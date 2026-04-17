@@ -1,0 +1,318 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.section { margin-bottom: 28px; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
+.theme-card { border-radius: var(--border-radius-lg); overflow: hidden; border: 0.5px solid var(--color-border-tertiary); }
+.mini-layout { display: flex; height: 220px; }
+.mini-sidebar { width: 140px; min-width: 140px; display: flex; flex-direction: column; padding: 12px 0; }
+.mini-logo { padding: 0 12px 10px; border-bottom: 1px solid; margin-bottom: 8px; }
+.logo-row { display: flex; align-items: center; gap: 6px; }
+.logo-sq { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.logo-sq svg { width: 11px; height: 11px; }
+.logo-txt { font-size: 11px; font-weight: 500; line-height: 1.2; }
+.logo-sub-txt { font-size: 9px; }
+.nav-i { display: flex; align-items: center; gap: 7px; padding: 5px 12px; font-size: 11px; border-radius: 0; }
+.nav-i svg { width: 11px; height: 11px; flex-shrink: 0; }
+.mini-main { flex: 1; display: flex; flex-direction: column; }
+.mini-topbar { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid; flex-shrink: 0; }
+.topbar-title { font-size: 11px; font-weight: 500; }
+.topbar-badge { font-size: 9px; padding: 2px 7px; border-radius: 99px; }
+.mini-content { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.m-card { padding: 7px 8px; border-radius: 6px; }
+.m-label { font-size: 9px; margin-bottom: 2px; }
+.m-val { font-size: 14px; font-weight: 500; }
+.bottom-row { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px; flex: 1; }
+.b-card { padding: 8px; border-radius: 6px; }
+.b-title { font-size: 9px; font-weight: 500; margin-bottom: 5px; }
+.bar-mini { height: 5px; border-radius: 99px; margin-bottom: 3px; }
+.pill-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.pill-mini { font-size: 8px; padding: 1px 6px; border-radius: 99px; font-weight: 500; }
+.swatches { display: flex; gap: 6px; margin-top: 10px; }
+.swatch { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.swatch-box { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid var(--color-border-tertiary); }
+.swatch-label { font-size: 9px; color: var(--color-text-tertiary); text-align: center; max-width: 44px; }
+.theme-meta { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-top: 0.5px solid var(--color-border-tertiary); }
+.theme-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.theme-desc { font-size: 11px; color: var(--color-text-secondary); }
+.choose-btn { font-size: 11px; padding: 4px 12px; border-radius: var(--border-radius-md); border: 0.5px solid; cursor: pointer; background: transparent; }
+</style>
+
+<h2 class="sr-only">Three color theme options for the School Management System: light, dark, and hybrid.</h2>
+
+<div class="section">
+  <div class="section-label">Theme 1 — Full light</div>
+  <div class="theme-card">
+    <div class="mini-layout" style="background:#F7F6FF;">
+      <div class="mini-sidebar" style="background:#ffffff; border-right: 0.5px solid #E8E7F8;">
+        <div class="mini-logo" style="border-bottom-color:#E8E7F8;">
+          <div class="logo-row">
+            <div class="logo-sq" style="background:#534AB7;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="logo-txt" style="color:#26215C;">Al-Noor</div>
+              <div class="logo-sub-txt" style="color:#AFA9EC;">Academy</div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-i" style="background:#EEEDFE; color:#534AB7; font-weight:500;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-i" style="color:#888780;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#888780" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Students
+        </div>
+        <div class="nav-i" style="color:#888780;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#888780" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Fees
+        </div>
+        <div class="nav-i" style="color:#888780;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#888780" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          Exams
+        </div>
+        <div class="nav-i" style="color:#888780;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#888780" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Attendance
+        </div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-topbar" style="background:#ffffff; border-bottom-color:#E8E7F8;">
+          <span class="topbar-title" style="color:#26215C;">Dashboard</span>
+          <span class="topbar-badge" style="background:#EEEDFE; color:#534AB7;">2024–25</span>
+        </div>
+        <div class="mini-content" style="background:#F7F6FF;">
+          <div class="metrics-row">
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E8E7F8;">
+              <div class="m-label" style="color:#888780;">Students</div>
+              <div class="m-val" style="color:#26215C;">1,247</div>
+            </div>
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E8E7F8;">
+              <div class="m-label" style="color:#888780;">Attendance</div>
+              <div class="m-val" style="color:#26215C;">91%</div>
+            </div>
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E8E7F8;">
+              <div class="m-label" style="color:#888780;">Fee</div>
+              <div class="m-val" style="color:#26215C;">68%</div>
+            </div>
+          </div>
+          <div class="bottom-row">
+            <div class="b-card" style="background:#ffffff; border: 0.5px solid #E8E7F8;">
+              <div class="b-title" style="color:#26215C;">Collection by class</div>
+              <div class="bar-mini" style="background:#EEEDFE;"><div style="width:88%;height:100%;background:#534AB7;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#EEEDFE;"><div style="width:61%;height:100%;background:#7F77DD;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#EEEDFE;"><div style="width:38%;height:100%;background:#AFA9EC;border-radius:99px;"></div></div>
+            </div>
+            <div class="b-card" style="background:#ffffff; border: 0.5px solid #E8E7F8;">
+              <div class="b-title" style="color:#26215C;">Fee status</div>
+              <div class="pill-row">
+                <div class="pill-mini" style="background:#EAF3DE;color:#27500A;">Paid</div>
+                <div class="pill-mini" style="background:#FAEEDA;color:#633806;">Partial</div>
+                <div class="pill-mini" style="background:#FCEBEB;color:#791F1F;">Unpaid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="theme-meta">
+      <div>
+        <div class="theme-name">Ivory & Violet</div>
+        <div class="theme-desc">Soft off-white base · purple accent · feels clean and trustworthy</div>
+      </div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-box" style="background:#F7F6FF;"></div><div class="swatch-label">Page bg</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#ffffff;"></div><div class="swatch-label">Cards</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#534AB7;"></div><div class="swatch-label">Primary</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#EEEDFE;"></div><div class="swatch-label">Accent bg</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#26215C;"></div><div class="swatch-label">Text</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Theme 2 — Full dark</div>
+  <div class="theme-card">
+    <div class="mini-layout" style="background:#0F1117;">
+      <div class="mini-sidebar" style="background:#171B24; border-right: 0.5px solid #252A36;">
+        <div class="mini-logo" style="border-bottom-color:#252A36;">
+          <div class="logo-row">
+            <div class="logo-sq" style="background:#1D9E75;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="logo-txt" style="color:#E1F5EE;">Al-Noor</div>
+              <div class="logo-sub-txt" style="color:#5DCAA5;">Academy</div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-i" style="background:#0D2E23; color:#5DCAA5; font-weight:500; border-right: 2px solid #1D9E75;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-i" style="color:#5F6B7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5F6B7A" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Students
+        </div>
+        <div class="nav-i" style="color:#5F6B7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5F6B7A" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Fees
+        </div>
+        <div class="nav-i" style="color:#5F6B7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5F6B7A" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          Exams
+        </div>
+        <div class="nav-i" style="color:#5F6B7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5F6B7A" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Attendance
+        </div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-topbar" style="background:#171B24; border-bottom-color:#252A36;">
+          <span class="topbar-title" style="color:#E1F5EE;">Dashboard</span>
+          <span class="topbar-badge" style="background:#0D2E23; color:#5DCAA5;">2024–25</span>
+        </div>
+        <div class="mini-content" style="background:#0F1117;">
+          <div class="metrics-row">
+            <div class="m-card" style="background:#171B24; border: 0.5px solid #252A36;">
+              <div class="m-label" style="color:#5F6B7A;">Students</div>
+              <div class="m-val" style="color:#E1F5EE;">1,247</div>
+            </div>
+            <div class="m-card" style="background:#171B24; border: 0.5px solid #252A36;">
+              <div class="m-label" style="color:#5F6B7A;">Attendance</div>
+              <div class="m-val" style="color:#E1F5EE;">91%</div>
+            </div>
+            <div class="m-card" style="background:#171B24; border: 0.5px solid #252A36;">
+              <div class="m-label" style="color:#5F6B7A;">Fee</div>
+              <div class="m-val" style="color:#E1F5EE;">68%</div>
+            </div>
+          </div>
+          <div class="bottom-row">
+            <div class="b-card" style="background:#171B24; border: 0.5px solid #252A36;">
+              <div class="b-title" style="color:#9FE1CB;">Collection by class</div>
+              <div class="bar-mini" style="background:#252A36;"><div style="width:88%;height:100%;background:#1D9E75;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#252A36;"><div style="width:61%;height:100%;background:#0F6E56;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#252A36;"><div style="width:38%;height:100%;background:#085041;border-radius:99px;"></div></div>
+            </div>
+            <div class="b-card" style="background:#171B24; border: 0.5px solid #252A36;">
+              <div class="b-title" style="color:#9FE1CB;">Fee status</div>
+              <div class="pill-row">
+                <div class="pill-mini" style="background:#085041;color:#9FE1CB;">Paid</div>
+                <div class="pill-mini" style="background:#412402;color:#FAC775;">Partial</div>
+                <div class="pill-mini" style="background:#501313;color:#F7C1C1;">Unpaid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="theme-meta" style="background:var(--color-background-primary);">
+      <div>
+        <div class="theme-name">Midnight & Teal</div>
+        <div class="theme-desc">Deep navy base · teal accent · professional, easy on long sessions</div>
+      </div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-box" style="background:#0F1117;"></div><div class="swatch-label">Page bg</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#171B24;"></div><div class="swatch-label">Cards</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#1D9E75;"></div><div class="swatch-label">Primary</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#0D2E23;"></div><div class="swatch-label">Accent bg</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#E1F5EE;"></div><div class="swatch-label">Text</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Theme 3 — Hybrid (light dominant · dark sidebar)</div>
+  <div class="theme-card">
+    <div class="mini-layout" style="background:#F5F4F2;">
+      <div class="mini-sidebar" style="background:#1C1F28; border-right: 0.5px solid #272B36;">
+        <div class="mini-logo" style="border-bottom-color:#272B36;">
+          <div class="logo-row">
+            <div class="logo-sq" style="background:#D85A30;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="logo-txt" style="color:#F5EDE8;">Al-Noor</div>
+              <div class="logo-sub-txt" style="color:#F0997B;">Academy</div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-i" style="background:#2E1E16; color:#F0997B; font-weight:500; border-right: 2px solid #D85A30;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#D85A30" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-i" style="color:#666D7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666D7A" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Students
+        </div>
+        <div class="nav-i" style="color:#666D7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666D7A" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Fees
+        </div>
+        <div class="nav-i" style="color:#666D7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666D7A" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          Exams
+        </div>
+        <div class="nav-i" style="color:#666D7A;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666D7A" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Attendance
+        </div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-topbar" style="background:#ffffff; border-bottom-color:#E5E3DF;">
+          <span class="topbar-title" style="color:#1C1F28;">Dashboard</span>
+          <span class="topbar-badge" style="background:#FAECE7; color:#993C1D;">2024–25</span>
+        </div>
+        <div class="mini-content" style="background:#F5F4F2;">
+          <div class="metrics-row">
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E5E3DF;">
+              <div class="m-label" style="color:#888780;">Students</div>
+              <div class="m-val" style="color:#1C1F28;">1,247</div>
+            </div>
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E5E3DF;">
+              <div class="m-label" style="color:#888780;">Attendance</div>
+              <div class="m-val" style="color:#1C1F28;">91%</div>
+            </div>
+            <div class="m-card" style="background:#ffffff; border: 0.5px solid #E5E3DF;">
+              <div class="m-label" style="color:#888780;">Fee</div>
+              <div class="m-val" style="color:#1C1F28;">68%</div>
+            </div>
+          </div>
+          <div class="bottom-row">
+            <div class="b-card" style="background:#ffffff; border: 0.5px solid #E5E3DF;">
+              <div class="b-title" style="color:#1C1F28;">Collection by class</div>
+              <div class="bar-mini" style="background:#F5EDE8;"><div style="width:88%;height:100%;background:#D85A30;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#F5EDE8;"><div style="width:61%;height:100%;background:#993C1D;border-radius:99px;"></div></div>
+              <div class="bar-mini" style="background:#F5EDE8;"><div style="width:38%;height:100%;background:#F0997B;border-radius:99px;"></div></div>
+            </div>
+            <div class="b-card" style="background:#ffffff; border: 0.5px solid #E5E3DF;">
+              <div class="b-title" style="color:#1C1F28;">Fee status</div>
+              <div class="pill-row">
+                <div class="pill-mini" style="background:#EAF3DE;color:#27500A;">Paid</div>
+                <div class="pill-mini" style="background:#FAEEDA;color:#633806;">Partial</div>
+                <div class="pill-mini" style="background:#FCEBEB;color:#791F1F;">Unpaid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="theme-meta">
+      <div>
+        <div class="theme-name">Charcoal & Coral</div>
+        <div class="theme-desc">Dark sidebar · warm white content · coral accent · bold and modern</div>
+      </div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-box" style="background:#1C1F28;"></div><div class="swatch-label">Sidebar</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#F5F4F2;"></div><div class="swatch-label">Page bg</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#ffffff;"></div><div class="swatch-label">Cards</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#D85A30;"></div><div class="swatch-label">Primary</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#FAECE7;"></div><div class="swatch-label">Accent bg</div></div>
+      </div>
+    </div>
+  </div>
+</div>

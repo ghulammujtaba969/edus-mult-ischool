@@ -1,0 +1,698 @@
+# 🏫 School Management System — Complete Master Plan
+
+Let me go extremely deep on this. I'll cover everything from architecture to the smallest edge cases.
+
+---
+
+## 📐 PART 1 — TECH STACK DECISION
+
+Before writing a single line, define your stack:
+
+| Layer | Recommended | Why |
+|---|---|---|
+| Backend | Laravel 11 | You already know it, mature ecosystem |
+| Frontend | Blade + Alpine.js | Fast, no SPA complexity |
+| CSS | Bootstrap 5 | Widely used, RTL support for Urdu |
+| DB | MySQL 8 | Relational, ideal for school data |
+| Queue | Laravel Queues + Redis | For SMS, reports, bulk operations |
+| Storage | Local + S3-compatible | Documents, images |
+| SMS | Jazz/Zong API or Twilio | Pakistani operators |
+| Cache | Redis | Sessions, timetable, dashboards |
+| Server | Ubuntu VPS + Nginx | Standard production setup |
+| Auth | Laravel Sanctum / Spatie Permissions | Role-based |
+
+---
+
+## 🗂️ PART 2 — DATABASE ARCHITECTURE (ERD-Level)
+
+### 2.1 — Multi-Tenancy Strategy (MOST CRITICAL DECISION)
+
+You need to decide this **before** any table design.
+
+**Option A — Single DB, `campus_id` everywhere**
+Every table has a `campus_id` foreign key. Simpler but risky if not enforced.
+
+**Option B — Separate DB per campus**
+Cleanest isolation. Complex migrations.
+
+**Recommended: Option A with Global Scopes**
+Use Laravel's Global Scopes to automatically inject `campus_id` on every query. This means one codebase serves all campuses without data leaks.
+
+---
+
+### 2.2 — Core Table Groups
+
+**SYSTEM TABLES**
+```
+campuses              id, name, address, phone, logo, is_active
+academic_years        id, campus_id, name (2024-25), start_date, end_date, is_current
+terms                 id, academic_year_id, name (Mid/Final), start_date, end_date
+```
+
+**USER & ROLES**
+```
+users                 id, campus_id, name, email, password, role_id, is_active
+roles                 id, name (admin/teacher/student/parent/accountant)
+permissions           id, name, slug
+role_permissions      role_id, permission_id
+user_meta             user_id, key, value  (flexible extra data)
+```
+
+**STUDENT TABLES**
+```
+students              id, user_id, campus_id, reg_no, b_form_no, dob, gender,
+                      blood_group, religion, nationality, photo, address,
+                      enrollment_date, status (active/alumni/expelled/transfer)
+
+student_parents       id, student_id, father_name, father_cnic, father_phone,
+                      father_occupation, mother_name, mother_cnic, mother_phone,
+                      guardian_name, guardian_cnic, guardian_relation,
+                      emergency_contact
+
+student_academic      id, student_id, academic_year_id, class_id, section_id,
+                      roll_no, admission_type, previous_school
+
+student_documents     id, student_id, type (b_form/photo/tc), file_path, uploaded_at
+
+student_promotions    id, student_id, from_year_id, to_year_id, from_class_id,
+                      to_class_id, promoted_by, promoted_at, remarks
+```
+
+**ACADEMIC STRUCTURE**
+```
+classes               id, campus_id, name (Class 1, Grade 9), level, order_seq
+sections              id, class_id, name (A/B/Red/Blue), capacity
+subjects              id, campus_id, name, code, type (theory/practical), is_optional
+class_subjects        id, class_id, subject_id, academic_year_id, weekly_hours
+```
+
+**STAFF TABLES**
+```
+employees             id, user_id, campus_id, emp_code, designation, department,
+                      joining_date, contract_type, cnic, dob, photo,
+                      qualification, experience_years, status
+
+employee_subjects     id, employee_id, subject_id, class_id, section_id, academic_year_id
+employee_documents    id, employee_id, type, file_path
+```
+
+**TIMETABLE**
+```
+timetable_slots       id, campus_id, day (Mon-Sat), period_no, start_time, end_time
+timetable_entries     id, academic_year_id, class_id, section_id, slot_id,
+                      subject_id, employee_id
+                      UNIQUE(slot_id, class_id, section_id) -- no double booking
+                      UNIQUE(slot_id, employee_id) -- no teacher clash
+```
+
+**ATTENDANCE**
+```
+attendance_student    id, student_id, section_id, date, status (P/A/L/H),
+                      marked_by, marked_at, method (manual/biometric/qr)
+
+attendance_employee   id, employee_id, date, check_in, check_out,
+                      status (P/A/L/HD), source
+
+attendance_devices    id, campus_id, device_id, device_type, location, is_active
+```
+
+**FEE SYSTEM (Most Complex in Pakistani SMS)**
+```
+fee_types             id, campus_id, name (Monthly/Admission/Exam/Library),
+                      is_recurring, frequency (monthly/yearly/once)
+
+fee_structures        id, campus_id, academic_year_id, class_id, fee_type_id,
+                      amount, due_day (day of month)
+
+fee_discounts         id, campus_id, name, type (sibling/scholarship/staff_child),
+                      discount_type (flat/percent), value
+
+student_fee_discounts id, student_id, fee_discount_id, applied_from, applied_to,
+                      approved_by
+
+fee_invoices          id, student_id, academic_year_id, month, fee_type_id,
+                      amount, discount_amount, fine_amount, net_amount,
+                      due_date, status (unpaid/paid/partial/waived),
+                      challan_no, generated_at
+
+fee_payments          id, invoice_id, student_id, amount_paid, payment_date,
+                      method (cash/bank/online), bank_ref, received_by,
+                      receipt_no
+
+fee_fines             id, student_id, month, days_late, fine_per_day,
+                      total_fine, waived (bool), waived_by
+```
+
+**EXAM & RESULTS**
+```
+exam_types            id, campus_id, name (Monthly Test/Mid Term/Final),
+                      weightage_percent
+
+exams                 id, campus_id, academic_year_id, term_id, exam_type_id,
+                      class_id, start_date, end_date, status
+
+exam_schedule         id, exam_id, subject_id, section_id, date, start_time,
+                      total_marks, passing_marks, room
+
+marks                 id, exam_id, student_id, subject_id, obtained_marks,
+                      is_absent, remarks, entered_by
+
+grading_scales        id, campus_id, name, min_percent, max_percent,
+                      grade (A+/A/B), gpa_value, remarks
+```
+
+**LEAVE MANAGEMENT**
+```
+leave_types           id, campus_id, name, max_days_per_year, is_paid
+leave_requests        id, employee_id, leave_type_id, from_date, to_date,
+                      total_days, reason, status (pending/approved/rejected),
+                      approved_by, remarks
+```
+
+**FINANCE/ACCOUNTS**
+```
+chart_of_accounts     id, campus_id, code, name, type (asset/liability/income/expense)
+journal_entries       id, campus_id, date, reference, description, created_by
+journal_lines         id, journal_id, account_id, debit, credit
+```
+
+**COMMUNICATION**
+```
+notifications         id, campus_id, title, body, type, target_role,
+                      target_ids (JSON), scheduled_at, sent_at
+sms_logs              id, notification_id, phone, status, response, sent_at
+```
+
+---
+
+## 🏗️ PART 3 — LARAVEL PROJECT ARCHITECTURE
+
+### 3.1 — Directory Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Admin/
+│   │   ├── Teacher/
+│   │   ├── Student/
+│   │   ├── Parent/
+│   │   └── Api/
+│   ├── Middleware/
+│   │   ├── CampusScope.php
+│   │   ├── RoleCheck.php
+│   │   └── AcademicYearActive.php
+│   └── Requests/  (Form validation per module)
+│
+├── Models/
+│   ├── Concerns/
+│   │   └── BelongsToCampus.php  (Global Scope trait)
+│
+├── Services/
+│   ├── FeeService.php          (fee generation logic)
+│   ├── AttendanceService.php
+│   ├── ResultService.php
+│   ├── SmsService.php
+│   ├── ChallanService.php
+│   └── ReportService.php
+│
+├── Repositories/              (optional, for complex queries)
+│
+├── Events/ & Listeners/       (attendance marked → SMS trigger)
+├── Jobs/                      (bulk SMS, report generation)
+└── Exports/                   (Excel/PDF exports via Laravel Excel)
+```
+
+---
+
+### 3.2 — Route Groups
+
+```php
+// Web routes grouped by role
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(...)
+Route::prefix('teacher')->middleware(['auth', 'role:teacher'])->group(...)
+Route::prefix('parent')->middleware(['auth', 'role:parent'])->group(...)
+Route::prefix('student')->middleware(['auth', 'role:student'])->group(...)
+
+// API routes for mobile app / parent portal
+Route::prefix('api/v1')->middleware('auth:sanctum')->group(...)
+```
+
+---
+
+## 📦 PART 4 — MODULE-BY-MODULE DEEP DIVE
+
+### MODULE 1 — Admission Management
+
+**Flow:**
+```
+Inquiry → Application Form → Document Upload → Entry Test → 
+Merit List → Offer Letter → Fee Payment → Enrollment → 
+Class Assignment → ID Card Generation
+```
+
+**Edge Cases to Handle:**
+- Duplicate B-Form detection (same child, two applications)
+- Waitlist management when class is full
+- Partial document submission — allow saving draft applications
+- Re-admission of previous students (pull old record)
+- Transfer students — different checklist
+
+**Key Features:**
+- Admission form with configurable fields per class
+- Auto-generate registration number on approval
+- Email/SMS on each stage change
+- Document checklist with status per document
+- Merit list auto-calculation based on entry test marks
+
+---
+
+### MODULE 2 — Student Management
+
+**Student Status Lifecycle:**
+```
+Applicant → Enrolled → Active → [Promoted / Detained / Transferred / Left / Expelled] → Alumni
+```
+
+**Critical Data Points:**
+- B-Form no. must be unique per campus
+- Two contacts minimum (father + mother/guardian)
+- Emergency contact mandatory
+- Photo requirements (passport size, recent)
+- Blood group (for emergencies)
+
+**Promotion Logic (Annual Process):**
+- Bulk promotion: pass students move to next class
+- Detained students stay in same class
+- New academic year auto-created from template
+- Roll numbers re-assigned after promotion
+- Fee structures copied to new year with price-edit option
+
+---
+
+### MODULE 3 — Timetable System
+
+**Clash Detection Rules:**
+1. A teacher cannot be in two sections at the same time
+2. A section cannot have two subjects in the same slot
+3. A room cannot have two classes at the same time
+4. Teacher must not exceed max periods per day (configurable)
+
+**Algorithm:**
+- Use constraint validation on save, not auto-generation
+- Visual drag-and-drop grid (day × period)
+- Color-code by subject
+- Print-ready timetable per class, per teacher
+
+**Substitution Management:**
+- When teacher is absent → assign substitute
+- Substitution log maintained
+- Auto-notify substitute teacher via SMS
+
+---
+
+### MODULE 4 — Attendance System (Very Deep)
+
+**Student Attendance:**
+- Marked per section per day
+- Three methods: Manual (web), QR code scan, Biometric device sync
+- Late arrival tracking (separate from absent)
+- Half-day leave handling
+- Holiday calendar integration (marked days auto-set to Holiday)
+- Monthly sheet view (calendar grid)
+- Auto-SMS to parent when child is absent (fire via queue, 15 min after school start)
+
+**Staff Attendance:**
+- Check-in / check-out times
+- Biometric device API integration (ZKTeco — you already have experience here!)
+- Late deduction rules (configurable grace period)
+- Link to payroll — attendance affects salary
+
+**Reports:**
+- Daily defaulters list (for admin)
+- Monthly attendance % per student
+- Students below threshold (e.g., below 75%) → auto-flag
+- Staff attendance summary for payroll
+
+---
+
+### MODULE 5 — Fee Management (Deepest Module)
+
+This is the most critical and most customized module for Pakistani schools.
+
+**Fee Generation Flow:**
+```
+Define Fee Structure per class → Assign to students → 
+Auto-generate monthly invoices (via Scheduler) → 
+Generate Challan → Parent pays → Record payment → 
+Update status → SMS receipt
+```
+
+**Fee Structure Setup:**
+- Per class, per fee type, per academic year
+- Effective date support (fee can change mid-year)
+- Copy previous year structure with override
+
+**Pakistani Challan Format:**
+- School copy + Bank copy + Parent copy (triplicate)
+- Bank code, account number (HBL/BOP/Meezan format)
+- Due date printed
+- Challan number as unique reference
+- QR code optional for payment verification
+
+**Discount Engine:**
+- Multiple discounts stackable (sibling + scholarship)
+- Cap at 100% discount
+- Approval workflow for manual discounts
+- Time-bound discounts (scholarship for this year only)
+
+**Fine Calculation:**
+- Configurable: PKR X per day after due date
+- Grace period (first 5 days free)
+- Fine waiver request + approval flow
+- Monthly fine report for accountant
+
+**Sibling Discount Logic:**
+```
+If 2 siblings enrolled:
+  eldest = 0% discount
+  2nd child = 10% on monthly fee
+  3rd child = 20% on monthly fee
+  (configurable per school)
+```
+
+**Fee Defaulters Workflow:**
+1. Auto-flag after due date passes
+2. SMS reminder sent (day 1, day 7, day 15)
+3. Defaulters list available daily
+4. Option to restrict exam admission if fee unpaid
+5. TC (Transfer Certificate) hold if dues pending
+
+---
+
+### MODULE 6 — Examination & Results
+
+**Exam Setup:**
+- Exam types with weightage (e.g., Mid = 30%, Final = 70%)
+- Per-subject total marks and passing marks
+- Schedule with room allocation
+- Seating plan generation
+
+**Marks Entry:**
+- Per subject per student
+- Bulk entry via Excel upload (teacher uploads sheet)
+- Absent marking (no marks entered = 0 if not marked absent)
+- Lock marks after verification (prevent accidental edits)
+- Re-check request workflow
+
+**Result Calculation:**
+```
+Weighted Result = (Mid Marks / Mid Total × Mid Weightage)
+               + (Final Marks / Final Total × Final Weightage)
+Final Percentage = Weighted Result × 100
+Grade = lookup grading_scale table
+Position = rank within section / class
+```
+
+**Result Card Generation:**
+- School header with logo
+- Student photo, class, section, roll no
+- Subject-wise marks table
+- Total, percentage, grade, position
+- Teacher/principal signature line
+- Print-ready PDF (per student or bulk)
+
+**Analytics:**
+- Subject-wise average per class
+- Top 10 position holders
+- Fail rate per subject
+- Comparison across terms
+
+---
+
+### MODULE 7 — HR & Payroll
+
+**Salary Components:**
+```
+Basic Salary
++ House Rent Allowance (HRA)
++ Medical Allowance
++ Conveyance
+- Absent Deductions (basic/26 × absent days)
+- Late Deductions (configurable)
+- Advance Recovery
+- Income Tax (if applicable)
+= Net Payable
+```
+
+**Monthly Payroll Flow:**
+```
+Lock attendance for month → 
+Calculate deductions → 
+Generate salary slips → 
+Approval by principal/admin → 
+Mark as paid → 
+Print salary slips
+```
+
+**Leave Impact:**
+- Paid leave → no deduction
+- Unpaid leave → deduction from basic
+- Leave encashment at year end (optional)
+
+---
+
+### MODULE 8 — Communication System
+
+**SMS Integration (Pakistan-Specific):**
+- SMS providers: Twilio, Zong Business API, Jazz Business
+- Use abstract `SmsService` so provider is swappable
+- Templates with variables: `Dear [Parent], [Student] was absent today [Date].`
+- Bulk SMS to class/section/all parents
+- Delivery status tracking
+- Monthly SMS usage report (cost tracking)
+
+**WhatsApp (Advanced):**
+- WhatsApp Business API (Meta) or 3rd party like Wassenger
+- Same template system
+- Attachment support (fee challan PDF via WhatsApp)
+
+**Notification Center:**
+- In-app notifications for all users
+- Announcement board (school-wide or class-specific)
+- Event notifications
+- Exam schedule alerts
+
+---
+
+### MODULE 9 — Reports & MIS Dashboard
+
+**Admin Dashboard KPIs:**
+- Total enrolled students (this year vs last year)
+- Today's attendance % (student + staff)
+- Fee collection this month vs target
+- Pending fee amount
+- Recent admissions
+- Upcoming exams
+
+**Key Reports (all PDF + Excel):**
+- Student strength report (class-wise)
+- Attendance report (daily/monthly/annual)
+- Fee collection report
+- Fee defaulters list
+- Salary report
+- Exam result summary
+- Academic performance trend
+
+---
+
+### MODULE 10 — Parent Portal
+
+**Access:**
+- Login with CNIC or phone number
+- OTP-based login (no password to remember)
+- Can see ALL their children in one account
+
+**Features:**
+- Attendance (today + monthly calendar)
+- Fee status + challan download
+- Result cards (per exam)
+- Notices & announcements
+- Leave application for child
+- Communication with class teacher
+
+---
+
+## 🔐 PART 5 — ROLES & PERMISSIONS MATRIX
+
+| Feature | Super Admin | Campus Admin | Principal | Teacher | Accountant | Parent | Student |
+|---|---|---|---|---|---|---|---|
+| Manage Campuses | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Manage Students | ✅ | ✅ | ✅ | View | ❌ | Own | Own |
+| Mark Attendance | ✅ | ✅ | ✅ | Own Class | ❌ | ❌ | ❌ |
+| Enter Marks | ✅ | ✅ | ✅ | Own Subject | ❌ | ❌ | ❌ |
+| Generate Fee | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| Receive Payment | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| View Reports | ✅ | ✅ | ✅ | Limited | Financial | ❌ | ❌ |
+| Send SMS | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Manage Payroll | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+
+Use **Spatie Laravel Permission** package for implementation.
+
+---
+
+## 🚦 PART 6 — DEVELOPMENT PHASES (Roadmap)
+
+### Phase 1 — Foundation (Weeks 1–3)
+- [ ] Project setup, multi-tenancy scaffold
+- [ ] Auth system + roles + permissions
+- [ ] Campus & Academic Year management
+- [ ] Class, Section, Subject setup
+
+### Phase 2 — Core Academic (Weeks 4–6)
+- [ ] Student registration & profiles
+- [ ] Admission workflow
+- [ ] Parent linking
+- [ ] Student documents upload
+
+### Phase 3 — Daily Operations (Weeks 7–9)
+- [ ] Timetable builder with clash detection
+- [ ] Student attendance (manual)
+- [ ] Staff attendance
+- [ ] Leave management
+
+### Phase 4 — Finance (Weeks 10–13)
+- [ ] Fee structure setup
+- [ ] Monthly invoice generation (scheduler)
+- [ ] Challan generation (PDF)
+- [ ] Payment recording
+- [ ] Fine calculation
+- [ ] Discount engine
+
+### Phase 5 — Exams & Results (Weeks 14–16)
+- [ ] Exam setup & schedule
+- [ ] Marks entry
+- [ ] Result calculation engine
+- [ ] Result card PDF generation
+
+### Phase 6 — HR & Payroll (Weeks 17–18)
+- [ ] Employee profiles
+- [ ] Salary structure
+- [ ] Monthly payroll generation
+- [ ] Salary slip PDF
+
+### Phase 7 — Communication (Week 19)
+- [ ] SMS integration
+- [ ] Notification system
+- [ ] Announcements
+
+### Phase 8 — Portals & Reports (Weeks 20–22)
+- [ ] Parent portal
+- [ ] Student portal
+- [ ] MIS dashboard
+- [ ] All report exports
+
+### Phase 9 — Polish & Testing (Weeks 23–24)
+- [ ] Urdu language support
+- [ ] Mobile responsiveness
+- [ ] Performance optimization
+- [ ] UAT with a real school
+
+---
+
+## ⚠️ PART 7 — CRITICAL EDGE CASES & LOOPHOLES
+
+These are things most developers miss and regret later:
+
+**Academic Year Transition:**
+- What happens to unpaid fees when year ends? → Carry forward as arrears
+- Promoted student gets new fee structure automatically
+- Old exam records must remain accessible after year closes
+
+**Mid-Year Admission:**
+- Fee for partial month — pro-rate or full month? (make it configurable)
+- Which exams has the student missed? — partial result handling
+
+**Transfer Certificate (TC):**
+- System must block TC if fee dues or library book pending
+- TC number must be unique and sequential
+- TC issued = student status → Left
+
+**Duplicate Prevention:**
+- Same B-Form number in same campus = hard block
+- Same teacher double-booked in timetable = hard block
+- Same student marked attendance twice = soft warning
+
+**Data Deletion Policy:**
+- Never hard-delete students, employees, or financial records
+- Use `soft deletes` everywhere
+- Audit log on every critical action
+
+**Academic Year Lock:**
+- Once year is closed, marks/fees/attendance become read-only
+- Only super admin can unlock with reason logged
+
+**SMS Failures:**
+- Failed SMS must be retried (queue with retry policy)
+- Parent phone number validation (Pakistani format: 03XX-XXXXXXX)
+- Log every SMS attempt regardless of success
+
+**Fee Edge Cases:**
+- Student leaves mid-month — fee waived or charged? (policy setting)
+- New fee type added mid-year — apply retroactively or from next month?
+- Bank returns a payment — reverse the receipt cleanly
+
+**Multi-Campus:**
+- Student transfers between campuses = preserve full history
+- Report at group level (all campuses combined)
+- Each campus has its own fee structure (same group, different pricing)
+
+---
+
+## 🇵🇰 PART 8 — PAKISTAN-SPECIFIC INTEGRATIONS
+
+| Integration | Details |
+|---|---|
+| SMS | Jazz/Zong Business SMS API or Twilio |
+| Bank Challan | HBL, Bank of Punjab, Meezan Bank print format |
+| Biometric | ZKTeco device SDK (you have ZKTeco experience already) |
+| Currency | PKR only, no decimal (Pakistani schools use round figures) |
+| Calendar | Urdu month names optional, Islamic calendar awareness |
+| Language | Urdu font rendering in PDFs via `mPDF` or `DomPDF` with Jameel Noori Nastaleeq font |
+| EOBI/Tax | Optional social security / income tax deduction in payroll |
+| FBISE/Boards | Board exam roll number tracking for Matric/FSc |
+
+---
+
+## 🧱 PART 9 — PACKAGES TO USE (Laravel)
+
+```
+spatie/laravel-permission          → Roles & permissions
+spatie/laravel-activitylog         → Audit logs  
+barryvdh/laravel-dompdf            → PDF generation
+maatwebsite/excel                  → Excel import/export
+spatie/laravel-medialibrary        → File/document management
+stichoza/google-translate-laravel  → Optional translation
+laravel/sanctum                    → API auth for parent portal
+league/flysystem-aws-s3-v3        → Cloud file storage
+```
+
+---
+
+## ✅ FINAL CHECKLIST BEFORE GOING LIVE
+
+- [ ] All sensitive routes behind auth + role middleware
+- [ ] CSRF on all forms
+- [ ] SQL injection prevented (use Eloquent, no raw queries without bindings)
+- [ ] File uploads validated (type + size + virus scan)
+- [ ] Daily automated database backup
+- [ ] Error logging (Laravel Telescope or Sentry)
+- [ ] SMS delivery testing on real Pakistani numbers
+- [ ] PDF tested with Urdu font rendering
+- [ ] Mobile responsiveness tested on low-end Android (common in Pakistan)
+- [ ] Performance: paginate all lists, eager load relationships, index DB foreign keys
+- [ ] Documented admin manual (even a basic one)
+
+---
+
+This is the full blueprint. Every module, every edge case, every table, every integration. You can start from Phase 1 and follow it sequentially — nothing will catch you off guard. Want me to now generate the actual **ERD diagram**, **Laravel folder structure scaffold**, or the **full migration files** for any specific module?

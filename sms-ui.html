@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduCore SMS — School Management System</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --charcoal:       #1E1F26;
+    --charcoal-light: #272930;
+    --charcoal-mid:   #32343E;
+    --charcoal-muted: #8B8FA8;
+    --coral:          #E85D3A;
+    --coral-light:    #F07355;
+    --coral-pale:     #FDF0ED;
+    --coral-border:   #F9D4CA;
+    --white:          #FFFFFF;
+    --surface:        #F8F7F5;
+    --surface-alt:    #F1EFF9;
+    --border:         #E8E5E0;
+    --text-dark:      #1E1F26;
+    --text-mid:       #5A5C6E;
+    --text-light:     #9899A8;
+    --success:        #2DA06A;
+    --success-bg:     #EBF8F2;
+    --warning:        #D48A12;
+    --warning-bg:     #FEF5E0;
+    --danger:         #D63B3B;
+    --danger-bg:      #FCEAEA;
+    --info:           #2C6FD4;
+    --info-bg:        #EAF1FC;
+    --sidebar-w:      260px;
+    --topbar-h:       64px;
+    --font:           'Plus Jakarta Sans', sans-serif;
+    --mono:           'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--surface); color: var(--text-dark); }
+
+  /* ─── PAGE SYSTEM ─── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ═══════════════════════════════════════
+     LOGIN PAGE
+  ═══════════════════════════════════════ */
+  #login-page {
+    min-height: 100vh;
+    display: flex;
+    background: var(--charcoal);
+  }
+  .login-left {
+    width: 45%;
+    background: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-left::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,93,58,0.15) 0%, transparent 70%);
+    top: -100px; right: -100px;
+  }
+  .login-left::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,93,58,0.1) 0%, transparent 70%);
+    bottom: -80px; left: -80px;
+  }
+  .login-brand {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 48px;
+    z-index: 1;
+  }
+  .login-brand-icon {
+    width: 44px; height: 44px;
+    background: var(--coral);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: white;
+    font-weight: 800;
+  }
+  .login-brand-name { font-size: 22px; font-weight: 700; color: white; letter-spacing: -0.3px; }
+  .login-brand-name span { color: var(--coral); }
+  .login-hero { z-index: 1; text-align: center; }
+  .login-hero h1 { font-size: 36px; font-weight: 800; color: white; line-height: 1.2; letter-spacing: -0.5px; }
+  .login-hero h1 em { font-style: normal; color: var(--coral); }
+  .login-hero p { font-size: 15px; color: var(--charcoal-muted); margin-top: 16px; line-height: 1.7; max-width: 340px; }
+  .login-stats { display: flex; gap: 32px; margin-top: 48px; z-index: 1; }
+  .login-stat-num { font-size: 28px; font-weight: 800; color: white; }
+  .login-stat-lbl { font-size: 12px; color: var(--charcoal-muted); margin-top: 2px; }
+
+  .login-right {
+    flex: 1;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px;
+    border-radius: 24px 0 0 24px;
+  }
+  .login-form-wrap { width: 100%; max-width: 400px; }
+  .login-form-wrap h2 { font-size: 28px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.3px; }
+  .login-form-wrap > p { font-size: 14px; color: var(--text-mid); margin-top: 6px; margin-bottom: 36px; }
+  .role-tabs { display: flex; gap: 8px; margin-bottom: 28px; padding: 4px; background: var(--surface); border-radius: 10px; }
+  .role-tab {
+    flex: 1; text-align: center; padding: 8px 4px;
+    font-size: 13px; font-weight: 600; color: var(--text-mid);
+    border-radius: 7px; cursor: pointer; transition: all .2s;
+    border: none; background: transparent;
+  }
+  .role-tab.active { background: white; color: var(--text-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .form-label-sms { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; display: block; }
+  .form-control-sms {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 14px;
+    font-family: var(--font); color: var(--text-dark);
+    background: white; transition: border .2s;
+    outline: none;
+  }
+  .form-control-sms:focus { border-color: var(--coral); }
+  .input-icon-wrap { position: relative; }
+  .input-icon-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 16px; }
+  .input-icon-wrap .form-control-sms { padding-left: 42px; }
+  .btn-login {
+    width: 100%; padding: 14px;
+    background: var(--coral); color: white;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 700;
+    font-family: var(--font); cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-top: 8px;
+  }
+  .btn-login:hover { background: var(--coral-light); }
+  .btn-login:active { transform: scale(0.99); }
+  .form-row-extra { display: flex; justify-content: space-between; align-items: center; margin: 12px 0 20px; }
+  .form-check-sms { display: flex; align-items: center; gap: 8px; }
+  .form-check-sms input[type="checkbox"] { accent-color: var(--coral); width: 15px; height: 15px; cursor: pointer; }
+  .form-check-sms label { font-size: 13px; color: var(--text-mid); cursor: pointer; }
+  .link-coral { font-size: 13px; color: var(--coral); text-decoration: none; font-weight: 600; }
+  .link-coral:hover { text-decoration: underline; }
+  .login-divider { text-align: center; font-size: 12px; color: var(--text-light); margin: 20px 0; position: relative; }
+  .login-divider::before, .login-divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: var(--border); }
+  .login-divider::before { left: 0; }
+  .login-divider::after { right: 0; }
+
+  /* ═══════════════════════════════════════
+     MAIN LAYOUT (Dashboard, List, Profile)
+  ═══════════════════════════════════════ */
+  .sms-layout { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--charcoal);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--charcoal-mid); border-radius: 2px; }
+  .sidebar-brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 20px 0;
+    margin-bottom: 24px;
+  }
+  .sidebar-brand-icon {
+    width: 36px; height: 36px;
+    background: var(--coral);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: white;
+  }
+  .sidebar-brand-name { font-size: 18px; font-weight: 800; color: white; }
+  .sidebar-brand-name span { color: var(--coral); }
+  .session-badge {
+    margin: 0 14px 20px;
+    background: var(--charcoal-light);
+    border-radius: 8px; padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .session-badge-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; flex-shrink: 0; }
+  .session-badge-text { font-size: 12px; color: var(--charcoal-muted); }
+  .session-badge-year { font-size: 12px; color: white; font-weight: 600; }
+
+  .nav-section { padding: 0 14px 4px; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--charcoal-muted); letter-spacing: 1px; text-transform: uppercase; padding: 12px 8px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 8px;
+    color: var(--charcoal-muted); font-size: 13.5px; font-weight: 500;
+    cursor: pointer; transition: all .15s;
+    text-decoration: none; margin-bottom: 2px;
+    border: none; background: transparent; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--charcoal-light); color: white; }
+  .nav-item.active { background: rgba(232,93,58,0.15); color: var(--coral-light); font-weight: 600; }
+  .nav-item i { width: 18px; font-size: 15px; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: var(--coral); color: white; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+  .sidebar-user {
+    margin-top: auto; padding: 16px 14px;
+    border-top: 1px solid var(--charcoal-mid);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .user-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--coral); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 600; color: white; }
+  .user-role { font-size: 11px; color: var(--charcoal-muted); }
+  .user-logout { margin-left: auto; color: var(--charcoal-muted); cursor: pointer; font-size: 16px; background: none; border: none; transition: color .15s; }
+  .user-logout:hover { color: var(--coral); }
+
+  /* MAIN CONTENT */
+  .main-content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+  .topbar {
+    height: var(--topbar-h); background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.2px; }
+  .topbar-breadcrumb { font-size: 13px; color: var(--text-light); margin-left: 4px; }
+  .topbar-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px; margin-left: auto;
+  }
+  .topbar-search i { color: var(--text-light); font-size: 15px; }
+  .topbar-search input { border: none; background: transparent; font-size: 13px; color: var(--text-dark); outline: none; width: 180px; font-family: var(--font); }
+  .topbar-search input::placeholder { color: var(--text-light); }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-mid); cursor: pointer; font-size: 16px;
+    position: relative; transition: all .15s;
+  }
+  .icon-btn:hover { background: var(--coral-pale); border-color: var(--coral-border); color: var(--coral); }
+  .notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; background: var(--coral); border-radius: 50%; border: 1.5px solid white; }
+  .page-body { padding: 28px; flex: 1; }
+
+  /* ═══════════════════════════════════════
+     DASHBOARD
+  ═══════════════════════════════════════ */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--border); padding: 20px;
+  }
+  .kpi-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 14px;
+  }
+  .kpi-label { font-size: 12px; color: var(--text-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 30px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; margin: 4px 0; }
+  .kpi-delta { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .delta-up { color: var(--success); }
+  .delta-down { color: var(--danger); }
+
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+  .card-sms {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--border); padding: 22px;
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+  .card-title-action { font-size: 12px; color: var(--coral); cursor: pointer; font-weight: 600; }
+
+  /* Attendance bars */
+  .att-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .att-bar-label { font-size: 12px; font-weight: 600; color: var(--text-mid); width: 60px; flex-shrink: 0; }
+  .att-bar-track { flex: 1; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+  .att-bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+  .att-bar-pct { font-size: 12px; font-weight: 700; color: var(--text-dark); width: 38px; text-align: right; flex-shrink: 0; }
+
+  /* Fee progress */
+  .fee-class-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .fee-class-name { font-size: 13px; font-weight: 600; color: var(--text-dark); width: 60px; flex-shrink: 0; }
+  .fee-bar-track { flex: 1; height: 10px; background: var(--surface); border-radius: 5px; overflow: hidden; }
+  .fee-bar-fill { height: 100%; border-radius: 5px; }
+  .fee-pct { font-size: 12px; font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* Recent payments table */
+  .sms-table { width: 100%; border-collapse: collapse; }
+  .sms-table th { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px 10px; text-align: left; }
+  .sms-table td { padding: 11px 12px; font-size: 13px; color: var(--text-dark); border-top: 1px solid var(--border); }
+  .sms-table tr:hover td { background: var(--surface); }
+  .status-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .pill-paid { background: var(--success-bg); color: var(--success); }
+  .pill-partial { background: var(--warning-bg); color: var(--warning); }
+  .pill-unpaid { background: var(--danger-bg); color: var(--danger); }
+  .pill-active { background: var(--success-bg); color: var(--success); }
+  .pill-inactive { background: var(--surface); color: var(--text-light); }
+  .pill-male { background: var(--info-bg); color: var(--info); }
+  .pill-female { background: #FEF0F6; color: #C2357B; }
+
+  /* Activity feed */
+  .activity-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .activity-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; }
+  .activity-time { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+  /* ═══════════════════════════════════════
+     LIST PAGE
+  ═══════════════════════════════════════ */
+  .list-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: white; border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 14px; flex: 1; min-width: 200px;
+  }
+  .search-bar i { color: var(--text-light); font-size: 15px; }
+  .search-bar input { border: none; background: transparent; font-size: 14px; color: var(--text-dark); outline: none; width: 100%; font-family: var(--font); }
+  .filter-select {
+    padding: 9px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; font-family: var(--font);
+    color: var(--text-dark); background: white; cursor: pointer; outline: none;
+  }
+  .btn-primary-sms {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; background: var(--coral); color: white;
+    border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+    font-family: var(--font); cursor: pointer; transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn-primary-sms:hover { background: var(--coral-light); }
+  .btn-outline-sms {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 16px; background: white; color: var(--text-dark);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600;
+    font-family: var(--font); cursor: pointer; transition: all .15s;
+  }
+  .btn-outline-sms:hover { border-color: var(--coral); color: var(--coral); }
+
+  .data-card {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .data-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .total-count { font-size: 13px; color: var(--text-mid); }
+  .total-count strong { color: var(--text-dark); }
+  .sms-table-wrap { overflow-x: auto; }
+  .sms-table.full td:first-child { padding-left: 20px; }
+  .sms-table.full th:first-child { padding-left: 20px; }
+  .sms-table.full tr:last-child td { border-bottom: none; }
+  .student-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .student-name { font-weight: 600; color: var(--text-dark); }
+  .student-reg { font-size: 11px; color: var(--text-light); font-family: var(--mono); margin-top: 1px; }
+  .action-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 4px; border-radius: 5px; font-size: 15px; transition: all .15s; }
+  .action-btn:hover { background: var(--surface); color: var(--coral); }
+  .data-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .pagination-sms { display: flex; gap: 4px; }
+  .page-btn { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 6px; background: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-mid); transition: all .15s; }
+  .page-btn.active { background: var(--coral); color: white; border-color: var(--coral); }
+  .page-btn:hover:not(.active) { border-color: var(--coral); color: var(--coral); }
+
+  /* ═══════════════════════════════════════
+     PROFILE PAGE
+  ═══════════════════════════════════════ */
+  .profile-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
+  .profile-card {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden; height: fit-content;
+  }
+  .profile-hero {
+    background: var(--charcoal);
+    padding: 28px 24px 20px;
+    position: relative;
+  }
+  .profile-hero::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    background: white;
+    border-radius: 14px 14px 0 0;
+  }
+  .profile-avatar-wrap { display: flex; justify-content: center; position: relative; z-index: 1; }
+  .profile-avatar {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--coral); display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 800; color: white;
+    border: 4px solid rgba(255,255,255,0.15);
+  }
+  .profile-status-dot {
+    position: absolute; bottom: 3px; right: 3px;
+    width: 16px; height: 16px; background: var(--success);
+    border-radius: 50%; border: 2.5px solid var(--charcoal);
+  }
+  .profile-id-section { padding: 12px 24px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+  .profile-name { font-size: 18px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.3px; }
+  .profile-class { font-size: 13px; color: var(--text-mid); margin-top: 3px; }
+  .profile-reg { font-size: 12px; color: var(--text-light); font-family: var(--mono); margin-top: 4px; }
+  .profile-tags { display: flex; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+
+  .profile-info-grid { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-bottom: 1px solid var(--border); }
+  .profile-info-item label { font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 3px; }
+  .profile-info-item span { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+  .profile-contact { padding: 16px 20px; }
+  .contact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .contact-row:last-child { margin-bottom: 0; }
+  .contact-row i { width: 18px; color: var(--coral); font-size: 14px; flex-shrink: 0; }
+  .contact-row span { font-size: 13px; color: var(--text-dark); }
+
+  .profile-right { display: flex; flex-direction: column; gap: 20px; }
+  .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+  .tab-btn { padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--text-light); cursor: pointer; border: none; background: none; font-family: var(--font); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+  .tab-btn.active { color: var(--coral); border-bottom-color: var(--coral); }
+
+  .info-section-title { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .info-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .info-field label { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 4px; }
+  .info-field span { font-size: 14px; color: var(--text-dark); font-weight: 500; }
+
+  /* Result card in profile */
+  .result-subject-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .result-subject-row:last-child { border-bottom: none; }
+  .subj-name { font-size: 13px; font-weight: 600; color: var(--text-dark); flex: 1; }
+  .subj-marks { font-family: var(--mono); font-size: 13px; color: var(--text-mid); width: 60px; text-align: center; }
+  .grade-chip { padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+  .grade-a { background: var(--success-bg); color: var(--success); }
+  .grade-b { background: var(--info-bg); color: var(--info); }
+  .grade-c { background: var(--warning-bg); color: var(--warning); }
+
+  /* Attendance heatmap */
+  .att-month { margin-bottom: 16px; }
+  .att-month-name { font-size: 12px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px; }
+  .att-days { display: flex; gap: 4px; flex-wrap: wrap; }
+  .att-day { width: 24px; height: 24px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+  .day-p { background: var(--success-bg); color: var(--success); }
+  .day-a { background: var(--danger-bg); color: var(--danger); }
+  .day-l { background: var(--warning-bg); color: var(--warning); }
+  .day-h { background: var(--surface); color: var(--text-light); }
+
+  /* Responsive tweaks */
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .profile-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-page" class="page active">
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-brand-icon">E</div>
+      <div class="login-brand-name">Edu<span>Core</span></div>
+    </div>
+    <div class="login-hero">
+      <h1>Pakistan's Smartest<br><em>School ERP</em></h1>
+      <p>Manage students, fees, attendance, exams, and staff — all in one powerful platform built for Pakistani schools.</p>
+    </div>
+    <div class="login-stats">
+      <div>
+        <div class="login-stat-num">2,400+</div>
+        <div class="login-stat-lbl">Students</div>
+      </div>
+      <div>
+        <div class="login-stat-num">140+</div>
+        <div class="login-stat-lbl">Staff</div>
+      </div>
+      <div>
+        <div class="login-stat-num">98%</div>
+        <div class="login-stat-lbl">Uptime</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2>Welcome back</h2>
+      <p>Sign in to your EduCore account</p>
+
+      <div class="role-tabs">
+        <button class="role-tab active">Admin</button>
+        <button class="role-tab">Teacher</button>
+        <button class="role-tab">Parent</button>
+        <button class="role-tab">Student</button>
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label class="form-label-sms">Email / Username</label>
+        <div class="input-icon-wrap">
+          <i class="bi bi-person"></i>
+          <input type="text" class="form-control-sms" placeholder="admin@alfalahschool.edu.pk" value="admin@alfalahschool.edu.pk">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 8px;">
+        <label class="form-label-sms">Password</label>
+        <div class="input-icon-wrap">
+          <i class="bi bi-lock"></i>
+          <input type="password" class="form-control-sms" placeholder="••••••••" value="••••••••">
+        </div>
+      </div>
+
+      <div class="form-row-extra">
+        <div class="form-check-sms">
+          <input type="checkbox" id="rememberMe" checked>
+          <label for="rememberMe">Keep me signed in</label>
+        </div>
+        <a href="#" class="link-coral">Forgot password?</a>
+      </div>
+
+      <button class="btn-login" onclick="navigateTo('dashboard')">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
+      </button>
+
+      <div class="login-divider">or continue with</div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-outline-sms" style="flex:1; justify-content: center; padding: 10px;">
+          <i class="bi bi-phone" style="font-size: 16px;"></i> OTP Login
+        </button>
+        <button class="btn-outline-sms" style="flex:1; justify-content: center; padding: 10px;">
+          <i class="bi bi-key" style="font-size: 16px;"></i> CNIC Login
+        </button>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-light); text-align: center; margin-top: 24px;">
+        Al-Falah School System · Islamabad Campus · <span style="color: var(--success); font-weight: 600;">● Online</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div id="dashboard-page" class="page">
+  <div class="sms-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">E</div>
+        <div class="sidebar-brand-name">Edu<span>Core</span></div>
+      </div>
+      <div class="session-badge">
+        <div class="session-badge-dot"></div>
+        <div>
+          <div class="session-badge-text">Academic Year</div>
+          <div class="session-badge-year">2024–2025</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Main</div>
+        <button class="nav-item active" onclick="navigateTo('dashboard')"><i class="bi bi-grid-1x2-fill"></i> Dashboard</button>
+        <button class="nav-item" onclick="navigateTo('list')"><i class="bi bi-mortarboard-fill"></i> Students <span class="nav-badge">2,418</span></button>
+        <button class="nav-item"><i class="bi bi-person-badge-fill"></i> Staff</button>
+        <button class="nav-item"><i class="bi bi-bell-fill"></i> Notifications <span class="nav-badge">5</span></button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Academic</div>
+        <button class="nav-item"><i class="bi bi-calendar3"></i> Timetable</button>
+        <button class="nav-item"><i class="bi bi-check2-square"></i> Attendance</button>
+        <button class="nav-item"><i class="bi bi-file-earmark-text"></i> Examinations</button>
+        <button class="nav-item"><i class="bi bi-award"></i> Results</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Finance</div>
+        <button class="nav-item"><i class="bi bi-cash-coin"></i> Fee Management</button>
+        <button class="nav-item"><i class="bi bi-receipt"></i> Challan Generator</button>
+        <button class="nav-item"><i class="bi bi-wallet2"></i> Accounts</button>
+        <button class="nav-item"><i class="bi bi-people-fill"></i> Payroll</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Operations</div>
+        <button class="nav-item"><i class="bi bi-bus-front"></i> Transport</button>
+        <button class="nav-item"><i class="bi bi-book"></i> Library</button>
+        <button class="nav-item"><i class="bi bi-box-seam"></i> Inventory</button>
+        <button class="nav-item"><i class="bi bi-chat-dots"></i> SMS Alerts</button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">System</div>
+        <button class="nav-item"><i class="bi bi-gear"></i> Settings</button>
+        <button class="nav-item"><i class="bi bi-bar-chart-line"></i> Reports</button>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">MA</div>
+        <div>
+          <div class="user-name">Muhammad Asif</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+        <button class="user-logout" onclick="navigateTo('login')" title="Logout"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div>
+          <span class="topbar-title">Dashboard</span>
+          <span class="topbar-breadcrumb">/ Overview</span>
+        </div>
+        <div class="topbar-search">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search students, staff, fees…">
+        </div>
+        <div class="topbar-actions">
+          <div class="icon-btn"><i class="bi bi-bell"></i><div class="notif-dot"></div></div>
+          <div class="icon-btn"><i class="bi bi-chat-square-text"></i></div>
+          <div class="user-avatar" style="width: 36px; height: 36px; font-size: 13px; cursor: pointer;" onclick="navigateTo('profile')">MA</div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #FDF0ED; color: var(--coral);"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="kpi-label">Total Students</div>
+            <div class="kpi-value">2,418</div>
+            <div class="kpi-delta delta-up"><i class="bi bi-arrow-up-short"></i> +47 this year</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--success-bg); color: var(--success);"><i class="bi bi-check2-circle"></i></div>
+            <div class="kpi-label">Today's Attendance</div>
+            <div class="kpi-value">91.4%</div>
+            <div class="kpi-delta delta-up"><i class="bi bi-arrow-up-short"></i> +2.1% vs yesterday</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--info-bg); color: var(--info);"><i class="bi bi-cash-coin"></i></div>
+            <div class="kpi-label">Fee Collected (Apr)</div>
+            <div class="kpi-value">₨ 4.2M</div>
+            <div class="kpi-delta delta-down"><i class="bi bi-arrow-down-short"></i> ₨ 680K pending</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--warning-bg); color: var(--warning);"><i class="bi bi-people-fill"></i></div>
+            <div class="kpi-label">Active Staff</div>
+            <div class="kpi-value">143</div>
+            <div class="kpi-delta" style="color: var(--text-light);">4 on leave today</div>
+          </div>
+        </div>
+
+        <!-- Main charts row -->
+        <div class="dashboard-grid">
+          <div>
+            <div class="card-sms" style="margin-bottom: 20px;">
+              <div class="card-title">Weekly Attendance <span class="card-title-action">View full report →</span></div>
+              <div style="padding: 8px 0;">
+                <div class="att-bar-row"><div class="att-bar-label">Monday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 94%; background: var(--success);"></div></div><div class="att-bar-pct" style="color: var(--success);">94%</div></div>
+                <div class="att-bar-row"><div class="att-bar-label">Tuesday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 91%; background: var(--success);"></div></div><div class="att-bar-pct" style="color: var(--success);">91%</div></div>
+                <div class="att-bar-row"><div class="att-bar-label">Wednesday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 88%; background: var(--warning);"></div></div><div class="att-bar-pct" style="color: var(--warning);">88%</div></div>
+                <div class="att-bar-row"><div class="att-bar-label">Thursday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 92%; background: var(--success);"></div></div><div class="att-bar-pct" style="color: var(--success);">92%</div></div>
+                <div class="att-bar-row"><div class="att-bar-label">Friday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 85%; background: var(--warning);"></div></div><div class="att-bar-pct" style="color: var(--warning);">85%</div></div>
+                <div class="att-bar-row"><div class="att-bar-label">Saturday</div><div class="att-bar-track"><div class="att-bar-fill" style="width: 79%; background: var(--danger);"></div></div><div class="att-bar-pct" style="color: var(--danger);">79%</div></div>
+              </div>
+            </div>
+
+            <div class="card-sms">
+              <div class="card-title">Recent Fee Payments <span class="card-title-action">View all →</span></div>
+              <table class="sms-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Class</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="student-avatar" style="background:#FDF0ED;color:var(--coral);font-size:10px;">AK</div><span style="font-weight:600">Ahmed Khan</span></div></td><td style="color:var(--text-mid);">Class 9-A</td><td style="font-family:var(--mono);font-weight:600;">₨ 4,500</td><td style="color:var(--text-mid);">Apr 8, 2025</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="student-avatar" style="background:#FEF0F6;color:#C2357B;font-size:10px;">SN</div><span style="font-weight:600">Sara Noor</span></div></td><td style="color:var(--text-mid);">Class 7-B</td><td style="font-family:var(--mono);font-weight:600;">₨ 3,800</td><td style="color:var(--text-mid);">Apr 8, 2025</td><td><span class="status-pill pill-partial">Partial</span></td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="student-avatar" style="background:var(--info-bg);color:var(--info);font-size:10px;">ZA</div><span style="font-weight:600">Zaid Abbas</span></div></td><td style="color:var(--text-mid);">Class 10-A</td><td style="font-family:var(--mono);font-weight:600;">₨ 5,200</td><td style="color:var(--text-mid);">Apr 7, 2025</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="student-avatar" style="background:var(--warning-bg);color:var(--warning);font-size:10px;">HA</div><span style="font-weight:600">Hina Arshad</span></div></td><td style="color:var(--text-mid);">Class 8-C</td><td style="font-family:var(--mono);font-weight:600;">₨ 4,100</td><td style="color:var(--text-mid);">Apr 7, 2025</td><td><span class="status-pill pill-unpaid">Unpaid</span></td></tr>
+                  <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="student-avatar" style="background:var(--success-bg);color:var(--success);font-size:10px;">OU</div><span style="font-weight:600">Omar Usman</span></div></td><td style="color:var(--text-mid);">Class 6-A</td><td style="font-family:var(--mono);font-weight:600;">₨ 3,500</td><td style="color:var(--text-mid);">Apr 6, 2025</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div>
+            <div class="card-sms" style="margin-bottom: 20px;">
+              <div class="card-title">Fee Collection by Class</div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 10</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 94%; background: var(--success);"></div></div><div class="fee-pct" style="color: var(--success);">94%</div></div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 9</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 87%; background: var(--success);"></div></div><div class="fee-pct" style="color: var(--success);">87%</div></div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 8</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 75%; background: var(--warning);"></div></div><div class="fee-pct" style="color: var(--warning);">75%</div></div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 7</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 68%; background: var(--warning);"></div></div><div class="fee-pct" style="color: var(--warning);">68%</div></div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 6</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 52%; background: var(--danger);"></div></div><div class="fee-pct" style="color: var(--danger);">52%</div></div>
+              <div class="fee-class-row"><div class="fee-class-name">Class 5</div><div class="fee-bar-track"><div class="fee-bar-fill" style="width: 81%; background: var(--success);"></div></div><div class="fee-pct" style="color: var(--success);">81%</div></div>
+            </div>
+
+            <div class="card-sms">
+              <div class="card-title">Recent Activity</div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background: var(--success-bg); color: var(--success);"><i class="bi bi-check2-circle"></i></div>
+                <div><div class="activity-text">Class 9-A attendance marked by <strong>Sir Bilal</strong></div><div class="activity-time">8 minutes ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background: var(--info-bg); color: var(--info);"><i class="bi bi-cash-coin"></i></div>
+                <div><div class="activity-text">Fee payment received for <strong>Zaid Abbas</strong> — ₨ 5,200</div><div class="activity-time">22 minutes ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background: var(--warning-bg); color: var(--warning);"><i class="bi bi-person-plus"></i></div>
+                <div><div class="activity-text">New admission: <strong>Fatima Malik</strong> enrolled in Class 6-B</div><div class="activity-time">1 hour ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background: var(--danger-bg); color: var(--danger);"><i class="bi bi-exclamation-triangle"></i></div>
+                <div><div class="activity-text">Fee defaulter alert: <strong>14 students</strong> overdue 15+ days</div><div class="activity-time">2 hours ago</div></div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon" style="background: #FDF0ED; color: var(--coral);"><i class="bi bi-chat-dots"></i></div>
+                <div><div class="activity-text">Bulk SMS sent to <strong>218 parents</strong> — Exam schedule</div><div class="activity-time">3 hours ago</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STUDENTS LIST ═══════════════ -->
+<div id="list-page" class="page">
+  <div class="sms-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">E</div>
+        <div class="sidebar-brand-name">Edu<span>Core</span></div>
+      </div>
+      <div class="session-badge">
+        <div class="session-badge-dot"></div>
+        <div>
+          <div class="session-badge-text">Academic Year</div>
+          <div class="session-badge-year">2024–2025</div>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Main</div>
+        <button class="nav-item" onclick="navigateTo('dashboard')"><i class="bi bi-grid-1x2-fill"></i> Dashboard</button>
+        <button class="nav-item active" onclick="navigateTo('list')"><i class="bi bi-mortarboard-fill"></i> Students <span class="nav-badge">2,418</span></button>
+        <button class="nav-item"><i class="bi bi-person-badge-fill"></i> Staff</button>
+        <button class="nav-item"><i class="bi bi-bell-fill"></i> Notifications <span class="nav-badge">5</span></button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Academic</div>
+        <button class="nav-item"><i class="bi bi-calendar3"></i> Timetable</button>
+        <button class="nav-item"><i class="bi bi-check2-square"></i> Attendance</button>
+        <button class="nav-item"><i class="bi bi-file-earmark-text"></i> Examinations</button>
+        <button class="nav-item"><i class="bi bi-award"></i> Results</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Finance</div>
+        <button class="nav-item"><i class="bi bi-cash-coin"></i> Fee Management</button>
+        <button class="nav-item"><i class="bi bi-receipt"></i> Challan Generator</button>
+        <button class="nav-item"><i class="bi bi-wallet2"></i> Accounts</button>
+        <button class="nav-item"><i class="bi bi-people-fill"></i> Payroll</button>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">MA</div>
+        <div><div class="user-name">Muhammad Asif</div><div class="user-role">Super Admin</div></div>
+        <button class="user-logout" onclick="navigateTo('login')"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div>
+          <span class="topbar-title">Students</span>
+          <span class="topbar-breadcrumb">/ All Students</span>
+        </div>
+        <div class="topbar-search">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search by name, reg no, B-Form…">
+        </div>
+        <div class="topbar-actions">
+          <div class="icon-btn"><i class="bi bi-bell"></i><div class="notif-dot"></div></div>
+          <div class="user-avatar" style="width: 36px; height: 36px; font-size: 13px; cursor: pointer;" onclick="navigateTo('profile')">MA</div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <!-- Summary pills -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+          <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; gap: 10px;">
+            <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
+            <span style="font-size: 13px; color: var(--text-mid);">Active</span>
+            <span style="font-size: 15px; font-weight: 800; color: var(--text-dark);">2,302</span>
+          </div>
+          <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; gap: 10px;">
+            <div style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></div>
+            <span style="font-size: 13px; color: var(--text-mid);">New Admission</span>
+            <span style="font-size: 15px; font-weight: 800; color: var(--text-dark);">47</span>
+          </div>
+          <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; gap: 10px;">
+            <div style="width: 8px; height: 8px; background: var(--text-light); border-radius: 50%;"></div>
+            <span style="font-size: 13px; color: var(--text-mid);">Left / TC Issued</span>
+            <span style="font-size: 15px; font-weight: 800; color: var(--text-dark);">69</span>
+          </div>
+          <div style="background: var(--coral-pale); border: 1px solid var(--coral-border); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-exclamation-circle" style="color: var(--coral); font-size: 14px;"></i>
+            <span style="font-size: 13px; color: var(--coral);">Fee Defaulters</span>
+            <span style="font-size: 15px; font-weight: 800; color: var(--coral);">184</span>
+          </div>
+        </div>
+
+        <div class="list-toolbar">
+          <div class="search-bar" style="max-width: 300px;">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search students…" id="studentSearch" oninput="filterStudents()">
+          </div>
+          <select class="filter-select" onchange="filterStudents()" id="classFilter">
+            <option value="">All Classes</option>
+            <option>Class 6</option>
+            <option>Class 7</option>
+            <option>Class 8</option>
+            <option>Class 9</option>
+            <option>Class 10</option>
+          </select>
+          <select class="filter-select" onchange="filterStudents()" id="statusFilter">
+            <option value="">All Status</option>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+          <select class="filter-select" id="genderFilter" onchange="filterStudents()">
+            <option value="">All Genders</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+          <div style="margin-left: auto; display: flex; gap: 8px;">
+            <button class="btn-outline-sms"><i class="bi bi-download"></i> Export</button>
+            <button class="btn-primary-sms"><i class="bi bi-plus-lg"></i> Add Student</button>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-header">
+            <span class="total-count">Showing <strong id="shownCount">12</strong> of <strong>2,418</strong> students</span>
+            <div style="margin-left: auto; display: flex; gap: 8px;">
+              <button class="btn-outline-sms" style="padding: 6px 12px; font-size: 12px;"><i class="bi bi-grid-3x3-gap"></i> Cards</button>
+              <button class="btn-outline-sms" style="padding: 6px 12px; font-size: 12px; border-color: var(--coral); color: var(--coral);"><i class="bi bi-list-ul"></i> Table</button>
+            </div>
+          </div>
+          <div class="sms-table-wrap">
+            <table class="sms-table full" id="studentTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox" style="accent-color: var(--coral);"></th>
+                  <th>Student</th>
+                  <th>Reg No.</th>
+                  <th>Class / Section</th>
+                  <th>Gender</th>
+                  <th>Father's Name</th>
+                  <th>Contact</th>
+                  <th>Fee Status</th>
+                  <th>Status</th>
+                  <th style="width: 80px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentTableBody">
+              </tbody>
+            </table>
+          </div>
+          <div class="data-footer">
+            <span style="font-size: 13px; color: var(--text-mid);">Page 1 of 202</span>
+            <div class="pagination-sms">
+              <button class="page-btn"><i class="bi bi-chevron-left"></i></button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <span style="display:flex;align-items:center;padding:0 4px;color:var(--text-light);font-size:13px;">…</span>
+              <button class="page-btn">202</button>
+              <button class="page-btn"><i class="bi bi-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PROFILE PAGE ═══════════════ -->
+<div id="profile-page" class="page">
+  <div class="sms-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">E</div>
+        <div class="sidebar-brand-name">Edu<span>Core</span></div>
+      </div>
+      <div class="session-badge">
+        <div class="session-badge-dot"></div>
+        <div>
+          <div class="session-badge-text">Academic Year</div>
+          <div class="session-badge-year">2024–2025</div>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Main</div>
+        <button class="nav-item" onclick="navigateTo('dashboard')"><i class="bi bi-grid-1x2-fill"></i> Dashboard</button>
+        <button class="nav-item active" onclick="navigateTo('list')"><i class="bi bi-mortarboard-fill"></i> Students</button>
+        <button class="nav-item"><i class="bi bi-person-badge-fill"></i> Staff</button>
+        <button class="nav-item"><i class="bi bi-bell-fill"></i> Notifications</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Academic</div>
+        <button class="nav-item"><i class="bi bi-calendar3"></i> Timetable</button>
+        <button class="nav-item"><i class="bi bi-check2-square"></i> Attendance</button>
+        <button class="nav-item"><i class="bi bi-file-earmark-text"></i> Examinations</button>
+        <button class="nav-item"><i class="bi bi-award"></i> Results</button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Finance</div>
+        <button class="nav-item"><i class="bi bi-cash-coin"></i> Fee Management</button>
+        <button class="nav-item"><i class="bi bi-receipt"></i> Challan Generator</button>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">MA</div>
+        <div><div class="user-name">Muhammad Asif</div><div class="user-role">Super Admin</div></div>
+        <button class="user-logout" onclick="navigateTo('login')"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn-outline-sms" onclick="navigateTo('list')" style="padding: 7px 12px;"><i class="bi bi-arrow-left"></i></button>
+          <div>
+            <span class="topbar-title">Student Profile</span>
+            <span class="topbar-breadcrumb">/ Ahmed Bilal Khan</span>
+          </div>
+        </div>
+        <div style="margin-left: auto; display: flex; gap: 10px;">
+          <button class="btn-outline-sms"><i class="bi bi-printer"></i> Print Card</button>
+          <button class="btn-outline-sms"><i class="bi bi-receipt"></i> Generate Challan</button>
+          <button class="btn-primary-sms"><i class="bi bi-pencil"></i> Edit Profile</button>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <div class="profile-grid">
+          <!-- Left: Profile Card -->
+          <div>
+            <div class="profile-card" style="margin-bottom: 16px;">
+              <div class="profile-hero">
+                <div class="profile-avatar-wrap">
+                  <div class="profile-avatar">AK</div>
+                  <div class="profile-status-dot"></div>
+                </div>
+              </div>
+              <div class="profile-id-section">
+                <div class="profile-name">Ahmed Bilal Khan</div>
+                <div class="profile-class">Class 9 — Section A</div>
+                <div class="profile-reg">REG-2019-00412</div>
+                <div class="profile-tags">
+                  <span class="status-pill pill-active">Active</span>
+                  <span class="status-pill pill-male">Male</span>
+                  <span style="background: var(--warning-bg); color: var(--warning);" class="status-pill">Roll #07</span>
+                </div>
+              </div>
+              <div class="profile-info-grid">
+                <div class="profile-info-item"><label>Date of Birth</label><span>15 Mar, 2010</span></div>
+                <div class="profile-info-item"><label>Age</label><span>15 years</span></div>
+                <div class="profile-info-item"><label>B-Form No.</label><span style="font-family:var(--mono);font-size:12px;">61101-1234567-8</span></div>
+                <div class="profile-info-item"><label>Blood Group</label><span>O+</span></div>
+                <div class="profile-info-item"><label>Enrolled</label><span>Apr 2019</span></div>
+                <div class="profile-info-item"><label>Section</label><span>A (Morning)</span></div>
+              </div>
+              <div class="profile-contact">
+                <div class="contact-row"><i class="bi bi-telephone-fill"></i><span>0312-3456789</span></div>
+                <div class="contact-row"><i class="bi bi-envelope-fill"></i><span>ahmed.khan@gmail.com</span></div>
+                <div class="contact-row"><i class="bi bi-geo-alt-fill"></i><span>House 14, Street 7, G-11/2, Islamabad</span></div>
+              </div>
+            </div>
+
+            <!-- Fee Status Card -->
+            <div class="card-sms">
+              <div class="card-title">Fee Status — April 2025</div>
+              <div style="background: var(--success-bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px;">
+                <i class="bi bi-check-circle-fill" style="color: var(--success); font-size: 22px;"></i>
+                <div><div style="font-size: 14px; font-weight: 700; color: var(--success);">Paid — ₨ 4,500</div><div style="font-size: 12px; color: var(--success);">Received on Apr 3, 2025</div></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 6px;"><span>Monthly Fee</span><span style="font-weight: 600; color: var(--text-dark);">₨ 4,200</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 6px;"><span>Sibling Discount (10%)</span><span style="font-weight: 600; color: var(--success);">- ₨ 420</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 10px;"><span>Exam Fee</span><span style="font-weight: 600; color: var(--text-dark);">₨ 720</span></div>
+              <div style="border-top: 1px solid var(--border); padding-top: 10px; display: flex; justify-content: space-between;"><span style="font-size: 13px; font-weight: 700; color: var(--text-dark);">Net Paid</span><span style="font-size: 15px; font-weight: 800; color: var(--text-dark);">₨ 4,500</span></div>
+            </div>
+          </div>
+
+          <!-- Right: Tabs -->
+          <div class="profile-right">
+            <div class="card-sms">
+              <div class="tab-nav">
+                <button class="tab-btn active" onclick="showTab('info', this)">Personal Info</button>
+                <button class="tab-btn" onclick="showTab('results', this)">Results</button>
+                <button class="tab-btn" onclick="showTab('attendance', this)">Attendance</button>
+                <button class="tab-btn" onclick="showTab('fees', this)">Fee History</button>
+              </div>
+
+              <!-- Tab: Personal Info -->
+              <div id="tab-info">
+                <div class="info-section-title">Parent / Guardian Information</div>
+                <div class="info-grid-2" style="margin-bottom: 20px;">
+                  <div class="info-field"><label>Father's Name</label><span>Bilal Ahmed Khan</span></div>
+                  <div class="info-field"><label>Father's CNIC</label><span style="font-family:var(--mono);font-size:13px;">61101-9876543-1</span></div>
+                  <div class="info-field"><label>Father's Occupation</label><span>Software Engineer</span></div>
+                  <div class="info-field"><label>Father's Phone</label><span>0312-3456789</span></div>
+                  <div class="info-field"><label>Mother's Name</label><span>Ayesha Bilal</span></div>
+                  <div class="info-field"><label>Mother's Phone</label><span>0345-9876543</span></div>
+                </div>
+
+                <div class="info-section-title">Academic Information</div>
+                <div class="info-grid-3" style="margin-bottom: 20px;">
+                  <div class="info-field"><label>Current Class</label><span>Class 9 — A</span></div>
+                  <div class="info-field"><label>Roll Number</label><span>07</span></div>
+                  <div class="info-field"><label>House</label><span>Iqbal House</span></div>
+                  <div class="info-field"><label>Subjects</label><span>9 Subjects</span></div>
+                  <div class="info-field"><label>Optional</label><span>Computer Sci.</span></div>
+                  <div class="info-field"><label>Board</label><span>FBISE</span></div>
+                </div>
+
+                <div class="info-section-title">Transport & Other</div>
+                <div class="info-grid-3">
+                  <div class="info-field"><label>Transport</label><span>Route #4 (G-11)</span></div>
+                  <div class="info-field"><label>Library Card</label><span>LIB-00412</span></div>
+                  <div class="info-field"><label>Previous School</label><span>Beacon House G-10</span></div>
+                </div>
+              </div>
+
+              <!-- Tab: Results -->
+              <div id="tab-results" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
+                  <select class="filter-select" style="font-size: 13px; padding: 8px 12px;">
+                    <option>Mid Term 2024–25</option>
+                    <option>Final 2023–24</option>
+                    <option>Mid Term 2023–24</option>
+                  </select>
+                  <div style="margin-left: auto; background: var(--success-bg); border-radius: 8px; padding: 8px 14px; text-align: center;">
+                    <div style="font-size: 20px; font-weight: 800; color: var(--success);">78.4%</div>
+                    <div style="font-size: 11px; color: var(--success); font-weight: 600;">Grade B+ · Position 4</div>
+                  </div>
+                </div>
+                <div class="result-subject-row"><span class="subj-name">Mathematics</span><span class="subj-marks">88 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 88%; background: var(--success);"></div></div></div><span class="grade-chip grade-a">A+</span></div>
+                <div class="result-subject-row"><span class="subj-name">English</span><span class="subj-marks">74 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 74%; background: var(--info);"></div></div></div><span class="grade-chip grade-b">B</span></div>
+                <div class="result-subject-row"><span class="subj-name">Urdu</span><span class="subj-marks">82 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 82%; background: var(--success);"></div></div></div><span class="grade-chip grade-a">A</span></div>
+                <div class="result-subject-row"><span class="subj-name">Physics</span><span class="subj-marks">71 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 71%; background: var(--info);"></div></div></div><span class="grade-chip grade-b">B</span></div>
+                <div class="result-subject-row"><span class="subj-name">Chemistry</span><span class="subj-marks">65 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 65%; background: var(--warning);"></div></div></div><span class="grade-chip grade-c">C+</span></div>
+                <div class="result-subject-row"><span class="subj-name">Biology</span><span class="subj-marks">79 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 79%; background: var(--info);"></div></div></div><span class="grade-chip grade-b">B+</span></div>
+                <div class="result-subject-row"><span class="subj-name">Islamiyat</span><span class="subj-marks">87 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 87%; background: var(--success);"></div></div></div><span class="grade-chip grade-a">A+</span></div>
+                <div class="result-subject-row"><span class="subj-name">Computer Sci.</span><span class="subj-marks">91 / 100</span><div style="flex: 1; margin: 0 12px;"><div class="att-bar-track"><div class="att-bar-fill" style="width: 91%; background: var(--success);"></div></div></div><span class="grade-chip grade-a">A+</span></div>
+              </div>
+
+              <!-- Tab: Attendance -->
+              <div id="tab-attendance" style="display: none;">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                  <div style="background: var(--success-bg); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 80px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--success);">91%</div>
+                    <div style="font-size: 11px; color: var(--success); font-weight: 600;">Overall</div>
+                  </div>
+                  <div style="background: var(--info-bg); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 80px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--info);">168</div>
+                    <div style="font-size: 11px; color: var(--info); font-weight: 600;">Present</div>
+                  </div>
+                  <div style="background: var(--danger-bg); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 80px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--danger);">11</div>
+                    <div style="font-size: 11px; color: var(--danger); font-weight: 600;">Absent</div>
+                  </div>
+                  <div style="background: var(--warning-bg); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 80px;">
+                    <div style="font-size: 22px; font-weight: 800; color: var(--warning);">5</div>
+                    <div style="font-size: 11px; color: var(--warning); font-weight: 600;">Leave</div>
+                  </div>
+                </div>
+                <div class="att-month">
+                  <div class="att-month-name">January 2025</div>
+                  <div class="att-days">
+                    <div class="att-day day-p">1</div><div class="att-day day-p">2</div><div class="att-day day-h">3</div><div class="att-day day-p">6</div><div class="att-day day-p">7</div><div class="att-day day-p">8</div><div class="att-day day-a">9</div><div class="att-day day-p">10</div><div class="att-day day-p">13</div><div class="att-day day-p">14</div><div class="att-day day-l">15</div><div class="att-day day-p">16</div><div class="att-day day-p">17</div><div class="att-day day-p">20</div><div class="att-day day-p">21</div><div class="att-day day-p">22</div><div class="att-day day-p">23</div><div class="att-day day-p">24</div><div class="att-day day-p">27</div><div class="att-day day-a">28</div><div class="att-day day-p">29</div><div class="att-day day-p">30</div><div class="att-day day-p">31</div>
+                  </div>
+                </div>
+                <div class="att-month">
+                  <div class="att-month-name">February 2025</div>
+                  <div class="att-days">
+                    <div class="att-day day-p">3</div><div class="att-day day-p">4</div><div class="att-day day-p">5</div><div class="att-day day-p">6</div><div class="att-day day-p">7</div><div class="att-day day-p">10</div><div class="att-day day-p">11</div><div class="att-day day-a">12</div><div class="att-day day-p">13</div><div class="att-day day-p">14</div><div class="att-day day-h">17</div><div class="att-day day-h">18</div><div class="att-day day-p">19</div><div class="att-day day-p">20</div><div class="att-day day-p">21</div><div class="att-day day-p">24</div><div class="att-day day-p">25</div><div class="att-day day-l">26</div><div class="att-day day-p">27</div><div class="att-day day-p">28</div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 6px;"><div class="att-day day-p" style="width:18px;height:18px;font-size:0;border-radius:4px;"></div><span style="font-size:12px;color:var(--text-mid);">Present</span></div>
+                  <div style="display: flex; align-items: center; gap: 6px;"><div class="att-day day-a" style="width:18px;height:18px;font-size:0;border-radius:4px;"></div><span style="font-size:12px;color:var(--text-mid);">Absent</span></div>
+                  <div style="display: flex; align-items: center; gap: 6px;"><div class="att-day day-l" style="width:18px;height:18px;font-size:0;border-radius:4px;"></div><span style="font-size:12px;color:var(--text-mid);">Leave</span></div>
+                  <div style="display: flex; align-items: center; gap: 6px;"><div class="att-day day-h" style="width:18px;height:18px;font-size:0;border-radius:4px;"></div><span style="font-size:12px;color:var(--text-mid);">Holiday</span></div>
+                </div>
+              </div>
+
+              <!-- Tab: Fee History -->
+              <div id="tab-fees" style="display: none;">
+                <table class="sms-table">
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th>Fee Type</th>
+                      <th>Amount</th>
+                      <th>Paid On</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td style="font-weight:600;">Apr 2025</td><td style="color:var(--text-mid);">Monthly + Exam</td><td style="font-family:var(--mono);">₨ 4,500</td><td style="color:var(--text-mid);">Apr 3, 2025</td><td style="color:var(--text-mid);">Cash</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                    <tr><td style="font-weight:600;">Mar 2025</td><td style="color:var(--text-mid);">Monthly</td><td style="font-family:var(--mono);">₨ 3,780</td><td style="color:var(--text-mid);">Mar 2, 2025</td><td style="color:var(--text-mid);">Bank</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                    <tr><td style="font-weight:600;">Feb 2025</td><td style="color:var(--text-mid);">Monthly</td><td style="font-family:var(--mono);">₨ 3,780</td><td style="color:var(--text-mid);">Feb 8, 2025</td><td style="color:var(--text-mid);">Cash</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                    <tr><td style="font-weight:600;">Jan 2025</td><td style="color:var(--text-mid);">Monthly + Fine</td><td style="font-family:var(--mono);">₨ 3,980</td><td style="color:var(--text-mid);">Jan 19, 2025</td><td style="color:var(--text-mid);">Cash</td><td><span class="status-pill pill-partial">Partial</span></td></tr>
+                    <tr><td style="font-weight:600;">Dec 2024</td><td style="color:var(--text-mid);">Monthly</td><td style="font-family:var(--mono);">₨ 3,780</td><td style="color:var(--text-mid);">Dec 5, 2024</td><td style="color:var(--text-mid);">Bank</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                    <tr><td style="font-weight:600;">Nov 2024</td><td style="color:var(--text-mid);">Monthly</td><td style="font-family:var(--mono);">₨ 3,780</td><td style="color:var(--text-mid);">Nov 4, 2024</td><td style="color:var(--text-mid);">Online</td><td><span class="status-pill pill-paid">Paid</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const students = [
+  { name: 'Ahmed Bilal Khan', reg: 'REG-2019-00412', initials: 'AK', color: '#FDF0ED', textColor: '#E85D3A', cls: 'Class 9', section: 'A', gender: 'Male', father: 'Bilal Ahmed Khan', phone: '0312-3456789', fee: 'paid', status: 'active' },
+  { name: 'Sara Noor Fatima', reg: 'REG-2021-00581', initials: 'SN', color: '#FEF0F6', textColor: '#C2357B', cls: 'Class 7', section: 'B', gender: 'Female', father: 'Noor Muhammad', phone: '0333-8765432', fee: 'partial', status: 'active' },
+  { name: 'Zaid Abbas Mirza', reg: 'REG-2018-00234', initials: 'ZA', color: '#EAF1FC', textColor: '#2C6FD4', cls: 'Class 10', section: 'A', gender: 'Male', father: 'Abbas Mirza', phone: '0321-5544332', fee: 'paid', status: 'active' },
+  { name: 'Hina Arshad Malik', reg: 'REG-2020-00399', initials: 'HA', color: '#FEF5E0', textColor: '#D48A12', cls: 'Class 8', section: 'C', gender: 'Female', father: 'Arshad Malik', phone: '0345-1122334', fee: 'unpaid', status: 'active' },
+  { name: 'Omar Usman Sheikh', reg: 'REG-2022-00702', initials: 'OU', color: '#EBF8F2', textColor: '#2DA06A', cls: 'Class 6', section: 'A', gender: 'Male', father: 'Usman Sheikh', phone: '0300-9988776', fee: 'paid', status: 'active' },
+  { name: 'Amna Tariq Butt', reg: 'REG-2021-00490', initials: 'AT', color: '#FEF0F6', textColor: '#C2357B', cls: 'Class 7', section: 'A', gender: 'Female', father: 'Tariq Butt', phone: '0311-2233445', fee: 'paid', status: 'active' },
+  { name: 'Hamza Raza Khan', reg: 'REG-2020-00411', initials: 'HR', color: '#FDF0ED', textColor: '#E85D3A', cls: 'Class 8', section: 'A', gender: 'Male', father: 'Raza Khan', phone: '0312-9988001', fee: 'unpaid', status: 'inactive' },
+  { name: 'Khadija Imran Ali', reg: 'REG-2019-00355', initials: 'KI', color: '#FEF0F6', textColor: '#C2357B', cls: 'Class 9', section: 'B', gender: 'Female', father: 'Imran Ali', phone: '0321-3344556', fee: 'paid', status: 'active' },
+  { name: 'Faisal Akhtar Qazi', reg: 'REG-2018-00188', initials: 'FA', color: '#EAF1FC', textColor: '#2C6FD4', cls: 'Class 10', section: 'B', gender: 'Male', father: 'Akhtar Qazi', phone: '0300-7766554', fee: 'partial', status: 'active' },
+  { name: 'Rabia Shahid Awan', reg: 'REG-2022-00660', initials: 'RS', color: '#FEF5E0', textColor: '#D48A12', cls: 'Class 6', section: 'B', gender: 'Female', father: 'Shahid Awan', phone: '0333-2211009', fee: 'paid', status: 'active' },
+  { name: 'Ali Hassan Siddiqui', reg: 'REG-2020-00430', initials: 'AH', color: '#EBF8F2', textColor: '#2DA06A', cls: 'Class 8', section: 'B', gender: 'Male', father: 'Hassan Siddiqui', phone: '0312-4455667', fee: 'paid', status: 'active' },
+  { name: 'Maryam Zahid Baig', reg: 'REG-2021-00555', initials: 'MZ', color: '#FEF0F6', textColor: '#C2357B', cls: 'Class 7', section: 'C', gender: 'Female', father: 'Zahid Baig', phone: '0345-8877665', fee: 'unpaid', status: 'active' },
+];
+
+function renderStudents(data) {
+  const tbody = document.getElementById('studentTableBody');
+  document.getElementById('shownCount').textContent = data.length;
+  tbody.innerHTML = data.map(s => `
+    <tr>
+      <td><input type="checkbox" style="accent-color: var(--coral);"></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="student-avatar" style="background:${s.color};color:${s.textColor};">${s.initials}</div>
+          <div>
+            <div class="student-name" style="cursor:pointer;" onclick="navigateTo('profile')">${s.name}</div>
+            <div class="student-reg">${s.reg}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--text-mid);">${s.reg}</td>
+      <td style="color:var(--text-dark);font-weight:600;">${s.cls} <span style="color:var(--text-mid);font-weight:400;">/ ${s.section}</span></td>
+      <td><span class="status-pill ${s.gender === 'Male' ? 'pill-male' : 'pill-female'}">${s.gender}</span></td>
+      <td style="color:var(--text-mid);">${s.father}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--text-mid);">${s.phone}</td>
+      <td><span class="status-pill ${s.fee === 'paid' ? 'pill-paid' : s.fee === 'partial' ? 'pill-partial' : 'pill-unpaid'}">${s.fee.charAt(0).toUpperCase()+s.fee.slice(1)}</span></td>
+      <td><span class="status-pill ${s.status === 'active' ? 'pill-active' : 'pill-inactive'}">${s.status.charAt(0).toUpperCase()+s.status.slice(1)}</span></td>
+      <td>
+        <button class="action-btn" onclick="navigateTo('profile')" title="View Profile"><i class="bi bi-eye"></i></button>
+        <button class="action-btn" title="Edit"><i class="bi bi-pencil"></i></button>
+        <button class="action-btn" title="More"><i class="bi bi-three-dots-vertical"></i></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterStudents() {
+  const q = document.getElementById('studentSearch').value.toLowerCase();
+  const cls = document.getElementById('classFilter').value;
+  const status = document.getElementById('statusFilter').value.toLowerCase();
+  const gender = document.getElementById('genderFilter').value;
+  const filtered = students.filter(s =>
+    (!q || s.name.toLowerCase().includes(q) || s.reg.toLowerCase().includes(q)) &&
+    (!cls || s.cls === cls) &&
+    (!status || s.status === status) &&
+    (!gender || s.gender === gender)
+  );
+  renderStudents(filtered);
+}
+
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page + '-page').classList.add('active');
+  window.scrollTo(0, 0);
+  if (page === 'list') renderStudents(students);
+}
+
+function showTab(tab, btn) {
+  ['info', 'results', 'attendance', 'fees'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Role tab switching
+document.querySelectorAll('.role-tab').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
