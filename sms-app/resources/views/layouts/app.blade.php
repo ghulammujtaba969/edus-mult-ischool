@@ -13,7 +13,11 @@
 </head>
 <body>
 <div class="sms-layout">
-    @include('partials.sidebar')
+    @if(request()->is('super-admin*'))
+        @include('partials.super-admin-sidebar')
+    @else
+        @include('partials.sidebar')
+    @endif
 
     <div class="main-content">
         <div class="topbar">

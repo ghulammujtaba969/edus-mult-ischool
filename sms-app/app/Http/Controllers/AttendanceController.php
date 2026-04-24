@@ -7,6 +7,8 @@ use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentAttendance;
+use App\Models\Employee;
+use App\Models\TimetableEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +18,20 @@ class AttendanceController extends Controller
 {
     public function index(): View
     {
-        $classes = SchoolClass::query()->with('sections')->orderBy('order_seq')->get();
+        $user = auth()->user();
+        $query = SchoolClass::query()->with('sections')->orderBy('order_seq');
+
+        // If the user is a teacher, only show their assigned classes/sections
+        if ($user->role->value === 'teacher') {
+            $employee = Employee::where('user_id', $user->id)->first();
+            $assignedSectionIds = TimetableEntry::where('employee_id', $employee?->id)->pluck('section_id')->unique();
+
+            $query->whereHas('sections', function($q) use ($assignedSectionIds) {
+                $q->whereIn('id', $assignedSectionIds);
+            });
+        }
+
+        $classes = $query->get();
 
         return view('attendance.index', compact('classes'));
     }

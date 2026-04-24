@@ -5,6 +5,23 @@
 @section('breadcrumb', '/ Overview')
 
 @section('content')
+    @php
+        $school = app(\App\Services\TenantManager::class)->getSchool();
+    @endphp
+
+    @if($school && $school->isTrial())
+        <div style="background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <i class="bi bi-info-circle-fill" style="font-size: 1.5rem;"></i>
+                <div>
+                    <div style="font-weight: 800;">Free Trial Active</div>
+                    <div style="font-size: .85rem;">You have <strong>{{ $school->trialDaysLeft() }} days</strong> left in your free trial. Upgrade now to avoid any service interruption.</div>
+                </div>
+            </div>
+            <a href="#" class="btn-primary-sms" style="background: #92400e; border: none; padding: .5rem 1rem; font-size: .8rem;">Upgrade Plan</a>
+        </div>
+    @endif
+
     <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-label">Total Students</div>

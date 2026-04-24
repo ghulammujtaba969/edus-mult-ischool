@@ -17,12 +17,26 @@
 - **Student Management**: Full Enrollment workflow, Profiles, and Academic history.
 - **Attendance Module**: Daily attendance marking for students, Section-wise.
 - **Fee Management**: Recurring fee structures, bulk invoice generation, and payment recording.
-- **Exam Management**: Exam types, scheduling, and Marks entry.
-- **HR & Payroll**: Employee management, basic salary setup, and monthly payroll generation.
+- **Examinations**: Exam types, scheduling, marks entry, online exams, grading scales, and official transcript generation.
+- **HR & Payroll**: Employee management, basic salary setup, monthly payroll generation, and advanced staff operations (attendance, leaves, ratings).
 - **Hostel Management**: Manage hostels, rooms, and student allocations with bed tracking.
-- **Asset Management**: Inventory tracking, categorization, and assignment to staff/students.
-- **Communication**: System for sending internal notifications and announcements.
-- **Reporting**: Reports for attendance and fee collection.
+- **Inventory & Assets**: Asset tracking, consumables management, supplier tracking, and item issuance.
+- **Transport Management**: Manage routes, vehicles, and pickup points with student assignments.
+- **Library Management**: Catalog books, manage members, and track issue/return with fine calculation.
+- **Front Office / CRM**: Visitor logs, admission enquiries, and complaint management.
+- **Alumni Management**: Alumni directory, graduation tracking, and event management.
+- **SaaS Architecture**: Single-database multi-tenant engine with `school_id` scoping across all modules.
+- **Self-Service Onboarding**: Public-facing school registration system with automated subdomain creation and 14-day trial management.
+- **Tenant Management**: Super Admin portal for managing schools, plans, and custom domains.
+- **Domain Routing & Verification**: Automated DNS verification for custom domains with hourly background checks.
+- **Hierarchical Scoping**: Schools can have multiple branches, restricted by their subscription plan.
+- **Core Academics**: Homework, syllabus progress, lesson planning, and full weekly Timetable management with clash detection.
+- **Student Lifecycle**: Online admissions inquiry portal and automated year-end promotions.
+- **Multi-Portal Access**: Dedicated dashboards for Admin, Teachers, Students, and Parents.
+- **Templates**: Customizable Certificate and ID card templates.
+- **Communication**: System for sending internal notifications, announcements, and gateway configurations for SMS/Email.
+- **System Settings**: Global and campus-specific configurations for school identity and integrations.
+- **Reporting**: Advanced MIS reports including attendance, fee collection, financials (income/expense), inventory status, and student transcripts.
 - **UI/UX**: Beautiful, modern, and mobile-responsive Blade UI with Alpine.js integration.
 
 ## What Is Working Right Now
@@ -32,6 +46,7 @@
 - Automatic campus scoping for all entities via `BelongsToCampus` trait.
 - Bulk generation of fee invoices and payroll records.
 - Marking attendance and recording marks.
+- Creating and managing Lesson Plans and Online Exams.
 - Viewing student and employee profiles with summary data.
 
 ## Key Modules

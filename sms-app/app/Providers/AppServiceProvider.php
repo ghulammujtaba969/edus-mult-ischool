@@ -15,6 +15,7 @@ use App\Services\FeeService;
 use App\Services\ReportService;
 use App\Services\ResultService;
 use App\Services\SmsService;
+use App\Services\TenantManager;
 use App\Models\Campus;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(CampusManager::class);
+        $this->app->singleton(TenantManager::class);
         $this->app->bind(FeeServiceInterface::class, FeeService::class);
         $this->app->bind(AttendanceServiceInterface::class, AttendanceService::class);
         $this->app->bind(ResultServiceInterface::class, ResultService::class);

@@ -22,12 +22,28 @@
             </div>
         </a>
 
-        <div class="data-card" style="text-opacity:0.5;cursor:not-allowed;">
+        <a href="{{ route('admin.reports.financials') }}" class="data-card" style="text-decoration:none;transition:transform 0.2s;">
             <div style="text-align:center;padding:1rem;">
-                <i class="bi bi-graph-up-arrow" style="font-size:3rem;color:var(--text-light);margin-bottom:1rem;display:block;"></i>
-                <div style="font-weight:800;font-size:1.2rem;color:var(--text-light);">Exam Results</div>
-                <div style="color:var(--text-light);font-size:.9rem;margin-top:.5rem;">(Coming Soon) Class-wise academic performance.</div>
+                <i class="bi bi-bank" style="font-size:3rem;color:var(--info);margin-bottom:1rem;display:block;"></i>
+                <div style="font-weight:800;font-size:1.2rem;color:var(--charcoal);">Financial Summary</div>
+                <div style="color:var(--text-light);font-size:.9rem;margin-top:.5rem;">Income vs Expense analysis for the academic year.</div>
             </div>
-        </div>
+        </a>
+
+        <a href="{{ route('admin.reports.inventory') }}" class="data-card" style="text-decoration:none;transition:transform 0.2s;">
+            <div style="text-align:center;padding:1rem;">
+                <i class="bi bi-box-seam" style="font-size:3rem;color:var(--warning);margin-bottom:1rem;display:block;"></i>
+                <div style="font-weight:800;font-size:1.2rem;color:var(--charcoal);">Inventory Status</div>
+                <div style="color:var(--text-light);font-size:.9rem;margin-top:.5rem;">Current stock levels and issuance tracking.</div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.reports.transcripts') }}" class="data-card" style="text-decoration:none;transition:transform 0.2s;">
+            <div style="text-align:center;padding:1rem;">
+                <i class="bi bi-file-earmark-person" style="font-size:3rem;color:var(--danger);margin-bottom:1rem;display:block;"></i>
+                <div style="font-weight:800;font-size:1.2rem;color:var(--charcoal);">Student Transcripts</div>
+                <div style="color:var(--text-light);font-size:.9rem;margin-top:.5rem;">Consolidated academic results and performance logs.</div>
+            </div>
+        </a>
     </div>
 @endsection

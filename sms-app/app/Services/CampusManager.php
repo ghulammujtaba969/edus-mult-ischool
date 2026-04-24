@@ -12,19 +12,24 @@ class CampusManager
     private ?Campus $activeCampus = null;
     private ?AcademicYear $activeAcademicYear = null;
 
+    public function __construct(protected TenantManager $tenantManager)
+    {
+    }
+
     public function hydrateFromRequest(Request $request): void
     {
         $user = $request->user();
+        $schoolId = $this->tenantManager->getSchoolId();
 
-        if (! $user) {
+        if (! $user || ! $schoolId) {
             return;
         }
 
-        if ($user->isSuperAdmin()) {
+        if ($user->isSuperAdmin() || $user->role->value === 'campus_admin') {
             $selectedCampusId = (int) $request->session()->get('active_campus_id');
 
             if (! $selectedCampusId) {
-                $selectedCampusId = (int) Campus::query()->value('id');
+                $selectedCampusId = (int) Campus::where('school_id', $schoolId)->value('id');
                 if ($selectedCampusId) {
                     $request->session()->put('active_campus_id', $selectedCampusId);
                 }

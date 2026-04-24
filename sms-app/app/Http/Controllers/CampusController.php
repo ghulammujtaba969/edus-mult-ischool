@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campus;
+use App\Services\TenantManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -11,26 +12,30 @@ class CampusController extends Controller
 {
     public function index(): View
     {
-        if (! auth()->user()->isSuperAdmin()) {
-            abort(403);
-        }
         $campuses = Campus::all();
         return view('campuses.index', compact('campuses'));
     }
 
     public function create(): View
     {
-        if (! auth()->user()->isSuperAdmin()) {
-            abort(403);
+        $school = app(TenantManager::class)->getSchool();
+        $maxBranches = $school->plan->max_branches;
+        
+        if (Campus::count() >= $maxBranches) {
+            return redirect()->route('admin.campuses.index')
+                ->with('error', "Your current plan allows a maximum of {$maxBranches} branches. Please upgrade to add more.");
         }
+
         return view('campuses.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        if (! auth()->user()->isSuperAdmin()) {
-            abort(403);
+        $school = app(TenantManager::class)->getSchool();
+        if (Campus::count() >= $school->plan->max_branches) {
+            return redirect()->route('admin.campuses.index')->with('error', 'Branch limit reached.');
         }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:campuses,code',
@@ -44,14 +49,11 @@ class CampusController extends Controller
         Campus::create($validated);
 
         return redirect()->route('admin.campuses.index')
-            ->with('success', 'Campus created successfully.');
+            ->with('success', 'Branch created successfully.');
     }
 
     public function edit(Campus $campus): View
     {
-        if (! auth()->user()->isSuperAdmin()) {
-            abort(403);
-        }
         return view('campuses.edit', compact('campus'));
     }
 
@@ -63,7 +65,8 @@ class CampusController extends Controller
                 'campus_id' => ['required', 'integer', 'exists:campuses,id'],
             ]);
 
-            if (! $request->user()->isSuperAdmin()) {
+            // Allow switching if user is campus_admin or super_admin
+            if (! in_array(auth()->user()->role->value, ['super_admin', 'campus_admin', 'principal'])) {
                 abort(403);
             }
 
@@ -72,10 +75,6 @@ class CampusController extends Controller
             return back();
         }
 
-        // This is for standard CRUD update
-        if (! auth()->user()->isSuperAdmin()) {
-            abort(403);
-        }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:campuses,code,' . $campus->id,
@@ -89,7 +88,7 @@ class CampusController extends Controller
         $campus->update($validated);
 
         return redirect()->route('admin.campuses.index')
-            ->with('success', 'Campus updated successfully.');
+            ->with('success', 'Branch updated successfully.');
     }
 
     public function destroy(Campus $campus): RedirectResponse

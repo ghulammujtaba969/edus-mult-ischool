@@ -25,8 +25,13 @@ EduCore is a modern, multi-campus School Management System (SMS) built with Lara
 ### 📅 Daily Operations
 - **Attendance**: Daily student attendance marking.
 - **Hostel**: Manage hostels, rooms, and student allocations.
+- **Transport**: Routes, vehicles, and pickup points management.
+- **Library**: Book cataloging and issue/return tracking.
+- **Front Office**: Visitor logs, enquiries, and complaints.
+- **Academics**: Homework and syllabus progress tracking.
 - **Assets**: Track school inventory and assignments.
 - **Notifications**: Internal announcement system for staff and parents.
+- **Templates**: Certificate and ID card template management.
 
 ### 👥 HR & Payroll
 - **Staff Management**: Manage employee records and roles.
