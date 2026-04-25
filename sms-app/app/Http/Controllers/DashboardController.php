@@ -61,8 +61,8 @@ class DashboardController extends Controller
             'recentPayments' => $recentPayments,
             'collectionByClass' => $collectionByClass,
             'activities' => $activities,
-            'activeCampus' => $this->campusManager->activeCampus(),
-            'activeAcademicYear' => $this->campusManager->activeAcademicYear(),
+            'activeCampus' => $this->campusManager->getActiveCampus(),
+            'activeAcademicYear' => $this->campusManager->getActiveAcademicYear(),
         ]);
     }
 }

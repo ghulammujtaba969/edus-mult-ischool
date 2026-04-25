@@ -29,7 +29,13 @@ trait BelongsToSchool
             $schoolId = app(TenantManager::class)->getSchoolId();
 
             if ($schoolId) {
-                $builder->where($builder->qualifyColumn('school_id'), $schoolId);
+                $builder->where(function ($query) use ($builder, $schoolId) {
+                    $query->where($builder->qualifyColumn('school_id'), $schoolId);
+
+                    if (defined(get_class($builder->getModel()) . '::ALLOW_GLOBAL_RECORDS')) {
+                        $query->orWhereNull($builder->qualifyColumn('school_id'));
+                    }
+                });
             }
         });
     }

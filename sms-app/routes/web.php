@@ -89,8 +89,19 @@ Route::middleware('auth')->group(function () {
     // Super Admin Portal
     Route::prefix('super-admin')->name('super-admin.')->middleware('role:super_admin')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/schools/{school}/impersonate', [\App\Http\Controllers\SuperAdmin\SchoolController::class, 'impersonate'])->name('schools.impersonate');
+        Route::post('/leave-impersonation', [\App\Http\Controllers\SuperAdmin\SchoolController::class, 'leaveImpersonation'])->name('leave-impersonation')->withoutMiddleware('role:super_admin');
         Route::resource('schools', \App\Http\Controllers\SuperAdmin\SchoolController::class);
+        Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class);
+        Route::get('/users/{user}/permissions', [\App\Http\Controllers\SuperAdmin\UserController::class, 'permissions'])->name('users.permissions');
+        Route::post('/users/{user}/permissions', [\App\Http\Controllers\SuperAdmin\UserController::class, 'updatePermissions'])->name('users.permissions.update');
+        Route::resource('permissions', \App\Http\Controllers\SuperAdmin\PermissionController::class);
+        Route::resource('roles', \App\Http\Controllers\SuperAdmin\RoleController::class);
         Route::resource('plans', \App\Http\Controllers\SuperAdmin\PlanController::class);
+        Route::get('/domains', [\App\Http\Controllers\SuperAdmin\DomainController::class, 'index'])->name('domains.index');
+        Route::get('/settings', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/audit-logs', [\App\Http\Controllers\SuperAdmin\AuditLogController::class, 'index'])->name('audit-logs.index');
     });
 
     // Admin Portal
@@ -159,6 +170,9 @@ Route::middleware('auth')->group(function () {
         // Settings
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class);
+        Route::get('users/{user}/permissions', [\App\Http\Controllers\Admin\UserPermissionController::class, 'index'])->name('users.permissions');
+        Route::put('users/{user}/permissions', [\App\Http\Controllers\Admin\UserPermissionController::class, 'update'])->name('users.permissions.update');
 
         // Students
         Route::resource('students', StudentController::class);

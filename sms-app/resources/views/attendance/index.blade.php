@@ -5,12 +5,6 @@
 @section('breadcrumb', '/ Attendance')
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="data-card">
         <div class="card-title">Select Section to Mark Attendance</div>
         <div class="kpi-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">

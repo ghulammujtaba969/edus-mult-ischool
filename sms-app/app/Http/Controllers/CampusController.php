@@ -18,7 +18,12 @@ class CampusController extends Controller
 
     public function create(): View
     {
-        $school = app(TenantManager::class)->getSchool();
+        $school = app(TenantManager::class)->getSchool() ?? auth()->user()->school;
+        
+        if (!$school) {
+            return redirect()->route('admin.dashboard')->with('error', 'Could not identify your school context.');
+        }
+
         $maxBranches = $school->plan->max_branches;
         
         if (Campus::count() >= $maxBranches) {
@@ -31,7 +36,12 @@ class CampusController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $school = app(TenantManager::class)->getSchool();
+        $school = app(TenantManager::class)->getSchool() ?? auth()->user()->school;
+
+        if (!$school) {
+            return redirect()->route('admin.campuses.index')->with('error', 'Could not identify your school context.');
+        }
+
         if (Campus::count() >= $school->plan->max_branches) {
             return redirect()->route('admin.campuses.index')->with('error', 'Branch limit reached.');
         }

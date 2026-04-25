@@ -45,8 +45,8 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view): void {
             $manager = app(CampusManager::class);
 
-            $view->with('layoutActiveCampus', $manager->activeCampus());
-            $view->with('layoutAcademicYear', $manager->activeAcademicYear());
+            $view->with('layoutActiveCampus', $manager->getActiveCampus());
+            $view->with('layoutAcademicYear', $manager->getActiveAcademicYear());
             $view->with('layoutCampuses', Campus::query()->orderBy('name')->get());
         });
     }

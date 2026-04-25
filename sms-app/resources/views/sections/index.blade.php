@@ -9,12 +9,6 @@
 @endsection
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="data-card">
         <div class="data-card-header">
             <div>Showing <strong>{{ $sections->count() }}</strong> sections</div>

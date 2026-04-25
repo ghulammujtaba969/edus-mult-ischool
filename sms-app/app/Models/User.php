@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Models\Concerns\BelongsToSchool;
+use App\Models\Concerns\HasPermissions;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, BelongsToSchool;
+    use HasApiTokens, HasFactory, Notifiable, BelongsToSchool, HasPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +55,11 @@ class User extends Authenticatable
         'role' => UserRole::class,
     ];
 
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
+
     public function campus(): BelongsTo
     {
         return $this->belongsTo(Campus::class);
@@ -72,5 +78,10 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->role === UserRole::SUPER_ADMIN;
+    }
+
+    public function isCampusAdmin(): bool
+    {
+        return $this->role === UserRole::CAMPUS_ADMIN;
     }
 }

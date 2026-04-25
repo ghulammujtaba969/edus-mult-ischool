@@ -38,9 +38,10 @@
             @endif
 
             <div class="role-tabs">
-                <button class="role-tab active" type="button">Admin</button>
-                <button class="role-tab" type="button">Teacher</button>
-                <button class="role-tab" type="button">Parent</button>
+                <button class="role-tab active" type="button" onclick="fillLogin('admin@alfalah.edu.pk', 'password', this)">Admin</button>
+                <button class="role-tab" type="button" onclick="fillLogin('teacher@alfalah.edu.pk', 'password', this)">Teacher</button>
+                <button class="role-tab" type="button" onclick="fillLogin('student1@alfalah.edu.pk', 'password', this)">Student</button>
+                <button class="role-tab" type="button" onclick="fillLogin('superadmin@educore.test', 'password', this)">SuperAdmin</button>
             </div>
 
             <form action="{{ route('login.store') }}" method="POST">
@@ -51,7 +52,12 @@
                 </div>
                 <div style="margin-bottom:1rem;">
                     <label class="form-label-sms" for="password">Password</label>
-                    <input class="form-control-sms" id="password" name="password" type="password" value="password" required>
+                    <div style="position:relative;">
+                        <input class="form-control-sms" id="password" name="password" type="password" value="password" required style="padding-right: 2.5rem;">
+                        <button type="button" onclick="togglePassword()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center;">
+                            <i id="password-icon" class="bi bi-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <label style="display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;">
                     <input type="checkbox" name="remember" value="1" checked>
@@ -62,5 +68,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    function fillLogin(email, password, el) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = password;
+        
+        // Update active tab
+        document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('password-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('bi-eye');
+            passwordIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('bi-eye-slash');
+            passwordIcon.classList.add('bi-eye');
+        }
+    }
+</script>
 </body>
 </html>

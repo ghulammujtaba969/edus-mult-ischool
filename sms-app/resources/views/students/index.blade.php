@@ -9,11 +9,6 @@
 @endsection
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
     <div class="summary-row">
         <div class="summary-pill"><span class="status-pill pill-active">Active</span> <strong>{{ $statusCounts['active'] }}</strong></div>
         <div class="summary-pill"><span class="status-pill pill-partial">New</span> <strong>{{ $statusCounts['enrolled'] }}</strong></div>

@@ -9,12 +9,6 @@
 @endsection
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <form class="list-toolbar" method="GET" action="{{ route('admin.employees.index') }}">
         <div class="search-wrap">
             <i class="bi bi-search"></i>
@@ -69,6 +63,7 @@
                     <td><span class="status-pill {{ $employee->status === 'active' ? 'pill-active' : 'pill-inactive' }}">{{ ucfirst($employee->status) }}</span></td>
                     <td>
                         <div style="display:flex;gap:.5rem;">
+                            <a class="btn-outline-sms" href="{{ route('admin.users.permissions', $employee->user) }}" title="Permissions"><i class="bi bi-shield-lock"></i></a>
                             <a class="btn-outline-sms" href="{{ route('admin.employees.show', $employee) }}"><i class="bi bi-eye"></i></a>
                             <a class="btn-outline-sms" href="{{ route('admin.employees.edit', $employee) }}"><i class="bi bi-pencil"></i></a>
                             <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('Are you sure?')">

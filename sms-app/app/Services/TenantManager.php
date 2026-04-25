@@ -29,6 +29,12 @@ class TenantManager
                 $this->school = $school;
             }
         }
+
+        // Final fallback: use authenticated user's school if still not resolved
+        if (!$this->schoolId && auth()->check() && auth()->user()->school_id) {
+            $this->schoolId = auth()->user()->school_id;
+            $this->school = auth()->user()->school;
+        }
     }
 
     public function getSchoolId(): ?int

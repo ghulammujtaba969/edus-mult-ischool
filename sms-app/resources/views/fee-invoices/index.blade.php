@@ -9,12 +9,6 @@
 @endsection
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <form class="list-toolbar" method="GET" action="{{ route('admin.fee-invoices.index') }}">
         <div class="search-wrap">
             <i class="bi bi-search"></i>

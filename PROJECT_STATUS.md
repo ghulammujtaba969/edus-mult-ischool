@@ -25,11 +25,20 @@
 - **Library Management**: Catalog books, manage members, and track issue/return with fine calculation.
 - **Front Office / CRM**: Visitor logs, admission enquiries, and complaint management.
 - **Alumni Management**: Alumni directory, graduation tracking, and event management.
+- **Comprehensive RBAC System**:
+  - **Global Roles**: Super Admin can define roles available across the entire platform.
+  - **School-Specific Roles**: School Admins can create and manage roles unique to their institution.
+  - **Direct Permissions**: Ability to assign specific permissions to individual users, bypassing or supplementing roles.
+  - **Optimized Performance**: Permission caching with automated invalidation on updates.
+- **Refined School Onboarding**:
+  - **Atomic Registration**: School, Main Campus, and Admin User created within a single database transaction.
+  - **Intelligent Auto-fill**: Real-time generation of slugs and campus codes during creation via Alpine.js.
 - **SaaS Architecture**: Single-database multi-tenant engine with `school_id` scoping across all modules.
 - **Self-Service Onboarding**: Public-facing school registration system with automated subdomain creation and 14-day trial management.
 - **Tenant Management**: Super Admin portal for managing schools, plans, and custom domains.
 - **Domain Routing & Verification**: Automated DNS verification for custom domains with hourly background checks.
 - **Hierarchical Scoping**: Schools can have multiple branches, restricted by their subscription plan.
+  - **Global Record Support**: Refined scoping to allow sharing global entities (like roles) while maintaining strict tenant isolation.
 - **Core Academics**: Homework, syllabus progress, lesson planning, and full weekly Timetable management with clash detection.
 - **Student Lifecycle**: Online admissions inquiry portal and automated year-end promotions.
 - **Multi-Portal Access**: Dedicated dashboards for Admin, Teachers, Students, and Parents.

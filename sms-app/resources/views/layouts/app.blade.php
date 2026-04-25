@@ -12,6 +12,20 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
+@if(session()->has('impersonator_id'))
+    <div style="background: var(--charcoal); color: white; padding: 0.5rem 1.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; border-bottom: 1px solid var(--coral);">
+        <div>
+            <i class="bi bi-shield-lock-fill" style="color: var(--coral);"></i>
+            <strong>Impersonation Mode:</strong> You are viewing <strong>{{ auth()->user()->school->name }}</strong> as an administrator.
+        </div>
+        <form action="{{ route('super-admin.leave-impersonation') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn-primary-sms" style="padding: 0.2rem 0.75rem; font-size: 0.75rem; border-radius: 6px;">
+                Return to Super Admin
+            </button>
+        </form>
+    </div>
+@endif
 <div class="sms-layout">
     @if(request()->is('super-admin*'))
         @include('partials.super-admin-sidebar')
@@ -27,15 +41,17 @@
             </div>
 
             <div class="topbar-actions">
-                @if(auth()->user()->isSuperAdmin())
-                    <form action="{{ route('campus.switch') }}" method="POST">
-                        @csrf
-                        <select class="filter-select" name="campus_id" onchange="this.form.submit()">
-                            @foreach($layoutCampuses as $campus)
-                                <option value="{{ $campus->id }}" @selected(optional($layoutActiveCampus)->id === $campus->id)>{{ $campus->name }}</option>
-                            @endforeach
-                        </select>
-                    </form>
+                @if(!request()->is('super-admin*') && (auth()->user()->isSuperAdmin() || auth()->user()->isCampusAdmin()))
+                    @if(count($layoutCampuses) > 1)
+                        <form action="{{ route('campus.switch') }}" method="POST">
+                            @csrf
+                            <select class="filter-select" name="campus_id" onchange="this.form.submit()">
+                                @foreach($layoutCampuses as $campus)
+                                    <option value="{{ $campus->id }}" @selected(optional($layoutActiveCampus)->id === $campus->id)>{{ $campus->name }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    @endif
                 @endif
 
                 @yield('topbar_actions')
@@ -48,6 +64,20 @@
         </div>
 
         <div class="page-body">
+            @if(session('success'))
+                <div class="alert-box tone-success" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div>{{ session('success') }}</div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert-box tone-danger" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>{{ session('error') }}</div>
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </div>

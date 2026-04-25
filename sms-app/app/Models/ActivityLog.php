@@ -24,4 +24,9 @@ class ActivityLog extends Model
     protected $casts = [
         'logged_at' => 'datetime',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

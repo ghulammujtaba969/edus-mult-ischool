@@ -49,18 +49,23 @@ class CampusManager
             : null;
     }
 
-    public function scopeCampusId(): ?int
+    public function getScopeCampusId(): ?int
     {
         return $this->scopeCampusId;
     }
 
-    public function activeCampus(): ?Campus
+    public function getActiveCampus(): ?Campus
     {
         return $this->activeCampus;
     }
 
-    public function activeAcademicYear(): ?AcademicYear
+    public function getActiveAcademicYear(): ?AcademicYear
     {
         return $this->activeAcademicYear;
     }
+
+    // Aliases for backward compatibility
+    public function activeCampus(): ?Campus { return $this->getActiveCampus(); }
+    public function activeAcademicYear(): ?AcademicYear { return $this->getActiveAcademicYear(); }
+    public function scopeCampusId(): ?int { return $this->getScopeCampusId(); }
 }

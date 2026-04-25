@@ -9,18 +9,6 @@
 @endsection
 
 @section('content')
-    @if(session('success'))
-        <div class="alert-box" style="background:var(--success-bg);border-color:var(--success);color:var(--success);">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert-box">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="data-card">
         <div class="data-card-header">
             <div>Showing <strong>{{ $classes->count() }}</strong> classes</div>

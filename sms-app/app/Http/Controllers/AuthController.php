@@ -28,9 +28,22 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
-        $request->user()->forceFill(['last_login_at' => now()])->save();
+        $user = $request->user();
+        $user->forceFill(['last_login_at' => now()])->save();
 
-        return redirect()->route('admin.dashboard');
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('super-admin.dashboard');
+        }
+
+        $redirectRoute = match($user->role->value) {
+            'campus_admin', 'principal', 'accountant' => 'admin.dashboard',
+            'teacher' => 'teacher.dashboard',
+            'student' => 'student.dashboard',
+            'parent' => 'parent.dashboard',
+            default => 'admin.dashboard',
+        };
+
+        return redirect()->intended(route($redirectRoute));
     }
 
     public function destroy(Request $request): RedirectResponse

@@ -18,6 +18,7 @@
     <a class="nav-item @if(request()->routeIs('admin.admission-inquiries.*')) active @endif" href="{{ route('admin.admission-inquiries.index') }}"><i class="bi bi-person-plus-fill"></i> Admission Inquiries</a>
     <a class="nav-item @if(request()->routeIs('admin.promotions.*')) active @endif" href="{{ route('admin.promotions.index') }}"><i class="bi bi-arrow-up-circle"></i> Promotions</a>
     <a class="nav-item @if(request()->routeIs('admin.employees.*')) active @endif" href="{{ route('admin.employees.index') }}"><i class="bi bi-person-badge-fill"></i> Staff</a>
+    <a class="nav-item @if(request()->routeIs('admin.roles.*')) active @endif" href="{{ route('admin.roles.index') }}"><i class="bi bi-shield-lock-fill"></i> Roles & Permissions</a>
     <a class="nav-item @if(request()->routeIs('admin.staff-attendance.*')) active @endif" href="{{ route('admin.staff-attendance.index') }}"><i class="bi bi-calendar-check"></i> Staff Attendance</a>
     <a class="nav-item @if(request()->routeIs('admin.staff-leaves.*')) active @endif" href="{{ route('admin.staff-leaves.index') }}"><i class="bi bi-calendar-x"></i> Staff Leaves</a>
     <a class="nav-item @if(request()->routeIs('admin.staff-ratings.*')) active @endif" href="{{ route('admin.staff-ratings.index') }}"><i class="bi bi-star"></i> Staff Ratings</a>
@@ -38,7 +39,7 @@
     <a class="nav-item @if(request()->routeIs('admin.certificate-*') || request()->routeIs('admin.id-card-*')) active @endif" href="{{ route('admin.certificate-templates.index') }}"><i class="bi bi-card-checklist"></i> Templates</a>
 
     <div class="nav-section-label">Academic</div>
-    @if(auth()->user()->isSuperAdmin())
+    @if(auth()->user()->isSuperAdmin() || auth()->user()->isCampusAdmin())
         <a class="nav-item @if(request()->routeIs('admin.campuses.*')) active @endif" href="{{ route('admin.campuses.index') }}"><i class="bi bi-buildings"></i> Campuses</a>
     @endif
     <a class="nav-item @if(request()->routeIs('admin.academic-years.*')) active @endif" href="{{ route('admin.academic-years.index') }}"><i class="bi bi-calendar-range"></i> Academic Years</a>
