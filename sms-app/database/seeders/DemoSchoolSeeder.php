@@ -34,54 +34,48 @@ class DemoSchoolSeeder extends Seeder
 {
     public function run(): void
     {
-        $islamabad = Campus::create([
+        $islamabad = Campus::updateOrCreate(['code' => 'AFS-ISB'], [
             'name' => 'Al-Falah School System - Islamabad Campus',
-            'code' => 'AFS-ISB',
             'phone' => '051-2345678',
             'email' => 'isb@alfalah.edu.pk',
             'address' => 'G-11 Markaz, Islamabad',
             'city' => 'Islamabad',
         ]);
 
-        $lahore = Campus::create([
+        $lahore = Campus::updateOrCreate(['code' => 'AFS-LHE'], [
             'name' => 'Al-Falah School System - Lahore Campus',
-            'code' => 'AFS-LHE',
             'phone' => '042-3456789',
             'email' => 'lhr@alfalah.edu.pk',
             'address' => 'Johar Town, Lahore',
             'city' => 'Lahore',
         ]);
 
-        $superAdmin = User::create([
+        $superAdmin = User::updateOrCreate(['email' => 'superadmin@educore.test'], [
             'name' => 'Muhammad Asif',
-            'email' => 'superadmin@educore.test',
             'phone' => '0300-1111111',
             'role' => UserRole::SUPER_ADMIN,
             'password' => Hash::make('password'),
         ]);
 
-        $campusAdmin = User::create([
+        $campusAdmin = User::updateOrCreate(['email' => 'admin@alfalah.edu.pk'], [
             'campus_id' => $islamabad->id,
             'name' => 'Muhammad Asif',
-            'email' => 'admin@alfalah.edu.pk',
             'phone' => '0312-3456789',
             'role' => UserRole::CAMPUS_ADMIN,
             'password' => Hash::make('password'),
         ]);
 
-        $teacherUser = User::create([
+        $teacherUser = User::updateOrCreate(['email' => 'teacher@alfalah.edu.pk'], [
             'campus_id' => $islamabad->id,
             'name' => 'Bilal Ahmed',
-            'email' => 'teacher@alfalah.edu.pk',
             'phone' => '0311-1234567',
             'role' => UserRole::TEACHER,
             'password' => Hash::make('password'),
         ]);
 
-        Employee::create([
+        Employee::updateOrCreate(['employee_code' => 'EMP-001'], [
             'campus_id' => $islamabad->id,
             'user_id' => $campusAdmin->id,
-            'employee_code' => 'EMP-001',
             'designation' => 'Campus Admin',
             'department' => 'Administration',
             'joining_date' => '2022-08-01',
@@ -89,10 +83,9 @@ class DemoSchoolSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        Employee::create([
+        Employee::updateOrCreate(['employee_code' => 'EMP-002'], [
             'campus_id' => $islamabad->id,
             'user_id' => $teacherUser->id,
-            'employee_code' => 'EMP-002',
             'designation' => 'Senior Teacher',
             'department' => 'Science',
             'joining_date' => '2021-03-01',

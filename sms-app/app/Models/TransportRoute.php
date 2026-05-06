@@ -13,6 +13,7 @@ class TransportRoute extends Model
     use BelongsToCampus;
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'name',
         'route_code',

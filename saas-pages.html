@@ -1,0 +1,2904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaSAdmin — Pages</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+:root {
+  --charcoal:       #1E1F26;
+  --charcoal-light: #272930;
+  --charcoal-mid:   #32343E;
+  --charcoal-muted: #8B8FA8;
+  --coral:          #E85D3A;
+  --coral-light:    #F07355;
+  --coral-pale:     #FDF0ED;
+  --coral-border:   #F9D4CA;
+  --white:          #FFFFFF;
+  --surface:        #F8F7F5;
+  --surface-alt:    #F1EFF9;
+  --border:         #E8E5E0;
+  --text-dark:      #1E1F26;
+  --text-mid:       #5A5C6E;
+  --text-light:     #9899A8;
+  --success:        #2DA06A;
+  --success-bg:     #EBF8F2;
+  --warning:        #D48A12;
+  --warning-bg:     #FEF5E0;
+  --danger:         #D63B3B;
+  --danger-bg:      #FCEAEA;
+  --info:           #2C6FD4;
+  --info-bg:        #EAF1FC;
+  --purple:         #7C3AED;
+  --purple-bg:      #F3EEFF;
+  --sidebar-w:      260px;
+  --topbar-h:       64px;
+  --font:           'Plus Jakarta Sans', sans-serif;
+  --mono:           'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--surface); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--charcoal);
+  height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--charcoal-mid); border-radius: 4px; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.brand-icon {
+  width: 36px; height: 36px;
+  background: var(--coral);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: white;
+  flex-shrink: 0;
+}
+.brand-name { font-size: 17px; font-weight: 700; color: white; letter-spacing: -0.2px; }
+.brand-name span { color: var(--coral); }
+
+.sidebar-status {
+  margin: 12px 12px 4px;
+  background: rgba(232,93,58,0.12);
+  border: 1px solid rgba(232,93,58,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--coral); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(232,93,58,0.25);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(232,93,58,0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(232,93,58,0.1); }
+}
+.status-label { font-size: 10px; color: var(--charcoal-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.status-name { font-size: 13px; font-weight: 700; color: white; margin-top: 1px; }
+
+.sidebar-section {
+  padding: 16px 12px 6px;
+  font-size: 10px; font-weight: 700;
+  color: var(--charcoal-muted);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; margin: 1px 8px;
+  border-radius: 8px;
+  color: var(--charcoal-muted); font-size: 13.5px; font-weight: 500;
+  cursor: pointer; transition: all .15s;
+  text-decoration: none; border: none; background: transparent; width: calc(100% - 16px); text-align: left;
+}
+.nav-item:hover { background: var(--charcoal-light); color: white; }
+.nav-item.active { background: rgba(232,93,58,0.15); color: var(--coral-light); font-weight: 600; }
+.nav-item i { width: 18px; font-size: 15px; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--coral); color: white; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+.sidebar-user {
+  margin-top: auto; padding: 14px 12px;
+  border-top: 1px solid var(--charcoal-mid);
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--coral); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; color: white; }
+.user-role { font-size: 11px; color: var(--charcoal-muted); }
+.user-logout { margin-left: auto; color: var(--charcoal-muted); cursor: pointer; font-size: 16px; background: none; border: none; transition: color .15s; }
+.user-logout:hover { color: var(--coral); }
+
+/* ─── MAIN ─── */
+.main-content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  height: var(--topbar-h); background: white;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-left { flex: 1; }
+.topbar-title { font-size: 18px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.2px; }
+.topbar-breadcrumb { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+.topbar-search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px;
+}
+.topbar-search i { color: var(--text-light); font-size: 15px; }
+.topbar-search input { border: none; background: transparent; font-size: 13px; color: var(--text-dark); outline: none; width: 200px; font-family: var(--font); }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-mid); cursor: pointer; font-size: 16px;
+  position: relative; transition: all .15s;
+}
+.icon-btn:hover { background: var(--coral-pale); border-color: var(--coral-border); color: var(--coral); }
+.notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; background: var(--coral); border-radius: 50%; border: 1.5px solid white; }
+
+.page-body { padding: 28px; flex: 1; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── BUTTONS ─── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; background: var(--coral); color: white;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+  font-family: var(--font); cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.btn-primary:hover { background: var(--coral-light); }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; background: white; color: var(--text-dark);
+  border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.btn-outline:hover { border-color: var(--coral); color: var(--coral); }
+.btn-danger {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; background: var(--danger-bg); color: var(--danger);
+  border: 1px solid rgba(214,59,59,0.2); border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: all .15s;
+}
+.btn-danger:hover { background: var(--danger); color: white; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-ghost { background: transparent; border: none; padding: 6px 8px; border-radius: 6px; font-size: 13px; color: var(--text-mid); cursor: pointer; font-family: var(--font); display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+.btn-ghost:hover { background: var(--surface); color: var(--coral); }
+
+/* ─── CARD ─── */
+.card {
+  background: white; border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.card-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.card-header-left { display: flex; align-items: center; gap: 12px; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+.card-subtitle { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+.card-body { padding: 22px; }
+
+/* ─── BADGES / PILLS ─── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.badge-success { background: var(--success-bg); color: var(--success); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); }
+.badge-danger  { background: var(--danger-bg);  color: var(--danger); }
+.badge-info    { background: var(--info-bg);    color: var(--info); }
+.badge-purple  { background: var(--purple-bg);  color: var(--purple); }
+.badge-muted   { background: var(--surface);    color: var(--text-mid); }
+
+/* ─── TABLE ─── */
+.tbl-wrap { overflow-x: auto; }
+.sms-table { width: 100%; border-collapse: collapse; }
+.sms-table th {
+  padding: 11px 16px; text-align: left;
+  font-size: 11px; font-weight: 700; color: var(--text-light);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.sms-table th:first-child { border-radius: 0; }
+.sms-table td {
+  padding: 13px 16px; border-bottom: 1px solid var(--border);
+  font-size: 13.5px; color: var(--text-dark); vertical-align: middle;
+}
+.sms-table tr:last-child td { border-bottom: none; }
+.sms-table tr:hover td { background: #FAFAF9; }
+.tbl-check { width: 16px; height: 16px; accent-color: var(--coral); cursor: pointer; }
+.row-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.row-name { font-weight: 600; color: var(--text-dark); font-size: 13.5px; }
+.row-sub  { font-size: 11.5px; color: var(--text-light); font-family: var(--mono); margin-top: 1px; }
+.action-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 5px 6px; border-radius: 6px; font-size: 15px; transition: all .15s; }
+.action-btn:hover { background: var(--surface); color: var(--coral); }
+
+/* ─── PAGINATION ─── */
+.pager { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-top: 1px solid var(--border); }
+.pager-info { font-size: 13px; color: var(--text-light); }
+.pager-btns { display: flex; gap: 4px; }
+.pg-btn { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 6px; background: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-mid); transition: all .15s; }
+.pg-btn.active { background: var(--coral); color: white; border-color: var(--coral); }
+.pg-btn:hover:not(.active) { border-color: var(--coral); color: var(--coral); }
+
+/* ═══════════════════════════════
+   PAGE 1 — LIST + ADVANCED SEARCH
+═══════════════════════════════ */
+.list-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+.list-topbar-left h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+.list-topbar-left p  { font-size: 13px; color: var(--text-light); margin-top: 3px; }
+
+/* Advanced Search Panel */
+.adv-search-panel {
+  background: white; border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 20px;
+  overflow: hidden;
+}
+.adv-search-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; cursor: pointer;
+  user-select: none; border-bottom: 1px solid var(--border);
+}
+.adv-search-toggle h4 { font-size: 13.5px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+.adv-search-toggle h4 i { color: var(--coral); }
+.adv-search-toggle .toggle-arrow { color: var(--text-light); transition: transform .25s; }
+.adv-search-toggle .toggle-arrow.open { transform: rotate(180deg); }
+.adv-search-body { padding: 20px; display: none; }
+.adv-search-body.open { display: block; }
+.filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+.filter-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.filter-group label {
+  display: block; font-size: 11px; font-weight: 700; color: var(--text-light);
+  text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px;
+}
+.filter-input, .filter-select {
+  width: 100%; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: var(--font); color: var(--text-dark);
+  background: white; outline: none; transition: border .2s;
+}
+.filter-input:focus, .filter-select:focus { border-color: var(--coral); }
+.filter-range { display: flex; align-items: center; gap: 8px; }
+.filter-range input { flex: 1; }
+.filter-range span { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+.filter-actions { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border); }
+.active-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px 4px 10px; background: var(--coral-pale);
+  border: 1px solid var(--coral-border); border-radius: 20px;
+  font-size: 12px; font-weight: 600; color: var(--coral);
+}
+.filter-chip button { background: none; border: none; color: var(--coral); cursor: pointer; padding: 0; line-height: 1; font-size: 14px; display: flex; }
+.filter-results-count { font-size: 12px; color: var(--text-light); }
+
+/* Quick search row */
+.quick-search-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.search-bar-lg {
+  flex: 1; display: flex; align-items: center; gap: 9px;
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 9px; padding: 10px 14px; transition: border .2s;
+}
+.search-bar-lg:focus-within { border-color: var(--coral); }
+.search-bar-lg i { color: var(--text-light); font-size: 16px; flex-shrink: 0; }
+.search-bar-lg input { border: none; background: transparent; font-size: 14px; color: var(--text-dark); outline: none; width: 100%; font-family: var(--font); }
+.view-toggle { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.view-btn { padding: 8px 11px; background: white; border: none; color: var(--text-light); cursor: pointer; font-size: 15px; transition: all .15s; }
+.view-btn.active { background: var(--coral); color: white; }
+
+/* Bulk actions bar */
+.bulk-bar {
+  display: none; align-items: center; gap: 12px;
+  padding: 12px 18px; background: var(--charcoal); border-radius: 10px; margin-bottom: 16px;
+}
+.bulk-bar.visible { display: flex; }
+.bulk-count { font-size: 13px; font-weight: 700; color: white; }
+.bulk-actions { display: flex; gap: 8px; margin-left: auto; }
+.btn-bulk { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; font-family: var(--font); transition: all .15s; display: flex; align-items: center; gap: 5px; }
+.btn-bulk-primary { background: var(--coral); color: white; }
+.btn-bulk-primary:hover { background: var(--coral-light); }
+.btn-bulk-outline { background: rgba(255,255,255,0.1); color: white; }
+.btn-bulk-outline:hover { background: rgba(255,255,255,0.2); }
+.btn-bulk-danger { background: rgba(214,59,59,0.8); color: white; }
+.btn-bulk-danger:hover { background: var(--danger); }
+
+/* Storage bar */
+.storage-bar-wrap { min-width: 100px; }
+.storage-bar-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.storage-bar-fill { height: 100%; border-radius: 3px; background: var(--coral); }
+
+/* ═══════════════════════════════
+   PAGE 2 — FORMS (Add / Edit)
+═══════════════════════════════ */
+.form-page-layout { display: grid; grid-template-columns: 1fr 320px; gap: 22px; align-items: start; }
+
+/* Section card */
+.form-section { margin-bottom: 22px; }
+.form-section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 12px; margin-bottom: 18px;
+  border-bottom: 2px solid var(--border);
+}
+.section-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.section-icon.coral   { background: var(--coral-pale); color: var(--coral); }
+.section-icon.success { background: var(--success-bg); color: var(--success); }
+.section-icon.info    { background: var(--info-bg);    color: var(--info); }
+.section-icon.purple  { background: var(--purple-bg);  color: var(--purple); }
+.section-icon.warning { background: var(--warning-bg); color: var(--warning); }
+.section-title { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+.section-desc  { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+
+.form-row { display: grid; gap: 16px; margin-bottom: 16px; }
+.form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.form-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label {
+  font-size: 12px; font-weight: 700; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.4px;
+  display: flex; align-items: center; gap: 5px;
+}
+.field-label .req { color: var(--coral); }
+.field-hint { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+.form-input, .form-select, .form-textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: 9px;
+  font-size: 13.5px; font-family: var(--font); color: var(--text-dark);
+  background: white; outline: none; transition: border .2s, box-shadow .2s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px rgba(232,93,58,0.08);
+}
+.form-input.error { border-color: var(--danger); }
+.form-input.success { border-color: var(--success); }
+.form-textarea { resize: vertical; min-height: 90px; }
+
+.input-prefix-wrap { position: relative; }
+.input-prefix {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  padding: 0 12px; display: flex; align-items: center;
+  background: var(--surface); border-right: 1.5px solid var(--border);
+  border-radius: 9px 0 0 9px; font-size: 13px; color: var(--text-mid);
+  white-space: nowrap;
+}
+.input-prefix-wrap .form-input { padding-left: calc(var(--pfx-w, 60px) + 8px); }
+.input-suffix-wrap { position: relative; }
+.input-suffix {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  padding: 0 12px; display: flex; align-items: center;
+  background: var(--surface); border-left: 1.5px solid var(--border);
+  border-radius: 0 9px 9px 0; font-size: 13px; color: var(--text-mid);
+}
+.input-icon-left { position: relative; }
+.input-icon-left i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 15px; }
+.input-icon-left .form-input { padding-left: 38px; }
+
+.field-error { font-size: 11.5px; color: var(--danger); display: flex; align-items: center; gap: 4px; }
+.field-success { font-size: 11.5px; color: var(--success); display: flex; align-items: center; gap: 4px; }
+
+/* Toggle switch */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info .toggle-label { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+.toggle-info .toggle-desc  { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.toggle-switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--border); border-radius: 11px; cursor: pointer; transition: background .2s;
+}
+.toggle-track::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; left: 3px; top: 3px;
+  background: white; border-radius: 50%; transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-track { background: var(--coral); }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
+
+/* Avatar upload */
+.avatar-upload {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px; background: var(--surface);
+  border: 1.5px dashed var(--border); border-radius: 12px;
+  margin-bottom: 16px;
+}
+.avatar-preview {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--coral); display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800; color: white; flex-shrink: 0;
+  border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.avatar-upload-info h4 { font-size: 13.5px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+.avatar-upload-info p  { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+
+/* File upload zone */
+.file-drop-zone {
+  border: 1.5px dashed var(--border); border-radius: 10px;
+  padding: 28px 20px; text-align: center; cursor: pointer;
+  background: var(--surface); transition: all .2s;
+}
+.file-drop-zone:hover { border-color: var(--coral); background: var(--coral-pale); }
+.file-drop-zone i { font-size: 28px; color: var(--text-light); margin-bottom: 8px; display: block; }
+.file-drop-zone p { font-size: 13px; color: var(--text-mid); }
+.file-drop-zone span { color: var(--coral); font-weight: 600; }
+
+/* Form sidebar panel */
+.form-sidebar { display: flex; flex-direction: column; gap: 16px; }
+.sidebar-widget { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.widget-header { padding: 14px 18px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.widget-header h4 { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+.widget-body { padding: 16px 18px; }
+.status-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px; cursor: pointer;
+  margin-bottom: 4px; transition: background .15s;
+}
+.status-option:hover { background: var(--surface); }
+.status-option input[type="radio"] { accent-color: var(--coral); width: 15px; height: 15px; }
+.status-option-label { font-size: 13px; color: var(--text-dark); font-weight: 500; }
+.status-option-desc  { font-size: 11.5px; color: var(--text-light); }
+
+/* Checklist */
+.checklist-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item input[type="checkbox"] { accent-color: var(--coral); width: 15px; height: 15px; cursor: pointer; flex-shrink: 0; }
+.checklist-item label { font-size: 13px; color: var(--text-dark); cursor: pointer; font-weight: 500; }
+
+/* Progress steps */
+.form-steps { display: flex; align-items: center; margin-bottom: 28px; }
+.step-item { display: flex; align-items: center; gap: 8px; flex: 1; position: relative; }
+.step-item:last-child { flex: none; }
+.step-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0; border: 2px solid var(--border);
+  background: white; color: var(--text-light);
+}
+.step-item.done .step-circle  { background: var(--success); border-color: var(--success); color: white; }
+.step-item.active .step-circle { background: var(--coral); border-color: var(--coral); color: white; }
+.step-text { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+.step-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--text-dark); }
+.step-item.active .step-text strong { color: var(--coral); }
+.step-line { flex: 1; height: 2px; background: var(--border); margin: 0 8px; }
+.step-item.done + .step-item .step-line-before,
+.step-line.done { background: var(--success); }
+
+/* Form tabs */
+.form-tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 22px; }
+.form-tab-btn {
+  padding: 10px 20px; font-size: 13px; font-weight: 600;
+  color: var(--text-light); cursor: pointer; border: none; background: none;
+  font-family: var(--font); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.form-tab-btn.active { color: var(--coral); border-bottom-color: var(--coral); }
+.form-tab-btn i { font-size: 14px; }
+.form-tab-panel { display: none; }
+.form-tab-panel.active { display: block; }
+
+/* ═══════════════════════════════
+   PAGE 3 — PROFILE + SETTINGS
+═══════════════════════════════ */
+.profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 22px; align-items: start; }
+.profile-card {
+  background: white; border-radius: 14px;
+  border: 1px solid var(--border); overflow: hidden;
+}
+.profile-hero-bg {
+  height: 100px; position: relative;
+  background: linear-gradient(135deg, var(--charcoal) 0%, #2D2F3A 100%);
+}
+.profile-hero-bg::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(232,93,58,0.25) 0%, transparent 60%);
+}
+.profile-avatar-wrap {
+  display: flex; justify-content: center;
+  margin-top: -44px; position: relative; z-index: 1;
+}
+.profile-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: var(--coral); display: flex; align-items: center; justify-content: center;
+  font-size: 30px; font-weight: 800; color: white;
+  border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+}
+.avatar-online {
+  position: absolute; bottom: 4px; right: 4px;
+  width: 16px; height: 16px; background: var(--success);
+  border-radius: 50%; border: 2.5px solid white;
+}
+.profile-id { padding: 12px 20px 16px; text-align: center; border-bottom: 1px solid var(--border); }
+.profile-name { font-size: 17px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.3px; }
+.profile-title { font-size: 12.5px; color: var(--text-mid); margin-top: 3px; }
+.profile-id-code { font-size: 11px; font-family: var(--mono); color: var(--text-light); margin-top: 4px; }
+.profile-badges { display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 16px 0; border-bottom: 1px solid var(--border); }
+.p-stat { text-align: center; padding: 0 12px; border-right: 1px solid var(--border); }
+.p-stat:last-child { border-right: none; }
+.p-stat-num { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+.p-stat-lbl { font-size: 10.5px; color: var(--text-light); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+.profile-nav { padding: 10px 12px; }
+.profile-nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 8px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-mid);
+  transition: all .15s; margin-bottom: 1px;
+}
+.profile-nav-item:hover { background: var(--surface); color: var(--text-dark); }
+.profile-nav-item.active { background: var(--coral-pale); color: var(--coral); font-weight: 600; }
+.profile-nav-item i { width: 18px; font-size: 14px; }
+.profile-nav-item .nav-arrow { margin-left: auto; font-size: 12px; opacity: 0.5; }
+
+.profile-right-panel { display: flex; flex-direction: column; gap: 18px; }
+
+/* Settings sections */
+.settings-tab-nav { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.settings-tab {
+  padding: 8px 16px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); background: white; color: var(--text-mid);
+  font-family: var(--font); transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.settings-tab.active { background: var(--coral); color: white; border-color: var(--coral); }
+.settings-tab i { font-size: 13px; }
+
+.setting-group { margin-bottom: 22px; }
+.setting-group-title {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-light); padding-bottom: 10px; margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Danger zone */
+.danger-zone {
+  border: 1.5px solid rgba(214,59,59,0.25); border-radius: 12px;
+  overflow: hidden;
+}
+.danger-zone-header { padding: 14px 20px; background: var(--danger-bg); border-bottom: 1px solid rgba(214,59,59,0.15); }
+.danger-zone-header h4 { font-size: 13.5px; font-weight: 700; color: var(--danger); display: flex; align-items: center; gap: 7px; }
+.danger-action {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid rgba(214,59,59,0.1);
+}
+.danger-action:last-child { border-bottom: none; }
+.danger-action-info h5 { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+.danger-action-info p  { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+/* ═══════════════════════════════
+   PAGE 4 — ROLES & PERMISSIONS
+═══════════════════════════════ */
+.roles-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
+
+.role-list-card { background: white; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.role-list-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.role-list-header h3 { font-size: 14px; font-weight: 700; }
+.role-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; cursor: pointer; transition: background .15s;
+  border-bottom: 1px solid var(--border);
+}
+.role-item:last-child { border-bottom: none; }
+.role-item:hover { background: var(--surface); }
+.role-item.active { background: var(--coral-pale); }
+.role-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.role-info { flex: 1; min-width: 0; }
+.role-name { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+.role-item.active .role-name { color: var(--coral); }
+.role-count { font-size: 11.5px; color: var(--text-light); margin-top: 1px; }
+.role-arrow { color: var(--text-light); font-size: 13px; }
+.role-item.active .role-arrow { color: var(--coral); }
+
+/* Permission matrix */
+.perm-matrix-card { background: white; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.perm-matrix-header { padding: 18px 22px; border-bottom: 1px solid var(--border); }
+.role-detail-header { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+.role-detail-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.role-detail-name { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+.role-detail-meta { font-size: 12.5px; color: var(--text-light); margin-top: 3px; }
+.role-detail-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+.perm-search-row { padding: 14px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--surface); }
+.perm-module-group { border-bottom: 1px solid var(--border); }
+.perm-module-group:last-child { border-bottom: none; }
+.perm-module-header {
+  display: flex; align-items: center; padding: 14px 22px;
+  cursor: pointer; user-select: none; transition: background .15s;
+}
+.perm-module-header:hover { background: #FAFAFA; }
+.perm-module-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-right: 10px; }
+.perm-module-name { font-size: 13.5px; font-weight: 700; color: var(--text-dark); flex: 1; }
+.perm-module-count { font-size: 12px; color: var(--text-light); margin-right: 8px; }
+.perm-module-toggle { color: var(--text-light); font-size: 13px; transition: transform .2s; }
+.perm-module-toggle.open { transform: rotate(180deg); }
+
+/* Bulk enable for module */
+.perm-module-bulk { display: flex; align-items: center; gap: 8px; margin-left: auto; margin-right: 14px; }
+.perm-module-bulk label { font-size: 11px; color: var(--text-mid); font-weight: 600; cursor: pointer; }
+
+.perm-rows { display: none; border-top: 1px solid var(--border); }
+.perm-rows.open { display: block; }
+.perm-row {
+  display: flex; align-items: center;
+  padding: 12px 22px 12px 62px; border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.perm-row:last-child { border-bottom: none; }
+.perm-row:hover { background: var(--surface); }
+.perm-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text-dark); }
+.perm-desc { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+.perm-actions { display: flex; gap: 6px; margin-left: auto; }
+
+/* Permission toggle pill */
+.perm-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 20px; cursor: pointer;
+  font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
+  background: white; color: var(--text-light); transition: all .15s;
+  user-select: none;
+}
+.perm-pill:hover { border-color: var(--coral); color: var(--coral); }
+.perm-pill.enabled { background: var(--success-bg); color: var(--success); border-color: var(--success); }
+.perm-pill i { font-size: 12px; }
+
+/* Compare table */
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th {
+  padding: 12px 16px; text-align: left;
+  font-size: 12px; font-weight: 700; color: var(--text-light);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.compare-table tr:last-child td { border-bottom: none; }
+.check-icon { color: var(--success); font-size: 16px; }
+.cross-icon { color: var(--danger); font-size: 16px; }
+.dash-icon  { color: var(--text-light); font-size: 16px; }
+
+/* Role users */
+.role-user-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.role-user-row:last-child { border-bottom: none; }
+
+/* ─── UTILITY ─── */
+.flex-gap { display: flex; align-items: center; gap: 8px; }
+.gap-2 { gap: 2px; } .gap-4 { gap: 4px; } .gap-6 { gap: 6px; } .gap-8 { gap: 8px; } .gap-12 { gap: 12px; }
+.mt-4 { margin-top: 4px; } .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; }
+.mb-4 { margin-bottom: 4px; } .mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; }
+.text-sm { font-size: 12px; } .text-xs { font-size: 11px; }
+.text-muted { color: var(--text-light); }
+.text-mid   { color: var(--text-mid); }
+.text-dark  { color: var(--text-dark); }
+.text-coral { color: var(--coral); }
+.text-success { color: var(--success); }
+.text-danger  { color: var(--danger); }
+.font-mono { font-family: var(--mono); }
+.fw-700 { font-weight: 700; }
+.d-flex { display: flex; } .align-center { align-items: center; } .justify-between { justify-content: space-between; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* Tag input */
+.tag-input-wrap {
+  border: 1.5px solid var(--border); border-radius: 9px; padding: 6px 10px;
+  display: flex; flex-wrap: wrap; gap: 6px; cursor: text;
+  background: white; transition: border .2s;
+  min-height: 44px; align-items: center;
+}
+.tag-input-wrap:focus-within { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,93,58,0.08); }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: var(--charcoal); color: white; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.tag button { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; padding: 0; font-size: 14px; line-height: 1; }
+.tag-input { border: none; outline: none; font-size: 13px; font-family: var(--font); color: var(--text-dark); flex: 1; min-width: 80px; }
+
+/* Color picker row */
+.color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-swatch { width: 28px; height: 28px; border-radius: 7px; cursor: pointer; transition: transform .15s; border: 2px solid transparent; }
+.color-swatch:hover { transform: scale(1.1); }
+.color-swatch.selected { border-color: var(--text-dark); box-shadow: 0 0 0 2px white inset; }
+
+/* Notification pref */
+.notif-channel { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.notif-channel:last-child { border-bottom: none; }
+.notif-channel-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.notif-channel-info { flex: 1; }
+.notif-channel-info h4 { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+.notif-channel-info p  { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+
+/* Two-factor section */
+.twofa-option { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; margin-bottom: 8px; }
+.twofa-option:hover { border-color: var(--coral); background: var(--coral-pale); }
+.twofa-option.active { border-color: var(--coral); background: var(--coral-pale); }
+.twofa-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.twofa-info h5 { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+.twofa-info p  { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.twofa-selected { margin-left: auto; color: var(--coral); font-size: 18px; }
+
+/* Session list */
+.session-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.session-item:last-child { border-bottom: none; }
+.session-device { width: 40px; height: 40px; border-radius: 10px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.session-info h5 { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+.session-info p  { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.session-current { margin-left: auto; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 16px; width: 100%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: modalIn .2s ease; overflow: hidden; }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+.modal-close { width: 32px; height: 32px; border-radius: 8px; background: var(--surface); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-mid); font-size: 16px; }
+.modal-close:hover { background: var(--danger-bg); color: var(--danger); }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+/* Confirm modal */
+.confirm-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">S</div>
+    <div class="brand-name">SaaS<span>Admin</span></div>
+  </div>
+  <div class="sidebar-status">
+    <div class="status-dot"></div>
+    <div>
+      <div class="status-label">Super Portal</div>
+      <div class="status-name">G. Mujtaba</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">Main</div>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-grid-1x2"></i> Dashboard</button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-building"></i> Schools <span class="nav-badge">247</span></button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-people"></i> Users</button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-server"></i> Instances</button>
+
+  <div class="sidebar-section">Management</div>
+  <button class="nav-item active" onclick="showPage('list')"><i class="bi bi-list-ul"></i> Schools List</button>
+  <button class="nav-item" onclick="showPage('form-add')"><i class="bi bi-plus-circle"></i> Add School</button>
+  <button class="nav-item" onclick="showPage('profile')"><i class="bi bi-person-circle"></i> Profile</button>
+  <button class="nav-item" onclick="showPage('roles')"><i class="bi bi-shield-lock"></i> Roles & Perms</button>
+
+  <div class="sidebar-section">System</div>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-currency-dollar"></i> Billing</button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-bar-chart"></i> Analytics</button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-gear"></i> System Settings</button>
+  <button class="nav-item" onclick="showPage('dashboard')"><i class="bi bi-journals"></i> Audit Logs</button>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">GM</div>
+    <div>
+      <div class="user-name">G. Mujtaba</div>
+      <div class="user-role">Super Admin</div>
+    </div>
+    <button class="user-logout"><i class="bi bi-box-arrow-right"></i></button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main-content">
+
+  <!-- TOPBAR -->
+  <div class="topbar" id="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="tb-title">Schools List</div>
+      <div class="topbar-breadcrumb" id="tb-crumb">Super Admin → Schools</div>
+    </div>
+    <div class="topbar-search">
+      <i class="bi bi-search"></i>
+      <input type="text" placeholder="Global search…">
+    </div>
+    <div class="topbar-actions">
+      <div class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot"></span></div>
+      <div class="icon-btn"><i class="bi bi-question-circle"></i></div>
+      <div class="user-avatar" style="cursor:pointer" onclick="showPage('profile')">GM</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE: LIST
+  ══════════════════════════════════════════ -->
+  <div class="page active page-body" id="page-list">
+
+    <div class="list-topbar">
+      <div class="list-topbar-left">
+        <h2>Schools</h2>
+        <p>Manage all registered schools and instances across the platform</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-outline" onclick="document.getElementById('exportModal').classList.add('open')"><i class="bi bi-download"></i> Export</button>
+        <button class="btn-primary" onclick="showPage('form-add')"><i class="bi bi-plus-lg"></i> Add School</button>
+      </div>
+    </div>
+
+    <!-- Advanced Search Panel -->
+    <div class="adv-search-panel">
+      <div class="adv-search-toggle" onclick="toggleAdvSearch()">
+        <h4><i class="bi bi-funnel-fill"></i> Advanced Filters</h4>
+        <div class="flex-gap">
+          <span class="badge badge-coral" id="filter-count-badge" style="display:none;background:var(--coral);color:white;">3 active</span>
+          <i class="bi bi-chevron-down toggle-arrow open" id="adv-arrow"></i>
+        </div>
+      </div>
+      <div class="adv-search-body open" id="adv-body">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label>School Name / ID</label>
+            <div style="position:relative;">
+              <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:13px;"></i>
+              <input type="text" class="filter-input" style="padding-left:30px;" placeholder="Search name or ID…">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Plan</label>
+            <select class="filter-select">
+              <option value="">All Plans</option>
+              <option>Basic</option>
+              <option selected>Pro</option>
+              <option>Enterprise</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Status</label>
+            <select class="filter-select">
+              <option value="">All Statuses</option>
+              <option selected>Active</option>
+              <option>Trial</option>
+              <option>Suspended</option>
+              <option>Expired</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Country / Region</label>
+            <select class="filter-select">
+              <option value="">All Regions</option>
+              <option selected>Pakistan</option>
+              <option>India</option>
+              <option>UAE</option>
+              <option>UK</option>
+              <option>USA</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-grid filter-grid-3">
+          <div class="filter-group">
+            <label>Students Range</label>
+            <div class="filter-range">
+              <input type="number" class="filter-input" placeholder="Min" value="100">
+              <span>–</span>
+              <input type="number" class="filter-input" placeholder="Max" value="5000">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>MRR Range ($)</label>
+            <div class="filter-range">
+              <input type="number" class="filter-input" placeholder="Min" value="0">
+              <span>–</span>
+              <input type="number" class="filter-input" placeholder="Max" value="9999">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Registration Date</label>
+            <div class="filter-range">
+              <input type="date" class="filter-input" value="2024-01-01">
+              <span>–</span>
+              <input type="date" class="filter-input" value="2025-12-31">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Storage Used (%)</label>
+            <div class="filter-range">
+              <input type="number" class="filter-input" placeholder="Min" value="0">
+              <span>–</span>
+              <input type="number" class="filter-input" placeholder="Max" value="100">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Domain Status</label>
+            <select class="filter-select">
+              <option value="">Any</option>
+              <option>Verified</option>
+              <option>Pending</option>
+              <option>None</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Sort By</label>
+            <select class="filter-select">
+              <option>Newest First</option>
+              <option>Oldest First</option>
+              <option>Most Students</option>
+              <option>Highest MRR</option>
+              <option>Storage Usage</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <div class="active-filters">
+            <span class="text-sm text-muted fw-700">Active:</span>
+            <span class="filter-chip">Plan: Pro <button>×</button></span>
+            <span class="filter-chip">Status: Active <button>×</button></span>
+            <span class="filter-chip">Region: Pakistan <button>×</button></span>
+          </div>
+          <div class="flex-gap gap-8">
+            <span class="filter-results-count">Showing <strong>84</strong> of 247 schools</span>
+            <button class="btn-ghost"><i class="bi bi-x-circle"></i> Clear All</button>
+            <button class="btn-primary btn-sm"><i class="bi bi-search"></i> Apply Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick search + view controls -->
+    <div class="quick-search-row">
+      <div class="search-bar-lg">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Quick search schools…" oninput="toggleBulkBar()">
+      </div>
+      <button class="btn-outline"><i class="bi bi-columns-gap"></i> Columns</button>
+      <div class="view-toggle">
+        <button class="view-btn active"><i class="bi bi-table"></i></button>
+        <button class="view-btn"><i class="bi bi-grid"></i></button>
+      </div>
+    </div>
+
+    <!-- Bulk actions bar -->
+    <div class="bulk-bar" id="bulk-bar">
+      <input type="checkbox" checked class="tbl-check">
+      <span class="bulk-count">6 schools selected</span>
+      <div class="bulk-actions">
+        <button class="btn-bulk btn-bulk-outline"><i class="bi bi-envelope"></i> Send Email</button>
+        <button class="btn-bulk btn-bulk-outline"><i class="bi bi-tag"></i> Change Plan</button>
+        <button class="btn-bulk btn-bulk-primary"><i class="bi bi-check-circle"></i> Activate</button>
+        <button class="btn-bulk btn-bulk-danger"><i class="bi bi-trash"></i> Delete</button>
+        <button class="btn-bulk btn-bulk-outline" onclick="document.getElementById('bulk-bar').classList.remove('visible')">✕</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div>
+            <div class="card-title">Schools Registry</div>
+            <div class="card-subtitle">84 results matching your filters</div>
+          </div>
+        </div>
+        <div class="flex-gap">
+          <span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> 197 Active</span>
+          <span class="badge badge-warning">24 Trial</span>
+          <span class="badge badge-danger">26 Suspended</span>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="sms-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"><input type="checkbox" class="tbl-check" onchange="toggleBulkBar(this)"></th>
+              <th>School <i class="bi bi-arrow-down-up" style="font-size:10px;opacity:0.5;cursor:pointer;"></i></th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Students</th>
+              <th>MRR</th>
+              <th>Storage</th>
+              <th>Registered</th>
+              <th>Domain</th>
+              <th style="width:90px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check"></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:#FDF0ED;color:var(--coral);">IB</div>
+                  <div>
+                    <div class="row-name">Islamabad Board School</div>
+                    <div class="row-sub">SCH-00247</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-purple">Enterprise</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> Active</span></td>
+              <td><span class="fw-700">2,847</span></td>
+              <td><span class="fw-700 font-mono">$1,299</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">78%</span>
+                    <span class="text-xs text-muted">78/100 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:78%;background:var(--warning);"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Mar 12, 2023</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-check-circle-fill" style="font-size:10px;"></i> Verified</span></td>
+              <td>
+                <button class="action-btn" title="View"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')" title="Edit"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn" title="More"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check" checked></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:var(--info-bg);color:var(--info);">LA</div>
+                  <div>
+                    <div class="row-name">Lahore Academy</div>
+                    <div class="row-sub">SCH-00246</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-info">Pro</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> Active</span></td>
+              <td><span class="fw-700">1,204</span></td>
+              <td><span class="fw-700 font-mono">$299</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">41%</span>
+                    <span class="text-xs text-muted">20/50 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:41%;background:var(--success);"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Jun 2, 2023</span></td>
+              <td><span class="badge badge-warning">Pending</span></td>
+              <td>
+                <button class="action-btn"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+            <!-- Row 3 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check" checked></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:var(--success-bg);color:var(--success);">KG</div>
+                  <div>
+                    <div class="row-name">Karachi Grammar</div>
+                    <div class="row-sub">SCH-00245</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-muted">Basic</span></td>
+              <td><span class="badge badge-warning">Trial</span></td>
+              <td><span class="fw-700">312</span></td>
+              <td><span class="fw-700 font-mono">$0</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">12%</span>
+                    <span class="text-xs text-muted">1.2/10 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:12%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Jan 18, 2024</span></td>
+              <td><span class="badge badge-muted">None</span></td>
+              <td>
+                <button class="action-btn"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+            <!-- Row 4 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check" checked></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:var(--purple-bg);color:var(--purple);">PE</div>
+                  <div>
+                    <div class="row-name">Punjab Edu Network</div>
+                    <div class="row-sub">SCH-00244</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-purple">Enterprise</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> Active</span></td>
+              <td><span class="fw-700">5,120</span></td>
+              <td><span class="fw-700 font-mono">$1,999</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">92%</span>
+                    <span class="text-xs text-muted">184/200 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:92%;background:var(--danger);"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Sep 7, 2022</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-check-circle-fill" style="font-size:10px;"></i> Verified</span></td>
+              <td>
+                <button class="action-btn"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+            <!-- Row 5 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check" checked></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:#FEF5E0;color:var(--warning);">SF</div>
+                  <div>
+                    <div class="row-name">Sindh Foundation</div>
+                    <div class="row-sub">SCH-00243</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-info">Pro</span></td>
+              <td><span class="badge badge-danger">Suspended</span></td>
+              <td><span class="fw-700">876</span></td>
+              <td><span class="fw-700 font-mono">$299</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">55%</span>
+                    <span class="text-xs text-muted">27/50 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:55%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Nov 30, 2023</span></td>
+              <td><span class="badge badge-info">Pending</span></td>
+              <td>
+                <button class="action-btn"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+            <!-- Row 6 -->
+            <tr>
+              <td><input type="checkbox" class="tbl-check" checked></td>
+              <td>
+                <div class="flex-gap gap-12">
+                  <div class="row-avatar" style="background:var(--info-bg);color:var(--info);">AE</div>
+                  <div>
+                    <div class="row-name">Al-Huda Education</div>
+                    <div class="row-sub">SCH-00242</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-muted">Basic</span></td>
+              <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> Active</span></td>
+              <td><span class="fw-700">489</span></td>
+              <td><span class="fw-700 font-mono">$99</span></td>
+              <td>
+                <div class="storage-bar-wrap">
+                  <div class="flex-gap justify-between mb-4">
+                    <span class="text-xs text-muted">23%</span>
+                    <span class="text-xs text-muted">2.3/10 GB</span>
+                  </div>
+                  <div class="storage-bar-track">
+                    <div class="storage-bar-fill" style="width:23%;background:var(--success);"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="text-sm text-muted">Apr 14, 2024</span></td>
+              <td><span class="badge badge-muted">None</span></td>
+              <td>
+                <button class="action-btn"><i class="bi bi-eye"></i></button>
+                <button class="action-btn" onclick="showPage('form-edit')"><i class="bi bi-pencil"></i></button>
+                <button class="action-btn"><i class="bi bi-three-dots-vertical"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <span class="pager-info">Showing <strong>1–6</strong> of <strong>84</strong></span>
+        <div class="pager-btns">
+          <button class="pg-btn"><i class="bi bi-chevron-left"></i></button>
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">…</button>
+          <button class="pg-btn">14</button>
+          <button class="pg-btn"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-list -->
+
+  <!-- ══════════════════════════════════════════
+       PAGE: FORM ADD
+  ══════════════════════════════════════════ -->
+  <div class="page page-body" id="page-form-add">
+
+    <div class="list-topbar">
+      <div class="list-topbar-left">
+        <h2>Add New School</h2>
+        <p>Register a new school instance on the SaaSAdmin platform</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-outline" onclick="showPage('list')"><i class="bi bi-arrow-left"></i> Back to List</button>
+        <button class="btn-primary"><i class="bi bi-floppy"></i> Save School</button>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="card mb-16" style="margin-bottom:20px;padding:20px 28px;">
+      <div class="form-steps">
+        <div class="step-item done">
+          <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+          <div class="step-text"><strong>Basic Info</strong> School details</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item active">
+          <div class="step-circle">2</div>
+          <div class="step-text"><strong>Configuration</strong> Plan & settings</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div class="step-text"><strong>Admin Account</strong> Owner details</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div class="step-text"><strong>Review</strong> Confirm & submit</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-page-layout">
+      <!-- Main form -->
+      <div>
+        <!-- Section: School Identity -->
+        <div class="card mb-16" style="margin-bottom:20px;">
+          <div class="card-body">
+            <div class="form-section-header">
+              <div class="section-icon coral"><i class="bi bi-building"></i></div>
+              <div>
+                <div class="section-title">School Identity</div>
+                <div class="section-desc">Basic information and branding</div>
+              </div>
+            </div>
+
+            <div class="avatar-upload">
+              <div class="avatar-preview">S</div>
+              <div class="avatar-upload-info">
+                <h4>School Logo</h4>
+                <p>Upload a square PNG/JPG at least 200×200px. Max 2MB.</p>
+                <button class="btn-outline btn-sm"><i class="bi bi-upload"></i> Upload Logo</button>
+              </div>
+            </div>
+
+            <div class="form-row cols-2">
+              <div class="field-group">
+                <label class="field-label">School Name <span class="req">*</span></label>
+                <input type="text" class="form-input" placeholder="e.g. Lahore Grammar School" value="">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Official Short Name</label>
+                <input type="text" class="form-input" placeholder="e.g. LGS">
+                <span class="field-hint">Used in reports and emails</span>
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="field-group">
+                <label class="field-label">Registration Number</label>
+                <div class="input-prefix-wrap" style="--pfx-w:50px;">
+                  <span class="input-prefix">SCH-</span>
+                  <input type="text" class="form-input" placeholder="Auto-generated" style="padding-left:62px;" readonly>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Established Year</label>
+                <input type="number" class="form-input" placeholder="e.g. 1998" min="1900" max="2025">
+              </div>
+            </div>
+            <div class="form-row cols-1" style="grid-template-columns:1fr;">
+              <div class="field-group">
+                <label class="field-label">School Description</label>
+                <textarea class="form-textarea" placeholder="Brief description shown in school profile…"></textarea>
+              </div>
+            </div>
+            <div class="form-row cols-3">
+              <div class="field-group">
+                <label class="field-label">Country <span class="req">*</span></label>
+                <select class="form-select">
+                  <option>Pakistan</option>
+                  <option>India</option>
+                  <option>UAE</option>
+                  <option>UK</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Province / State</label>
+                <select class="form-select">
+                  <option>Punjab</option>
+                  <option>Sindh</option>
+                  <option>KPK</option>
+                  <option>Balochistan</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">City <span class="req">*</span></label>
+                <input type="text" class="form-input" placeholder="e.g. Lahore">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Full Address</label>
+              <input type="text" class="form-input" placeholder="Street address, landmark…">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Contact Info -->
+        <div class="card mb-16" style="margin-bottom:20px;">
+          <div class="card-body">
+            <div class="form-section-header">
+              <div class="section-icon info"><i class="bi bi-telephone"></i></div>
+              <div>
+                <div class="section-title">Contact & Communication</div>
+                <div class="section-desc">Primary contact details for this school</div>
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="field-group">
+                <label class="field-label">Official Email <span class="req">*</span></label>
+                <div class="input-icon-left">
+                  <i class="bi bi-envelope"></i>
+                  <input type="email" class="form-input" placeholder="admin@school.edu.pk">
+                </div>
+                <span class="field-success"><i class="bi bi-check-circle-fill"></i> Valid email format</span>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Phone Number <span class="req">*</span></label>
+                <div class="input-prefix-wrap" style="--pfx-w:52px;">
+                  <span class="input-prefix">+92</span>
+                  <input type="tel" class="form-input" placeholder="300 1234567" style="padding-left:62px;">
+                </div>
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="field-group">
+                <label class="field-label">Website</label>
+                <div class="input-prefix-wrap" style="--pfx-w:60px;">
+                  <span class="input-prefix">https://</span>
+                  <input type="text" class="form-input" placeholder="school.edu.pk" style="padding-left:72px;">
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Custom Subdomain</label>
+                <div class="input-suffix-wrap" style="position:relative;">
+                  <input type="text" class="form-input" placeholder="lahoregrammar" style="padding-right:130px;">
+                  <span class="input-suffix">.educore.app</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-row cols-3">
+              <div class="field-group">
+                <label class="field-label">WhatsApp</label>
+                <input type="text" class="form-input" placeholder="+92 300 …">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Twitter / X</label>
+                <div class="input-icon-left">
+                  <i class="bi bi-twitter-x"></i>
+                  <input type="text" class="form-input" placeholder="@handle">
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Facebook</label>
+                <div class="input-icon-left">
+                  <i class="bi bi-facebook"></i>
+                  <input type="text" class="form-input" placeholder="page URL or name">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Plan & Subscription -->
+        <div class="card mb-16" style="margin-bottom:20px;">
+          <div class="card-body">
+            <div class="form-section-header">
+              <div class="section-icon success"><i class="bi bi-credit-card"></i></div>
+              <div>
+                <div class="section-title">Plan & Subscription</div>
+                <div class="section-desc">Configure billing and resource limits</div>
+              </div>
+            </div>
+            <div class="form-row cols-3">
+              <div class="field-group">
+                <label class="field-label">Subscription Plan <span class="req">*</span></label>
+                <select class="form-select">
+                  <option>Basic — $99/mo</option>
+                  <option selected>Pro — $299/mo</option>
+                  <option>Enterprise — $999/mo</option>
+                  <option>Custom</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Billing Cycle</label>
+                <select class="form-select">
+                  <option>Monthly</option>
+                  <option>Quarterly</option>
+                  <option selected>Annual (20% off)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Trial Period</label>
+                <select class="form-select">
+                  <option>No Trial</option>
+                  <option>7 Days</option>
+                  <option selected>14 Days</option>
+                  <option>30 Days</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row cols-4">
+              <div class="field-group">
+                <label class="field-label">Max Students</label>
+                <input type="number" class="form-input" value="2000">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Max Teachers</label>
+                <input type="number" class="form-input" value="200">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Storage (GB)</label>
+                <input type="number" class="form-input" value="50">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Custom MRR ($)</label>
+                <input type="number" class="form-input" placeholder="Leave blank for auto">
+              </div>
+            </div>
+            <div class="field-group mt-8">
+              <label class="field-label">Tags / Labels</label>
+              <div class="tag-input-wrap">
+                <span class="tag">premium-client <button>×</button></span>
+                <span class="tag">pakistan <button>×</button></span>
+                <input type="text" class="tag-input" placeholder="Add tag and press Enter…">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Advanced Settings -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-body">
+            <div class="form-section-header">
+              <div class="section-icon purple"><i class="bi bi-toggles"></i></div>
+              <div>
+                <div class="section-title">Feature Toggles</div>
+                <div class="section-desc">Enable or disable modules for this school</div>
+              </div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">SMS Notifications</div>
+                <div class="toggle-desc">Allow this school to send SMS alerts to parents</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">Online Fee Collection</div>
+                <div class="toggle-desc">Enable Stripe / JazzCash payment integration</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">AI Analytics</div>
+                <div class="toggle-desc">AI-powered insights and prediction features</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">Custom Domain</div>
+                <div class="toggle-desc">Allow school to use their own domain name</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">White-label Branding</div>
+                <div class="toggle-desc">Remove EduCore branding from school portal</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">API Access</div>
+                <div class="toggle-desc">Generate and use REST API keys</div>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="form-sidebar">
+        <!-- Status -->
+        <div class="sidebar-widget">
+          <div class="widget-header"><h4>School Status</h4></div>
+          <div class="widget-body">
+            <div class="status-option">
+              <input type="radio" name="school-status" id="s-draft">
+              <label for="s-draft">
+                <div class="status-option-label">Draft</div>
+                <div class="status-option-desc">Not yet live, setup in progress</div>
+              </label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="school-status" id="s-trial" checked>
+              <label for="s-trial">
+                <div class="status-option-label">Trial</div>
+                <div class="status-option-desc">14-day free trial</div>
+              </label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="school-status" id="s-active">
+              <label for="s-active">
+                <div class="status-option-label">Active</div>
+                <div class="status-option-desc">Fully operational</div>
+              </label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="school-status" id="s-suspended">
+              <label for="s-suspended">
+                <div class="status-option-label">Suspended</div>
+                <div class="status-option-desc">Access restricted</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="sidebar-widget">
+          <div class="widget-header"><h4><i class="bi bi-check2-square" style="color:var(--success);margin-right:5px;"></i> Setup Checklist</h4></div>
+          <div class="widget-body">
+            <div class="checklist-item"><input type="checkbox" id="c1" checked><label for="c1">Basic Info filled</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c2" checked><label for="c2">Contact details added</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c3" checked><label for="c3">Plan selected</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c4"><label for="c4">Admin account created</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">Logo uploaded</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c6"><label for="c6">Domain configured</label></div>
+            <div class="checklist-item"><input type="checkbox" id="c7"><label for="c7">Test email sent</label></div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="sidebar-widget">
+          <div class="widget-header"><h4>Internal Notes</h4></div>
+          <div class="widget-body">
+            <textarea class="form-textarea" placeholder="Add private notes about this school (not visible to school admin)…" style="min-height:80px;"></textarea>
+            <div class="flex-gap mt-8 justify-between">
+              <span class="text-xs text-muted">Visible to super admins only</span>
+              <button class="btn-ghost" style="font-size:12px;"><i class="bi bi-floppy"></i> Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assigned manager -->
+        <div class="sidebar-widget">
+          <div class="widget-header"><h4>Account Manager</h4></div>
+          <div class="widget-body">
+            <select class="form-select" style="margin-bottom:10px;">
+              <option>— Unassigned —</option>
+              <option selected>G. Mujtaba</option>
+              <option>Ayesha Khan</option>
+              <option>Omar Farooq</option>
+            </select>
+            <p class="text-xs text-muted">Manager receives alerts for this school's billing and issues.</p>
+          </div>
+        </div>
+
+        <!-- Form actions -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn-primary" style="width:100%;justify-content:center;"><i class="bi bi-floppy"></i> Save & Continue</button>
+          <button class="btn-outline" style="width:100%;justify-content:center;">Save as Draft</button>
+          <button class="btn-ghost" style="width:100%;justify-content:center;color:var(--danger);" onclick="showPage('list')">Discard Changes</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /form-add -->
+
+  <!-- ══════════════════════════════════════════
+       PAGE: FORM EDIT (same layout, edit mode)
+  ══════════════════════════════════════════ -->
+  <div class="page page-body" id="page-form-edit">
+    <div class="list-topbar">
+      <div class="list-topbar-left">
+        <h2>Edit School — <span style="color:var(--coral);">Lahore Academy</span></h2>
+        <p>SCH-00246 · Pro Plan · Last updated 2 hours ago by G. Mujtaba</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-outline" onclick="showPage('list')"><i class="bi bi-arrow-left"></i> Cancel</button>
+        <button class="btn-danger btn-sm" onclick="document.getElementById('deleteModal').classList.add('open')"><i class="bi bi-trash"></i> Delete</button>
+        <button class="btn-primary"><i class="bi bi-check-lg"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="form-tab-nav">
+      <button class="form-tab-btn active" onclick="switchFormTab(this,'tab-general')"><i class="bi bi-info-circle"></i> General</button>
+      <button class="form-tab-btn" onclick="switchFormTab(this,'tab-plan')"><i class="bi bi-credit-card"></i> Plan & Billing</button>
+      <button class="form-tab-btn" onclick="switchFormTab(this,'tab-modules')"><i class="bi bi-toggles"></i> Modules</button>
+      <button class="form-tab-btn" onclick="switchFormTab(this,'tab-domain')"><i class="bi bi-globe2"></i> Domain</button>
+      <button class="form-tab-btn" onclick="switchFormTab(this,'tab-danger')"><i class="bi bi-exclamation-triangle"></i> Danger Zone</button>
+    </div>
+
+    <div class="form-tab-panel active" id="tab-general">
+      <div class="form-page-layout">
+        <div>
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-body">
+              <div class="form-section-header">
+                <div class="section-icon coral"><i class="bi bi-pencil-square"></i></div>
+                <div>
+                  <div class="section-title">General Information</div>
+                  <div class="section-desc">Update school identity and contact details</div>
+                </div>
+              </div>
+              <div class="avatar-upload">
+                <div class="avatar-preview" style="background:var(--info);">LA</div>
+                <div class="avatar-upload-info">
+                  <h4>School Logo</h4>
+                  <p>Current: logo_lahore_academy.png (48 KB)</p>
+                  <div class="flex-gap gap-8">
+                    <button class="btn-outline btn-sm"><i class="bi bi-upload"></i> Change</button>
+                    <button class="btn-ghost" style="font-size:12px;color:var(--danger);"><i class="bi bi-trash"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">School Name <span class="req">*</span></label>
+                  <input type="text" class="form-input success" value="Lahore Academy">
+                  <span class="field-success"><i class="bi bi-check-circle-fill"></i> Unique name available</span>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Short Name</label>
+                  <input type="text" class="form-input" value="LA">
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">Official Email</label>
+                  <div class="input-icon-left"><i class="bi bi-envelope"></i>
+                    <input type="email" class="form-input" value="admin@lahoreacademy.edu.pk">
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Phone</label>
+                  <input type="tel" class="form-input" value="+92 42 3571 1234">
+                </div>
+              </div>
+              <div class="form-row cols-3">
+                <div class="field-group">
+                  <label class="field-label">Country</label>
+                  <select class="form-select"><option selected>Pakistan</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Province</label>
+                  <select class="form-select"><option selected>Punjab</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">City</label>
+                  <input type="text" class="form-input" value="Lahore">
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Address</label>
+                <input type="text" class="form-input" value="17-Main Boulevard, Gulberg III, Lahore">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-sidebar">
+          <!-- Quick stats -->
+          <div class="card">
+            <div class="card-body">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;">Quick Stats</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="text-align:center;padding:12px;background:var(--surface);border-radius:8px;">
+                  <div style="font-size:22px;font-weight:800;color:var(--coral);">1,204</div>
+                  <div class="text-xs text-muted mt-4">Students</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--surface);border-radius:8px;">
+                  <div style="font-size:22px;font-weight:800;color:var(--info);">87</div>
+                  <div class="text-xs text-muted mt-4">Teachers</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--surface);border-radius:8px;">
+                  <div style="font-size:22px;font-weight:800;color:var(--success);">$299</div>
+                  <div class="text-xs text-muted mt-4">MRR</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--surface);border-radius:8px;">
+                  <div style="font-size:22px;font-weight:800;color:var(--warning);">41%</div>
+                  <div class="text-xs text-muted mt-4">Storage</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn-primary" style="width:100%;justify-content:center;"><i class="bi bi-check-lg"></i> Save Changes</button>
+            <button class="btn-outline" style="width:100%;justify-content:center;" onclick="showPage('list')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-tab-panel" id="tab-plan">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-section-header">
+            <div class="section-icon success"><i class="bi bi-credit-card-2-front"></i></div>
+            <div><div class="section-title">Plan & Billing</div><div class="section-desc">Subscription and payment settings</div></div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="field-group">
+              <label class="field-label">Plan</label>
+              <select class="form-select"><option>Basic</option><option selected>Pro</option><option>Enterprise</option></select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Billing Cycle</label>
+              <select class="form-select"><option selected>Annual</option><option>Monthly</option></select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Next Renewal</label>
+              <input type="date" class="form-input" value="2026-06-01">
+            </div>
+          </div>
+          <div class="form-row cols-4">
+            <div class="field-group">
+              <label class="field-label">Custom MRR ($)</label>
+              <input type="number" class="form-input" value="299">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Discount (%)</label>
+              <input type="number" class="form-input" value="0">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Max Students</label>
+              <input type="number" class="form-input" value="2000">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Storage (GB)</label>
+              <input type="number" class="form-input" value="50">
+            </div>
+          </div>
+          <button class="btn-primary mt-16"><i class="bi bi-check-lg"></i> Update Plan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-tab-panel" id="tab-modules">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-section-header">
+            <div class="section-icon purple"><i class="bi bi-grid-3x3-gap"></i></div>
+            <div><div class="section-title">Module Configuration</div><div class="section-desc">Enable/disable features for this school</div></div>
+          </div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Student Portal</div><div class="toggle-desc">Students can log in and view their data</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Parent Portal</div><div class="toggle-desc">Parents receive updates and notifications</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Online Exams</div><div class="toggle-desc">Conduct digital examinations</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Fee Management</div><div class="toggle-desc">Collect and manage school fees online</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Timetable Builder</div><div class="toggle-desc">Automated class scheduling</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">HR & Payroll</div><div class="toggle-desc">Teacher salary and HR management</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Live Classes</div><div class="toggle-desc">Zoom/Meet integration for online sessions</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">AI Grade Predictions</div><div class="toggle-desc">Machine learning performance forecasting</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+          <button class="btn-primary mt-16"><i class="bi bi-check-lg"></i> Save Module Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-tab-panel" id="tab-domain">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-section-header">
+            <div class="section-icon info"><i class="bi bi-globe2"></i></div>
+            <div><div class="section-title">Domain Configuration</div><div class="section-desc">Custom domain and SSL settings</div></div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field-group">
+              <label class="field-label">Assigned Subdomain</label>
+              <div class="input-suffix-wrap" style="position:relative;">
+                <input type="text" class="form-input" value="lahoreacademy" style="padding-right:130px;">
+                <span class="input-suffix">.educore.app</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Custom Domain</label>
+              <input type="text" class="form-input" placeholder="e.g. portal.lahoreacademy.edu.pk">
+            </div>
+          </div>
+          <div style="background:var(--warning-bg);border:1px solid rgba(212,138,18,0.2);border-radius:10px;padding:14px 16px;margin-top:4px;">
+            <p style="font-size:13px;color:var(--warning);font-weight:600;"><i class="bi bi-exclamation-triangle-fill" style="margin-right:6px;"></i>DNS Verification Pending</p>
+            <p class="text-sm text-muted" style="margin-top:4px;">Add a CNAME record pointing to <code style="font-family:var(--mono);background:white;padding:2px 6px;border-radius:4px;">cname.educore.app</code> in your DNS settings.</p>
+          </div>
+          <button class="btn-primary mt-16"><i class="bi bi-arrow-clockwise"></i> Verify DNS</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-tab-panel" id="tab-danger">
+      <div class="danger-zone">
+        <div class="danger-zone-header"><h4><i class="bi bi-exclamation-octagon-fill"></i> Danger Zone</h4></div>
+        <div class="danger-action">
+          <div class="danger-action-info">
+            <h5>Reset School Data</h5>
+            <p>Wipe all student records, results, and configurations. Cannot be undone.</p>
+          </div>
+          <button class="btn-danger btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+        </div>
+        <div class="danger-action">
+          <div class="danger-action-info">
+            <h5>Suspend School</h5>
+            <p>Block all access immediately. School can be reactivated at any time.</p>
+          </div>
+          <button class="btn-danger btn-sm"><i class="bi bi-pause-circle"></i> Suspend</button>
+        </div>
+        <div class="danger-action">
+          <div class="danger-action-info">
+            <h5>Transfer Ownership</h5>
+            <p>Move this school to a different super admin account.</p>
+          </div>
+          <button class="btn-outline btn-sm"><i class="bi bi-arrow-left-right"></i> Transfer</button>
+        </div>
+        <div class="danger-action">
+          <div class="danger-action-info">
+            <h5>Delete School Permanently</h5>
+            <p>Permanently remove this school and all associated data from the platform.</p>
+          </div>
+          <button class="btn-danger btn-sm" onclick="document.getElementById('deleteModal').classList.add('open')"><i class="bi bi-trash3-fill"></i> Delete Forever</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /form-edit -->
+
+  <!-- ══════════════════════════════════════════
+       PAGE: PROFILE + SETTINGS
+  ══════════════════════════════════════════ -->
+  <div class="page page-body" id="page-profile">
+
+    <div class="list-topbar">
+      <div class="list-topbar-left">
+        <h2>My Profile</h2>
+        <p>Manage your account settings, preferences, and security</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-outline"><i class="bi bi-eye"></i> Preview Public Profile</button>
+        <button class="btn-primary"><i class="bi bi-floppy"></i> Save All Changes</button>
+      </div>
+    </div>
+
+    <div class="profile-layout">
+      <!-- Left: Profile card -->
+      <div>
+        <div class="profile-card">
+          <div class="profile-hero-bg"></div>
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar">
+              GM
+              <div class="avatar-online"></div>
+            </div>
+          </div>
+          <div class="profile-id">
+            <div class="profile-name">G. Mujtaba</div>
+            <div class="profile-title">Super Administrator</div>
+            <div class="profile-id-code">UID-SADM-0001</div>
+            <div class="profile-badges">
+              <span class="badge badge-purple"><i class="bi bi-shield-fill-check" style="font-size:9px;"></i> Super Admin</span>
+              <span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:7px;"></i> Online</span>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="p-stat">
+              <div class="p-stat-num">247</div>
+              <div class="p-stat-lbl">Schools</div>
+            </div>
+            <div class="p-stat">
+              <div class="p-stat-num">18.4k</div>
+              <div class="p-stat-lbl">Users</div>
+            </div>
+            <div class="p-stat">
+              <div class="p-stat-num">3y</div>
+              <div class="p-stat-lbl">Tenure</div>
+            </div>
+          </div>
+          <div class="profile-nav">
+            <div class="profile-nav-item active" onclick="showSettingsTab('tab-personal',this)">
+              <i class="bi bi-person"></i> Personal Info
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="profile-nav-item" onclick="showSettingsTab('tab-security',this)">
+              <i class="bi bi-shield-lock"></i> Security
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="profile-nav-item" onclick="showSettingsTab('tab-notifs',this)">
+              <i class="bi bi-bell"></i> Notifications
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="profile-nav-item" onclick="showSettingsTab('tab-appearance',this)">
+              <i class="bi bi-palette"></i> Appearance
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="profile-nav-item" onclick="showSettingsTab('tab-sessions',this)">
+              <i class="bi bi-laptop"></i> Sessions
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="profile-nav-item" onclick="showSettingsTab('tab-api',this)">
+              <i class="bi bi-key"></i> API Keys
+              <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Settings panels -->
+      <div class="profile-right-panel">
+
+        <!-- PERSONAL INFO -->
+        <div class="card settings-panel active" id="tab-personal">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon coral" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-person"></i></div>
+              <div>
+                <div class="card-title">Personal Information</div>
+                <div class="card-subtitle">Update your profile details</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="avatar-upload">
+              <div class="avatar-preview">GM</div>
+              <div class="avatar-upload-info">
+                <h4>Profile Photo</h4>
+                <p>JPG, PNG or GIF. Max 2MB. Recommended 400×400px.</p>
+                <div class="flex-gap gap-8">
+                  <button class="btn-outline btn-sm"><i class="bi bi-upload"></i> Upload</button>
+                  <button class="btn-ghost" style="font-size:12px;color:var(--danger);"><i class="bi bi-trash"></i> Remove</button>
+                </div>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Basic Details</div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">First Name <span class="req">*</span></label>
+                  <input type="text" class="form-input" value="G.">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Last Name <span class="req">*</span></label>
+                  <input type="text" class="form-input" value="Mujtaba">
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">Display Name</label>
+                  <input type="text" class="form-input" value="G. Mujtaba">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Job Title</label>
+                  <input type="text" class="form-input" value="Super Administrator">
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">Email Address <span class="req">*</span></label>
+                  <div class="input-icon-left"><i class="bi bi-envelope"></i>
+                    <input type="email" class="form-input" value="mujtaba@educore.app">
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Phone</label>
+                  <input type="tel" class="form-input" value="+92 300 1234567">
+                </div>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Locale & Language</div>
+              <div class="form-row cols-3">
+                <div class="field-group">
+                  <label class="field-label">Language</label>
+                  <select class="form-select"><option selected>English (US)</option><option>English (UK)</option><option>Urdu</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Timezone</label>
+                  <select class="form-select"><option selected>Asia/Karachi (PKT+5)</option><option>UTC</option><option>Asia/Dubai</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Date Format</label>
+                  <select class="form-select"><option selected>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">About</div>
+              <div class="field-group">
+                <label class="field-label">Bio</label>
+                <textarea class="form-textarea" placeholder="A short bio visible on your profile…">Super Admin at EduCore SaaS. Managing 247 school instances across Pakistan and UAE.</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="card settings-panel" id="tab-security" style="display:none;">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon warning" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-shield-lock"></i></div>
+              <div>
+                <div class="card-title">Security Settings</div>
+                <div class="card-subtitle">Password, 2FA and account protection</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="setting-group">
+              <div class="setting-group-title">Change Password</div>
+              <div class="form-row cols-1" style="grid-template-columns:1fr;">
+                <div class="field-group">
+                  <label class="field-label">Current Password</label>
+                  <div class="input-icon-left"><i class="bi bi-lock"></i>
+                    <input type="password" class="form-input" placeholder="Enter current password">
+                  </div>
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field-group">
+                  <label class="field-label">New Password</label>
+                  <div class="input-icon-left"><i class="bi bi-key"></i>
+                    <input type="password" class="form-input" placeholder="Min 12 characters">
+                  </div>
+                  <span class="field-hint">Use uppercase, numbers, and symbols.</span>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Confirm New Password</label>
+                  <div class="input-icon-left"><i class="bi bi-key-fill"></i>
+                    <input type="password" class="form-input" placeholder="Repeat new password">
+                  </div>
+                </div>
+              </div>
+              <button class="btn-primary btn-sm mt-4"><i class="bi bi-check-lg"></i> Update Password</button>
+            </div>
+
+            <div class="setting-group">
+              <div class="setting-group-title">Two-Factor Authentication</div>
+              <div class="twofa-option active">
+                <div class="twofa-icon">📱</div>
+                <div class="twofa-info">
+                  <h5>Authenticator App</h5>
+                  <p>Google Authenticator, Authy or similar</p>
+                </div>
+                <i class="bi bi-check-circle-fill twofa-selected"></i>
+              </div>
+              <div class="twofa-option">
+                <div class="twofa-icon">💬</div>
+                <div class="twofa-info">
+                  <h5>SMS Verification</h5>
+                  <p>Receive OTP to +92 300 ••••567</p>
+                </div>
+              </div>
+              <div class="twofa-option">
+                <div class="twofa-icon">📧</div>
+                <div class="twofa-info">
+                  <h5>Email OTP</h5>
+                  <p>mujtaba@educore.app</p>
+                </div>
+              </div>
+              <div class="twofa-option">
+                <div class="twofa-icon">🔑</div>
+                <div class="twofa-info">
+                  <h5>Hardware Security Key</h5>
+                  <p>YubiKey or FIDO2-compatible device</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <div class="setting-group-title">Login Activity</div>
+              <div style="background:var(--surface);border-radius:10px;padding:14px 16px;font-size:13px;">
+                <div class="flex-gap justify-between mb-8">
+                  <span class="fw-700">Last 5 Logins</span>
+                  <button class="btn-ghost" style="font-size:12px;">View All</button>
+                </div>
+                <div style="display:grid;gap:8px;">
+                  <div class="flex-gap justify-between"><span>🟢 Today, 9:41 AM — Lahore, PK — Chrome/Win</span><span class="badge badge-success">Current</span></div>
+                  <div class="flex-gap justify-between"><span>Yesterday, 3:12 PM — Lahore, PK — Chrome/Win</span><span class="text-xs text-muted">—</span></div>
+                  <div class="flex-gap justify-between"><span>Apr 24, 11:02 AM — Lahore, PK — Mobile/iOS</span><span class="text-xs text-muted">—</span></div>
+                  <div class="flex-gap justify-between"><span>Apr 22, 8:30 PM — Dubai, UAE — Chrome/Mac</span><span class="badge badge-warning">New Location</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="card settings-panel" id="tab-notifs" style="display:none;">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon info" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-bell"></i></div>
+              <div>
+                <div class="card-title">Notification Preferences</div>
+                <div class="card-subtitle">Control what you get notified about</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="setting-group">
+              <div class="setting-group-title">Channels</div>
+              <div class="notif-channel">
+                <div class="notif-channel-icon" style="background:var(--info-bg);"><i class="bi bi-envelope" style="color:var(--info);"></i></div>
+                <div class="notif-channel-info">
+                  <h4>Email Notifications</h4>
+                  <p>mujtaba@educore.app</p>
+                </div>
+                <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+              </div>
+              <div class="notif-channel">
+                <div class="notif-channel-icon" style="background:var(--success-bg);"><i class="bi bi-chat-text" style="color:var(--success);"></i></div>
+                <div class="notif-channel-info">
+                  <h4>In-App Notifications</h4>
+                  <p>Shown in the top notification bell</p>
+                </div>
+                <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label>
+              </div>
+              <div class="notif-channel">
+                <div class="notif-channel-icon" style="background:var(--warning-bg);"><i class="bi bi-phone" style="color:var(--warning);"></i></div>
+                <div class="notif-channel-info">
+                  <h4>SMS / WhatsApp</h4>
+                  <p>+92 300 1234567</p>
+                </div>
+                <label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label>
+              </div>
+              <div class="notif-channel">
+                <div class="notif-channel-icon" style="background:var(--purple-bg);"><i class="bi bi-slack" style="color:var(--purple);"></i></div>
+                <div class="notif-channel-info">
+                  <h4>Slack Integration</h4>
+                  <p>Not connected</p>
+                </div>
+                <button class="btn-outline btn-sm" style="white-space:nowrap;"><i class="bi bi-link-45deg"></i> Connect</button>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Notification Types</div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">New School Registration</div><div class="toggle-desc">When a new school signs up on the platform</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Domain Requests</div><div class="toggle-desc">Schools requesting custom domain approval</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Payment Events</div><div class="toggle-desc">Successful payments, failures, and refunds</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">System Alerts</div><div class="toggle-desc">Downtime, errors, and critical warnings</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Weekly Summary</div><div class="toggle-desc">Weekly digest of platform activity</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Marketing Updates</div><div class="toggle-desc">Product news and feature announcements</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APPEARANCE -->
+        <div class="card settings-panel" id="tab-appearance" style="display:none;">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon purple" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-palette"></i></div>
+              <div>
+                <div class="card-title">Appearance & Display</div>
+                <div class="card-subtitle">Customize your dashboard look and feel</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="setting-group">
+              <div class="setting-group-title">Color Theme</div>
+              <div class="color-swatches mb-12">
+                <div class="color-swatch selected" style="background:#E85D3A;" title="Coral (Default)"></div>
+                <div class="color-swatch" style="background:#2C6FD4;" title="Blue"></div>
+                <div class="color-swatch" style="background:#7C3AED;" title="Purple"></div>
+                <div class="color-swatch" style="background:#2DA06A;" title="Green"></div>
+                <div class="color-swatch" style="background:#D48A12;" title="Amber"></div>
+                <div class="color-swatch" style="background:#C2357B;" title="Pink"></div>
+                <div class="color-swatch" style="background:#1E1F26;" title="Charcoal"></div>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Mode</div>
+              <div class="form-row cols-2">
+                <div style="border:2px solid var(--coral);border-radius:10px;padding:14px;cursor:pointer;text-align:center;">
+                  <div style="font-size:24px;margin-bottom:6px;">☀️</div>
+                  <div style="font-size:13px;font-weight:700;color:var(--coral);">Light Mode</div>
+                  <div class="text-xs text-muted mt-4">Currently active</div>
+                </div>
+                <div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;text-align:center;background:var(--charcoal);">
+                  <div style="font-size:24px;margin-bottom:6px;">🌙</div>
+                  <div style="font-size:13px;font-weight:700;color:white;">Dark Mode</div>
+                  <div style="font-size:11px;color:var(--charcoal-muted);margin-top:4px;">Coming soon</div>
+                </div>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-group-title">Dashboard Preferences</div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Compact Sidebar</div><div class="toggle-desc">Collapse sidebar to icon-only mode</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Sticky Topbar</div><div class="toggle-desc">Keep topbar visible while scrolling</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Animations</div><div class="toggle-desc">Enable UI transition animations</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Dense Tables</div><div class="toggle-desc">Reduce row height in data tables</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SESSIONS -->
+        <div class="card settings-panel" id="tab-sessions" style="display:none;">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon success" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-laptop"></i></div>
+              <div>
+                <div class="card-title">Active Sessions</div>
+                <div class="card-subtitle">Devices currently logged in to your account</div>
+              </div>
+            </div>
+            <button class="btn-danger btn-sm"><i class="bi bi-x-circle"></i> Revoke All Others</button>
+          </div>
+          <div class="card-body">
+            <div class="session-item">
+              <div class="session-device">💻</div>
+              <div class="session-info">
+                <h5>Windows PC — Chrome 124</h5>
+                <p>Lahore, PK · 192.168.1.1 · Active now</p>
+              </div>
+              <div class="session-current"><span class="badge badge-success">Current</span></div>
+            </div>
+            <div class="session-item">
+              <div class="session-device">📱</div>
+              <div class="session-info">
+                <h5>iPhone 15 Pro — Safari</h5>
+                <p>Lahore, PK · 103.48.xx.xx · 2 hours ago</p>
+              </div>
+              <div class="session-current"><button class="btn-danger btn-sm"><i class="bi bi-x"></i> Revoke</button></div>
+            </div>
+            <div class="session-item">
+              <div class="session-device">🖥</div>
+              <div class="session-info">
+                <h5>MacBook Pro — Chrome 123</h5>
+                <p>Dubai, UAE · 77.33.xx.xx · Yesterday</p>
+              </div>
+              <div class="session-current"><button class="btn-danger btn-sm"><i class="bi bi-x"></i> Revoke</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API KEYS -->
+        <div class="card settings-panel" id="tab-api" style="display:none;">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="section-icon coral" style="width:36px;height:36px;font-size:16px;"><i class="bi bi-key"></i></div>
+              <div>
+                <div class="card-title">API Keys</div>
+                <div class="card-subtitle">Manage personal API access tokens</div>
+              </div>
+            </div>
+            <button class="btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Generate New Key</button>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--warning-bg);border:1px solid rgba(212,138,18,0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+              <p style="font-size:13px;color:var(--warning);"><i class="bi bi-exclamation-triangle-fill" style="margin-right:6px;"></i>Never share your API keys. Treat them like passwords.</p>
+            </div>
+            <table class="sms-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Key</th>
+                  <th>Scopes</th>
+                  <th>Last Used</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="fw-700">Production Key</span></td>
+                  <td><code class="font-mono" style="background:var(--surface);padding:3px 8px;border-radius:5px;font-size:12px;">sk_live_••••••••••EWuP</code></td>
+                  <td><span class="badge badge-purple">Full Access</span></td>
+                  <td><span class="text-sm text-muted">2 hrs ago</span></td>
+                  <td>
+                    <button class="action-btn"><i class="bi bi-eye"></i></button>
+                    <button class="action-btn"><i class="bi bi-arrow-clockwise"></i></button>
+                    <button class="action-btn" style="color:var(--danger);"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="fw-700">Reporting Tool</span></td>
+                  <td><code class="font-mono" style="background:var(--surface);padding:3px 8px;border-radius:5px;font-size:12px;">sk_live_••••••••••Kz3L</code></td>
+                  <td><span class="badge badge-info">Read Only</span></td>
+                  <td><span class="text-sm text-muted">3 days ago</span></td>
+                  <td>
+                    <button class="action-btn"><i class="bi bi-eye"></i></button>
+                    <button class="action-btn"><i class="bi bi-arrow-clockwise"></i></button>
+                    <button class="action-btn" style="color:var(--danger);"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /profile-right-panel -->
+    </div>
+  </div><!-- /page-profile -->
+
+  <!-- ══════════════════════════════════════════
+       PAGE: ROLES & PERMISSIONS
+  ══════════════════════════════════════════ -->
+  <div class="page page-body" id="page-roles">
+
+    <div class="list-topbar">
+      <div class="list-topbar-left">
+        <h2>Roles & Permissions</h2>
+        <p>Configure access control for all user types across the platform</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn-outline"><i class="bi bi-people"></i> Assign Users</button>
+        <button class="btn-primary" onclick="document.getElementById('newRoleModal').classList.add('open')"><i class="bi bi-plus-lg"></i> Create Role</button>
+      </div>
+    </div>
+
+    <div class="roles-layout">
+      <!-- Role list -->
+      <div class="role-list-card">
+        <div class="role-list-header">
+          <h3>All Roles</h3>
+          <span class="badge badge-muted">7 roles</span>
+        </div>
+        <div class="role-item active" onclick="selectRole(this)">
+          <div class="role-icon" style="background:rgba(232,93,58,0.12);"><i class="bi bi-shield-fill-check" style="color:var(--coral);"></i></div>
+          <div class="role-info">
+            <div class="role-name">Super Admin</div>
+            <div class="role-count">1 user</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:var(--purple-bg);"><i class="bi bi-shield-fill" style="color:var(--purple);"></i></div>
+          <div class="role-info">
+            <div class="role-name">Platform Admin</div>
+            <div class="role-count">4 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:var(--info-bg);"><i class="bi bi-person-badge" style="color:var(--info);"></i></div>
+          <div class="role-info">
+            <div class="role-name">School Admin</div>
+            <div class="role-count">247 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:var(--success-bg);"><i class="bi bi-person-workspace" style="color:var(--success);"></i></div>
+          <div class="role-info">
+            <div class="role-name">Teacher</div>
+            <div class="role-count">3,840 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:var(--warning-bg);"><i class="bi bi-mortarboard" style="color:var(--warning);"></i></div>
+          <div class="role-info">
+            <div class="role-name">Student</div>
+            <div class="role-count">14,298 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:#F0FEF6;"><i class="bi bi-people" style="color:#059669;"></i></div>
+          <div class="role-info">
+            <div class="role-name">Parent</div>
+            <div class="role-count">9,124 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+        <div class="role-item" onclick="selectRole(this)">
+          <div class="role-icon" style="background:var(--surface);"><i class="bi bi-eye" style="color:var(--text-mid);"></i></div>
+          <div class="role-info">
+            <div class="role-name">Auditor (Read-Only)</div>
+            <div class="role-count">2 users</div>
+          </div>
+          <i class="bi bi-chevron-right role-arrow"></i>
+        </div>
+      </div>
+
+      <!-- Permission matrix -->
+      <div>
+        <div class="perm-matrix-card">
+          <div class="perm-matrix-header">
+            <div class="role-detail-header">
+              <div class="role-detail-icon" style="background:rgba(232,93,58,0.12);font-size:22px;">🛡️</div>
+              <div>
+                <div class="role-detail-name">Super Admin</div>
+                <div class="role-detail-meta">Full unrestricted access to the entire platform</div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <button class="btn-outline btn-sm"><i class="bi bi-people"></i> Manage Users</button>
+                <button class="btn-outline btn-sm"><i class="bi bi-pencil"></i> Edit Role</button>
+                <button class="btn-primary btn-sm"><i class="bi bi-floppy"></i> Save</button>
+              </div>
+            </div>
+            <div class="role-detail-badges">
+              <span class="badge badge-success"><i class="bi bi-shield-fill-check" style="font-size:9px;"></i> System Role</span>
+              <span class="badge badge-muted">1 user assigned</span>
+              <span class="badge badge-purple">All permissions</span>
+            </div>
+          </div>
+
+          <!-- Permission tabs -->
+          <div style="border-bottom:1px solid var(--border);">
+            <div class="form-tab-nav" style="margin-bottom:0;padding:0 22px;">
+              <button class="form-tab-btn active" onclick="switchRoleTab(this,'perm-matrix')"><i class="bi bi-grid-3x2-gap"></i> Permissions Matrix</button>
+              <button class="form-tab-btn" onclick="switchRoleTab(this,'perm-users')"><i class="bi bi-people"></i> Users</button>
+              <button class="form-tab-btn" onclick="switchRoleTab(this,'perm-compare')"><i class="bi bi-columns"></i> Compare Roles</button>
+            </div>
+          </div>
+
+          <!-- MATRIX TAB -->
+          <div id="perm-matrix">
+            <div class="perm-search-row">
+              <div class="search-bar-lg" style="max-width:320px;">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search permissions…">
+              </div>
+              <button class="btn-ghost btn-sm"><i class="bi bi-check2-all"></i> Enable All</button>
+              <button class="btn-ghost btn-sm"><i class="bi bi-x-circle"></i> Disable All</button>
+              <span class="text-sm text-muted" style="margin-left:auto;"><strong>62/62</strong> permissions active</span>
+            </div>
+
+            <!-- Module: Schools -->
+            <div class="perm-module-group">
+              <div class="perm-module-header" onclick="togglePermModule(this)">
+                <div class="perm-module-icon" style="background:var(--coral-pale);">🏫</div>
+                <div class="perm-module-name">Schools</div>
+                <div class="perm-module-count">8 permissions</div>
+                <div class="perm-module-bulk">
+                  <label for="m1-all">All</label>
+                  <label class="toggle-switch" style="transform:scale(0.8);"><input type="checkbox" id="m1-all" checked><span class="toggle-track"></span></label>
+                </div>
+                <i class="bi bi-chevron-down perm-module-toggle open"></i>
+              </div>
+              <div class="perm-rows open">
+                <div class="perm-row"><div><div class="perm-name">View Schools</div><div class="perm-desc">List and search school records</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Manage School Plans</div><div class="perm-desc">Upgrade, downgrade and set custom pricing</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill" onclick="togglePill(this)"><i class="bi bi-dash-lg"></i> Delete</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Domain Approval</div><div class="perm-desc">Approve or reject custom domain requests</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Approve</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Reject</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">School Suspension</div><div class="perm-desc">Suspend and unsuspend school access</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Suspend</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Unsuspend</span></div></div>
+              </div>
+            </div>
+
+            <!-- Module: Users -->
+            <div class="perm-module-group">
+              <div class="perm-module-header" onclick="togglePermModule(this)">
+                <div class="perm-module-icon" style="background:var(--info-bg);">👥</div>
+                <div class="perm-module-name">Users</div>
+                <div class="perm-module-count">6 permissions</div>
+                <div class="perm-module-bulk">
+                  <label for="m2-all">All</label>
+                  <label class="toggle-switch" style="transform:scale(0.8);"><input type="checkbox" id="m2-all" checked><span class="toggle-track"></span></label>
+                </div>
+                <i class="bi bi-chevron-down perm-module-toggle open"></i>
+              </div>
+              <div class="perm-rows open">
+                <div class="perm-row"><div><div class="perm-name">View All Users</div><div class="perm-desc">Access global user list across all schools</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Impersonate Users</div><div class="perm-desc">Log in as any user for support purposes</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Allowed</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Bulk User Operations</div><div class="perm-desc">Mass import, export, and modify users</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Import</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span></div></div>
+              </div>
+            </div>
+
+            <!-- Module: Billing -->
+            <div class="perm-module-group">
+              <div class="perm-module-header" onclick="togglePermModule(this)">
+                <div class="perm-module-icon" style="background:var(--success-bg);">💳</div>
+                <div class="perm-module-name">Billing & Revenue</div>
+                <div class="perm-module-count">5 permissions</div>
+                <div class="perm-module-bulk">
+                  <label for="m3-all">All</label>
+                  <label class="toggle-switch" style="transform:scale(0.8);"><input type="checkbox" id="m3-all" checked><span class="toggle-track"></span></label>
+                </div>
+                <i class="bi bi-chevron-down perm-module-toggle open"></i>
+              </div>
+              <div class="perm-rows open">
+                <div class="perm-row"><div><div class="perm-name">View Revenue Data</div><div class="perm-desc">Access MRR, ARR and payment history</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Issue Refunds</div><div class="perm-desc">Process refunds and credit adjustments</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Allowed</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Manage Pricing Plans</div><div class="perm-desc">Create, edit and archive subscription plans</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span></div></div>
+              </div>
+            </div>
+
+            <!-- Module: System -->
+            <div class="perm-module-group">
+              <div class="perm-module-header" onclick="togglePermModule(this)">
+                <div class="perm-module-icon" style="background:var(--purple-bg);">⚙️</div>
+                <div class="perm-module-name">System & Configuration</div>
+                <div class="perm-module-count">8 permissions</div>
+                <div class="perm-module-bulk">
+                  <label for="m4-all">All</label>
+                  <label class="toggle-switch" style="transform:scale(0.8);"><input type="checkbox" id="m4-all" checked><span class="toggle-track"></span></label>
+                </div>
+                <i class="bi bi-chevron-down perm-module-toggle open"></i>
+              </div>
+              <div class="perm-rows open">
+                <div class="perm-row"><div><div class="perm-name">System Settings</div><div class="perm-desc">Global platform configuration</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Audit Logs</div><div class="perm-desc">View complete platform audit trail</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Role Management</div><div class="perm-desc">Create and modify platform roles</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">API Key Management</div><div class="perm-desc">Issue and revoke platform API tokens</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Write</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Revoke</span></div></div>
+              </div>
+            </div>
+
+            <!-- Module: Analytics -->
+            <div class="perm-module-group">
+              <div class="perm-module-header" onclick="togglePermModule(this)">
+                <div class="perm-module-icon" style="background:var(--warning-bg);">📊</div>
+                <div class="perm-module-name">Analytics & Reports</div>
+                <div class="perm-module-count">4 permissions</div>
+                <div class="perm-module-bulk">
+                  <label for="m5-all">All</label>
+                  <label class="toggle-switch" style="transform:scale(0.8);"><input type="checkbox" id="m5-all" checked><span class="toggle-track"></span></label>
+                </div>
+                <i class="bi bi-chevron-down perm-module-toggle open"></i>
+              </div>
+              <div class="perm-rows open">
+                <div class="perm-row"><div><div class="perm-name">View Analytics</div><div class="perm-desc">Platform-wide analytics dashboards</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Read</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Generate Reports</div><div class="perm-desc">Create custom PDF/CSV reports</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Create</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Export</span></div></div>
+                <div class="perm-row"><div><div class="perm-name">Scheduled Reports</div><div class="perm-desc">Set up automated report delivery</div></div><div class="perm-actions"><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Create</span><span class="perm-pill enabled" onclick="togglePill(this)"><i class="bi bi-check-lg"></i> Delete</span></div></div>
+              </div>
+            </div>
+          </div><!-- /perm-matrix -->
+
+          <!-- USERS TAB -->
+          <div id="perm-users" style="display:none;padding:22px;">
+            <div class="flex-gap justify-between mb-16">
+              <div class="search-bar-lg" style="max-width:300px;">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search users…">
+              </div>
+              <button class="btn-primary btn-sm"><i class="bi bi-person-plus"></i> Add User to Role</button>
+            </div>
+            <div class="role-user-row">
+              <div class="row-avatar" style="background:var(--coral-pale);color:var(--coral);">GM</div>
+              <div style="flex:1;"><div class="row-name">G. Mujtaba</div><div class="row-sub">mujtaba@educore.app</div></div>
+              <span class="badge badge-success">Active</span>
+              <button class="action-btn"><i class="bi bi-pencil"></i></button>
+            </div>
+          </div>
+
+          <!-- COMPARE TAB -->
+          <div id="perm-compare" style="display:none;overflow-x:auto;">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th style="min-width:180px;">Permission</th>
+                  <th style="text-align:center;">Super Admin</th>
+                  <th style="text-align:center;">Platform Admin</th>
+                  <th style="text-align:center;">School Admin</th>
+                  <th style="text-align:center;">Teacher</th>
+                  <th style="text-align:center;">Auditor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface);" colspan="6">Schools</td></tr>
+                <tr><td>View Schools</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-dash-circle dash-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td></tr>
+                <tr><td>Edit Schools</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td>Delete Schools</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td>Suspend Schools</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface);" colspan="6">Users</td></tr>
+                <tr><td>View All Users</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-dash-circle dash-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td></tr>
+                <tr><td>Impersonate Users</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface);" colspan="6">Billing</td></tr>
+                <tr><td>View Revenue</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td></tr>
+                <tr><td>Issue Refunds</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface);" colspan="6">System</td></tr>
+                <tr><td>System Settings</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td>Role Management</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td></tr>
+                <tr><td>Audit Logs</td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-x-circle-fill cross-icon"></i></td><td style="text-align:center;"><i class="bi bi-check-circle-fill check-icon"></i></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /perm-matrix-card -->
+      </div>
+    </div>
+
+  </div><!-- /page-roles -->
+
+</div><!-- /main-content -->
+
+<!-- ══════════ MODALS ══════════ -->
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Delete School</h3>
+      <button class="modal-close" onclick="document.getElementById('deleteModal').classList.remove('open')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div class="confirm-icon" style="background:var(--danger-bg);color:var(--danger);">🗑️</div>
+      <h4 style="font-size:17px;font-weight:800;margin-bottom:8px;">Delete Lahore Academy?</h4>
+      <p style="font-size:13.5px;color:var(--text-mid);line-height:1.6;margin-bottom:20px;">This will permanently delete <strong>SCH-00246</strong> and all associated data including <strong>1,204 students</strong>, <strong>87 teachers</strong>, and all records. This action <strong>cannot be undone</strong>.</p>
+      <div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:4px;text-align:left;">
+        <div class="field-group">
+          <label class="field-label">Type <strong>DELETE</strong> to confirm</label>
+          <input type="text" class="form-input" placeholder="DELETE">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+      <button class="btn-danger"><i class="bi bi-trash3-fill"></i> Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Export Schools Data</h3>
+      <button class="modal-close" onclick="document.getElementById('exportModal').classList.remove('open')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row cols-2">
+        <div class="field-group">
+          <label class="field-label">Format</label>
+          <select class="form-select"><option>CSV</option><option>Excel (.xlsx)</option><option>JSON</option><option>PDF Report</option></select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Scope</label>
+          <select class="form-select"><option>Current filters (84 schools)</option><option>All schools (247)</option><option>Selected only</option></select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Include Columns</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox" checked> School Name & ID</label>
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox" checked> Plan & Status</label>
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox" checked> Students & Teachers</label>
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox" checked> MRR & Billing</label>
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox"> Contact Details</label>
+          <label class="checklist-item" style="border:none;padding:0;"><input type="checkbox"> Domain Info</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="document.getElementById('exportModal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary"><i class="bi bi-download"></i> Export Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Role Modal -->
+<div class="modal-overlay" id="newRoleModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Create New Role</h3>
+      <button class="modal-close" onclick="document.getElementById('newRoleModal').classList.remove('open')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group mb-12">
+        <label class="field-label">Role Name <span class="req">*</span></label>
+        <input type="text" class="form-input" placeholder="e.g. Finance Manager">
+      </div>
+      <div class="field-group mb-12">
+        <label class="field-label">Description</label>
+        <textarea class="form-textarea" placeholder="Describe what this role can do…" style="min-height:70px;"></textarea>
+      </div>
+      <div class="field-group mb-12">
+        <label class="field-label">Clone Permissions From</label>
+        <select class="form-select"><option value="">Start from scratch</option><option>Platform Admin</option><option>School Admin</option><option>Auditor</option></select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Icon Color</label>
+        <div class="color-swatches mt-4">
+          <div class="color-swatch selected" style="background:var(--coral);"></div>
+          <div class="color-swatch" style="background:var(--info);"></div>
+          <div class="color-swatch" style="background:var(--success);"></div>
+          <div class="color-swatch" style="background:var(--purple);"></div>
+          <div class="color-swatch" style="background:var(--warning);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="document.getElementById('newRoleModal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary"><i class="bi bi-shield-plus"></i> Create & Configure</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Page navigation ───
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pageMeta = {
+    'list':      { title: 'Schools', crumb: 'Super Admin → Schools' },
+    'form-add':  { title: 'Add School', crumb: 'Super Admin → Schools → Add' },
+    'form-edit': { title: 'Edit School', crumb: 'Super Admin → Schools → Edit' },
+    'profile':   { title: 'My Profile', crumb: 'Super Admin → Profile' },
+    'roles':     { title: 'Roles & Permissions', crumb: 'Super Admin → Access Control' },
+  };
+  if (pageMeta[name]) {
+    document.getElementById('tb-title').textContent = pageMeta[name].title;
+    document.getElementById('tb-crumb').textContent = pageMeta[name].crumb;
+  }
+  window.scrollTo(0,0);
+}
+
+// ─── Advanced search toggle ───
+function toggleAdvSearch() {
+  const body = document.getElementById('adv-body');
+  const arrow = document.getElementById('adv-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// ─── Bulk bar ───
+function toggleBulkBar(cb) {
+  if (!cb) return;
+  const checked = document.querySelectorAll('.sms-table input[type="checkbox"]:checked:not([id])');
+  const bar = document.getElementById('bulk-bar');
+  if (checked.length > 0) {
+    bar.classList.add('visible');
+    bar.querySelector('.bulk-count').textContent = checked.length + ' school' + (checked.length > 1 ? 's' : '') + ' selected';
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ─── Form tabs ───
+function switchFormTab(btn, tabId) {
+  const parent = btn.closest('.page');
+  parent.querySelectorAll('.form-tab-btn').forEach(b => b.classList.remove('active'));
+  parent.querySelectorAll('.form-tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ─── Profile settings nav ───
+function showSettingsTab(tabId, navItem) {
+  document.querySelectorAll('.settings-panel').forEach(p => p.style.display = 'none');
+  document.getElementById(tabId).style.display = 'block';
+  document.querySelectorAll('.profile-nav-item').forEach(n => n.classList.remove('active'));
+  navItem.classList.add('active');
+}
+
+// ─── Role tabs ───
+function switchRoleTab(btn, tabId) {
+  btn.closest('.perm-matrix-card').querySelectorAll('.form-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['perm-matrix','perm-users','perm-compare'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = (id === tabId) ? 'block' : 'none';
+  });
+}
+
+// ─── Perm module toggle ───
+function togglePermModule(header) {
+  const rows = header.nextElementSibling;
+  const arrow = header.querySelector('.perm-module-toggle');
+  rows.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// ─── Perm pill toggle ───
+function togglePill(pill) {
+  pill.classList.toggle('enabled');
+  if (pill.classList.contains('enabled')) {
+    pill.querySelector('i').className = 'bi bi-check-lg';
+  } else {
+    pill.querySelector('i').className = 'bi bi-dash-lg';
+  }
+}
+
+// ─── Role selection ───
+function selectRole(item) {
+  document.querySelectorAll('.role-item').forEach(r => r.classList.remove('active'));
+  item.classList.add('active');
+}
+
+// ─── Close modals on overlay click ───
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ─── Color swatch selection ───
+document.querySelectorAll('.color-swatches').forEach(group => {
+  group.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      group.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      sw.classList.add('selected');
+    });
+  });
+});
+
+// ─── 2FA option selection ───
+document.querySelectorAll('.twofa-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    opt.closest('.setting-group').querySelectorAll('.twofa-option').forEach(o => {
+      o.classList.remove('active');
+      const sel = o.querySelector('.twofa-selected');
+      if (sel) sel.remove();
+    });
+    opt.classList.add('active');
+    if (!opt.querySelector('.twofa-selected')) {
+      const icon = document.createElement('i');
+      icon.className = 'bi bi-check-circle-fill twofa-selected';
+      opt.appendChild(icon);
+    }
+  });
+});
+
+// Initial bulk bar show (6 pre-checked rows)
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bulk-bar').classList.add('visible');
+});
+</script>
+</body>
+</html>

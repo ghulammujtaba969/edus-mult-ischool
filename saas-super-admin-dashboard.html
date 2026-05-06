@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaSAdmin — Super Portal Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --charcoal:       #1E1F26;
+  --charcoal-light: #272930;
+  --charcoal-mid:   #32343E;
+  --charcoal-muted: #8B8FA8;
+  --coral:          #E85D3A;
+  --coral-light:    #F07355;
+  --coral-pale:     #FDF0ED;
+  --coral-border:   #F9D4CA;
+  --white:          #FFFFFF;
+  --surface:        #F8F7F5;
+  --surface-alt:    #F1EFF9;
+  --border:         #E8E5E0;
+  --text-dark:      #1E1F26;
+  --text-mid:       #5A5C6E;
+  --text-light:     #9899A8;
+  --success:        #2DA06A;
+  --success-bg:     #EBF8F2;
+  --warning:        #D48A12;
+  --warning-bg:     #FEF5E0;
+  --danger:         #D63B3B;
+  --danger-bg:      #FCEAEA;
+  --info:           #2C6FD4;
+  --info-bg:        #EAF1FC;
+  --purple:         #7C3AED;
+  --purple-bg:      #F3EEFF;
+  --sidebar-w:      260px;
+  --topbar-h:       64px;
+  --font:           'Plus Jakarta Sans', sans-serif;
+  --mono:           'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--surface); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--charcoal);
+  height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--charcoal-mid); border-radius: 4px; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.brand-icon {
+  width: 36px; height: 36px;
+  background: var(--coral);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: white;
+  flex-shrink: 0;
+}
+.brand-name { font-size: 17px; font-weight: 700; color: white; letter-spacing: -0.2px; }
+.brand-name span { color: var(--coral); }
+
+.sidebar-status {
+  margin: 12px 12px 4px;
+  background: rgba(232,93,58,0.12);
+  border: 1px solid rgba(232,93,58,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--coral); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(232,93,58,0.25);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(232,93,58,0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(232,93,58,0.1); }
+}
+.status-label { font-size: 10px; color: var(--charcoal-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.status-name { font-size: 13px; font-weight: 700; color: white; margin-top: 1px; }
+
+.sidebar-section {
+  padding: 16px 12px 6px;
+  font-size: 10px; font-weight: 700;
+  color: var(--charcoal-muted);
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  margin: 1px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--charcoal-muted);
+  transition: all .18s;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+.nav-item.active { background: rgba(232,93,58,0.15); color: white; }
+.nav-item.active i { color: var(--coral); }
+.nav-item i { font-size: 15px; width: 18px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--coral);
+  color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 20px;
+  min-width: 18px; text-align: center;
+}
+.nav-badge.warning { background: var(--warning); }
+.nav-badge.info { background: var(--info); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .18s;
+}
+.sidebar-user:hover { background: rgba(255,255,255,0.05); }
+.user-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--coral);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; color: white; }
+.user-role { font-size: 11px; color: var(--charcoal-muted); margin-top: 1px; }
+.user-chevron { margin-left: auto; color: var(--charcoal-muted); font-size: 12px; }
+
+/* ─── MAIN LAYOUT ─── */
+.main-wrap {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 28px;
+  gap: 14px;
+  position: sticky; top: 0; z-index: 50;
+}
+.breadcrumb-nav {
+  font-size: 13px; color: var(--text-light);
+  display: flex; align-items: center; gap: 6px;
+}
+.breadcrumb-nav span.active { color: var(--text-dark); font-weight: 600; }
+.topbar-spacer { flex: 1; }
+.topbar-search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px; color: var(--text-mid);
+  cursor: text; transition: border .2s;
+  width: 220px;
+}
+.topbar-search:hover { border-color: var(--charcoal-muted); }
+.topbar-search input {
+  border: none; background: none; outline: none;
+  font-family: var(--font); font-size: 13px; color: var(--text-dark);
+  width: 100%;
+}
+.topbar-search input::placeholder { color: var(--text-light); }
+.topbar-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-mid);
+  transition: all .2s; position: relative;
+  flex-shrink: 0;
+}
+.topbar-icon-btn:hover { background: var(--white); border-color: var(--charcoal-muted); color: var(--text-dark); }
+.notif-badge {
+  position: absolute; top: -4px; right: -4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--coral); color: white;
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--white);
+}
+.topbar-divider { width: 1px; height: 24px; background: var(--border); }
+.topbar-profile {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; padding: 4px 8px; border-radius: 8px;
+  transition: background .2s;
+}
+.topbar-profile:hover { background: var(--surface); }
+.topbar-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--coral); color: white;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-user-info .name { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+.topbar-user-info .role { font-size: 11px; color: var(--text-light); }
+.btn-logout {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--text-mid);
+  cursor: pointer; transition: all .2s;
+  font-family: var(--font);
+}
+.btn-logout:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
+
+/* ─── CONTENT ─── */
+.content {
+  padding: 28px;
+  flex: 1;
+}
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+}
+.page-title { font-size: 22px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.3px; }
+.page-subtitle { font-size: 13.5px; color: var(--text-mid); margin-top: 3px; }
+.page-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--coral);
+  color: white; font-family: var(--font);
+  font-size: 13.5px; font-weight: 600;
+  padding: 9px 18px; border-radius: 8px;
+  border: none; cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.btn-primary:hover { background: var(--coral-light); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--white);
+  color: var(--text-dark); font-family: var(--font);
+  font-size: 13.5px; font-weight: 600;
+  padding: 9px 16px; border-radius: 8px;
+  border: 1.5px solid var(--border); cursor: pointer;
+  transition: all .2s;
+}
+.btn-secondary:hover { border-color: var(--charcoal-muted); background: var(--surface); }
+
+/* ─── STAT CARDS ROW 1 ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 0 0 12px 12px;
+}
+.stat-card.blue::after   { background: var(--info); }
+.stat-card.green::after  { background: var(--success); }
+.stat-card.coral::after  { background: var(--coral); }
+.stat-card.yellow::after { background: var(--warning); }
+.stat-card.purple::after { background: var(--purple); }
+.stat-card.red::after    { background: var(--danger); }
+
+.stat-icon-wrap {
+  width: 40px; height: 40px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 14px;
+}
+.stat-icon-wrap.blue   { background: var(--info-bg); color: var(--info); }
+.stat-icon-wrap.green  { background: var(--success-bg); color: var(--success); }
+.stat-icon-wrap.coral  { background: var(--coral-pale); color: var(--coral); }
+.stat-icon-wrap.yellow { background: var(--warning-bg); color: var(--warning); }
+.stat-icon-wrap.purple { background: var(--purple-bg); color: var(--purple); }
+.stat-icon-wrap.red    { background: var(--danger-bg); color: var(--danger); }
+
+.stat-value { font-size: 28px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; line-height: 1; }
+.stat-label { font-size: 12.5px; color: var(--text-mid); margin-top: 4px; font-weight: 500; }
+.stat-change {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11.5px; font-weight: 600;
+  padding: 3px 7px; border-radius: 20px;
+  margin-top: 10px;
+}
+.stat-change.up   { background: var(--success-bg); color: var(--success); }
+.stat-change.down { background: var(--danger-bg); color: var(--danger); }
+.stat-change.flat { background: var(--surface); color: var(--text-mid); }
+.stat-sub { font-size: 11.5px; color: var(--text-light); margin-top: 8px; }
+
+/* ─── STATS ROW 2 (wide) ─── */
+.stats-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* ─── SECTION HEADING ─── */
+.section-heading {
+  font-size: 15px; font-weight: 700; color: var(--text-dark);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.section-heading .badge {
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px;
+}
+
+/* ─── CHARTS ROW ─── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.charts-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.card-title { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+.card-subtitle { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.chart-wrap { position: relative; }
+
+/* ─── TABLE STYLES ─── */
+.table-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.table-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-light);
+  padding: 10px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  text-align: left; white-space: nowrap;
+}
+.tbl td {
+  padding: 13px 16px;
+  font-size: 13px; color: var(--text-dark);
+  border-bottom: 1px solid rgba(232,229,224,0.5);
+  vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(248,247,245,0.7); }
+
+/* ─── PILLS ─── */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+}
+.pill-active   { background: var(--success-bg); color: var(--success); }
+.pill-inactive { background: var(--surface); color: var(--text-light); }
+.pill-pending  { background: var(--warning-bg); color: var(--warning); }
+.pill-suspended{ background: var(--danger-bg); color: var(--danger); }
+.pill-trial    { background: var(--info-bg); color: var(--info); }
+.pill-basic    { background: var(--surface-alt); color: var(--purple); }
+.pill-pro      { background: var(--coral-pale); color: var(--coral); }
+.pill-enterprise{ background: #FDF5FF; color: var(--purple); }
+.pill-approved { background: var(--success-bg); color: var(--success); }
+.pill-rejected { background: var(--danger-bg); color: var(--danger); }
+.pill-review   { background: var(--warning-bg); color: var(--warning); }
+
+/* ─── SCHOOL LOGO ─── */
+.school-logo {
+  width: 32px; height: 32px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar-wrap { background: var(--surface); border-radius: 20px; height: 6px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 20px; }
+
+/* ─── PLATFORM HEALTH ─── */
+.health-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.health-item {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.health-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.health-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+.health-sub { font-size: 11.5px; color: var(--text-light); margin-top: 1px; }
+.health-status { margin-left: auto; font-size: 12px; font-weight: 600; }
+
+/* ─── ACTIVITY FEED ─── */
+.activity-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(232,229,224,0.5);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.activity-text { font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+.activity-text strong { font-weight: 600; }
+.activity-time { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+/* ─── TOP SCHOOLS ─── */
+.top-school-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(232,229,224,0.5);
+}
+.top-school-item:last-child { border-bottom: none; }
+.rank-num { font-size: 12px; font-weight: 700; color: var(--text-light); width: 20px; flex-shrink: 0; text-align: center; }
+
+/* ─── TWO COLUMN LAYOUT ─── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+/* ─── LINK BTN ─── */
+.link-btn {
+  font-size: 12.5px; font-weight: 600; color: var(--coral);
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  text-decoration: none;
+  transition: color .18s;
+}
+.link-btn:hover { color: var(--coral-light); }
+
+/* ─── ACTION BTN ─── */
+.action-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-mid); font-size: 12px;
+  transition: all .18s;
+}
+.action-btn:hover { background: var(--charcoal); color: white; border-color: var(--charcoal); }
+
+/* ─── FILTER ROW ─── */
+.filter-row {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.filter-select {
+  padding: 7px 10px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: var(--font); font-size: 12.5px; color: var(--text-dark);
+  background: var(--white); cursor: pointer;
+  outline: none; transition: border .2s;
+}
+.filter-select:focus { border-color: var(--coral); }
+.search-input-sm {
+  display: flex; align-items: center; gap: 6px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 6px 10px; background: var(--white); transition: border .2s;
+}
+.search-input-sm:focus-within { border-color: var(--coral); }
+.search-input-sm input {
+  border: none; outline: none; font-family: var(--font);
+  font-size: 12.5px; color: var(--text-dark); background: transparent;
+  width: 160px;
+}
+.search-input-sm i { color: var(--text-light); font-size: 13px; }
+
+/* ─── MINI CHART SPARKLINE ─── */
+.sparkline-wrap { height: 40px; }
+
+/* ─── DONUT LEGEND ─── */
+.donut-legend { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.legend-label { font-size: 12.5px; color: var(--text-mid); flex: 1; }
+.legend-val { font-size: 12.5px; font-weight: 700; color: var(--text-dark); font-family: var(--mono); }
+.legend-pct { font-size: 11px; color: var(--text-light); font-family: var(--mono); }
+
+/* ─── REVENUE METRIC ─── */
+.rev-metric { margin-bottom: 16px; }
+.rev-val { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-dark); }
+.rev-period { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+.rev-change { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--success); background: var(--success-bg); padding: 2px 8px; border-radius: 20px; margin-top: 8px; }
+
+/* ─── SELECTOR TABS ─── */
+.chart-tabs { display: flex; gap: 4px; }
+.chart-tab {
+  padding: 5px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  color: var(--text-light); transition: all .18s;
+  border: none; background: none; font-family: var(--font);
+}
+.chart-tab.active { background: var(--coral); color: white; }
+.chart-tab:not(.active):hover { background: var(--surface); color: var(--text-dark); }
+
+/* ─── TOOLTIP CARD ─── */
+.info-tooltip {
+  font-size: 11px; color: var(--text-light);
+  display: flex; align-items: center; gap: 4px; cursor: pointer;
+}
+
+/* ─── DOMAIN REQ ─── */
+.domain-badge {
+  font-family: var(--mono); font-size: 11px;
+  background: var(--surface); color: var(--info);
+  padding: 2px 8px; border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* ─── OVERVIEW DIVIDER ─── */
+.divider { height: 1px; background: var(--border); margin: 4px 0 20px; }
+
+/* ─── KPI HIGHLIGHT ─── */
+.kpi-highlight {
+  background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-mid) 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-highlight::before {
+  content: '';
+  position: absolute;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(232,93,58,0.2) 0%, transparent 70%);
+  top: -50px; right: -50px;
+  border-radius: 50%;
+}
+.kpi-highlight .kpi-label { font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-highlight .kpi-val { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-top: 6px; }
+.kpi-highlight .kpi-sub { font-size: 12.5px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+.kpi-highlight .kpi-change { font-size: 12px; font-weight: 600; color: var(--coral); display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+
+/* ─── GAUGE ─── */
+.gauge-wrap { position: relative; width: 100%; display: flex; justify-content: center; }
+
+/* ─── SCROLLABLE TABLE ─── */
+.table-scroll { overflow-x: auto; }
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center; padding: 32px;
+  color: var(--text-light); font-size: 13px;
+}
+.empty-state i { font-size: 28px; color: var(--border); display: block; margin-bottom: 8px; }
+
+/* ─── SYSTEM LOG ITEM ─── */
+.log-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(232,229,224,0.5);
+  font-size: 12.5px;
+}
+.log-item:last-child { border-bottom: none; }
+.log-level {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 4px;
+  text-transform: uppercase; flex-shrink: 0; margin-top: 1px;
+}
+.log-info    { background: var(--info-bg); color: var(--info); }
+.log-warning { background: var(--warning-bg); color: var(--warning); }
+.log-error   { background: var(--danger-bg); color: var(--danger); }
+.log-success { background: var(--success-bg); color: var(--success); }
+.log-time { font-family: var(--mono); font-size: 11px; color: var(--text-light); white-space: nowrap; }
+.log-msg { color: var(--text-dark); flex: 1; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">S</div>
+    <div class="brand-name">Saas<span>Admin</span></div>
+  </div>
+
+  <div class="sidebar-status">
+    <div class="status-dot"></div>
+    <div>
+      <div class="status-label">System Status</div>
+      <div class="status-name">Super Portal</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">Main</div>
+  <a class="nav-item active" href="#">
+    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+  </a>
+
+  <div class="sidebar-section">Platform Management</div>
+  <a class="nav-item" href="#">
+    <i class="bi bi-building-fill"></i> Schools
+    <span class="nav-badge">24</span>
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-credit-card-fill"></i> School Subscriptions
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-people-fill"></i> Users
+    <span class="nav-badge info">17</span>
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-layers-fill"></i> Subscription Plans
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-shield-fill-check"></i> Global Roles
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-key-fill"></i> Permissions
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-globe2"></i> Domain Requests
+    <span class="nav-badge warning">5</span>
+  </a>
+
+  <div class="sidebar-section">System</div>
+  <a class="nav-item" href="#">
+    <i class="bi bi-gear-fill"></i> Platform Settings
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-journal-text"></i> Audit Logs
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-bar-chart-fill"></i> Analytics
+  </a>
+  <a class="nav-item" href="#">
+    <i class="bi bi-envelope-fill"></i> Notifications
+    <span class="nav-badge">3</span>
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">MA</div>
+      <div>
+        <div class="user-name">Muhammad Asif</div>
+        <div class="user-role">Platform Master</div>
+      </div>
+      <i class="bi bi-chevron-expand user-chevron"></i>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main-wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="breadcrumb-nav">
+      <i class="bi bi-grid-1x2" style="font-size:14px;"></i>
+      <span>1.</span>
+      <span class="active">Dashboard</span>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-search">
+      <i class="bi bi-search" style="color:var(--text-light);font-size:13px;"></i>
+      <input type="text" placeholder="Search schools, users...">
+    </div>
+    <div class="topbar-icon-btn">
+      <i class="bi bi-bell"></i>
+      <span class="notif-badge">7</span>
+    </div>
+    <div class="topbar-icon-btn">
+      <i class="bi bi-question-circle"></i>
+    </div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-profile">
+      <div class="topbar-avatar">MA</div>
+      <div class="topbar-user-info">
+        <div class="name">Muhammad Asif</div>
+        <div class="role">Platform Master</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:11px;color:var(--text-light);margin-left:4px;"></i>
+    </div>
+    <button class="btn-logout">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">Platform Overview</div>
+        <div class="page-subtitle">Real-time health monitoring, revenue metrics, and core platform analytics.</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary"><i class="bi bi-download"></i> Export Report</button>
+        <button class="btn-secondary"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        <button class="btn-primary"><i class="bi bi-plus-lg"></i> Register School</button>
+      </div>
+    </div>
+
+    <!-- ── STAT CARDS ROW 1 ── -->
+    <div class="stats-grid">
+      <!-- Total Schools -->
+      <div class="stat-card blue">
+        <div class="stat-icon-wrap blue"><i class="bi bi-building-fill"></i></div>
+        <div class="stat-value">24</div>
+        <div class="stat-label">Total Schools</div>
+        <div><span class="stat-change up"><i class="bi bi-arrow-up-short"></i> +3 this month</span></div>
+        <div class="stat-sub">21 active · 3 trial</div>
+      </div>
+      <!-- Active Instances -->
+      <div class="stat-card green">
+        <div class="stat-icon-wrap green"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-value">21</div>
+        <div class="stat-label">Active Instances</div>
+        <div><span class="stat-change up"><i class="bi bi-arrow-up-short"></i> +1 this week</span></div>
+        <div class="stat-sub">2 suspended · 1 pending</div>
+      </div>
+      <!-- Subscription Plans -->
+      <div class="stat-card coral">
+        <div class="stat-icon-wrap coral"><i class="bi bi-layers-fill"></i></div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Subscription Plans</div>
+        <div><span class="stat-change flat">No changes</span></div>
+        <div class="stat-sub">Basic · Pro · Enterprise</div>
+      </div>
+      <!-- Total Users -->
+      <div class="stat-card yellow">
+        <div class="stat-icon-wrap yellow"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-value">1,284</div>
+        <div class="stat-label">Total Users</div>
+        <div><span class="stat-change up"><i class="bi bi-arrow-up-short"></i> +47 this month</span></div>
+        <div class="stat-sub">Across all schools</div>
+      </div>
+    </div>
+
+    <!-- ── STAT CARDS ROW 2 ── -->
+    <div class="stats-grid">
+      <!-- MRR -->
+      <div class="stat-card purple">
+        <div class="stat-icon-wrap purple"><i class="bi bi-cash-stack"></i></div>
+        <div class="stat-value">₨ 3.2M</div>
+        <div class="stat-label">Monthly Recurring Revenue</div>
+        <div><span class="stat-change up"><i class="bi bi-arrow-up-short"></i> +12.4% vs last month</span></div>
+        <div class="stat-sub">ARR: ₨ 38.4M projected</div>
+      </div>
+      <!-- Pending Domain Requests -->
+      <div class="stat-card yellow">
+        <div class="stat-icon-wrap yellow"><i class="bi bi-globe2"></i></div>
+        <div class="stat-value">5</div>
+        <div class="stat-label">Pending Domain Requests</div>
+        <div><span class="stat-change down"><i class="bi bi-arrow-down-short"></i> Needs review</span></div>
+        <div class="stat-sub">2 new today</div>
+      </div>
+      <!-- System Uptime -->
+      <div class="stat-card green">
+        <div class="stat-icon-wrap green"><i class="bi bi-activity"></i></div>
+        <div class="stat-value">99.8%</div>
+        <div class="stat-label">Platform Uptime</div>
+        <div><span class="stat-change up"><i class="bi bi-arrow-up-short"></i> Last 30 days</span></div>
+        <div class="stat-sub">Last incident: 12 days ago</div>
+      </div>
+      <!-- Storage Used -->
+      <div class="stat-card red">
+        <div class="stat-icon-wrap red"><i class="bi bi-hdd-fill"></i></div>
+        <div class="stat-value">68%</div>
+        <div class="stat-label">Storage Utilisation</div>
+        <div><span class="stat-change down"><i class="bi bi-arrow-up-short"></i> +5% this month</span></div>
+        <div class="stat-sub">340 GB of 500 GB used</div>
+      </div>
+    </div>
+
+    <!-- ── CHARTS ROW ── -->
+    <div class="charts-row">
+      <!-- Revenue Trend -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Revenue Trend</div>
+            <div class="card-subtitle">Monthly recurring revenue over time</div>
+          </div>
+          <div class="chart-tabs">
+            <button class="chart-tab active" onclick="setRevTab(this,'6m')">6M</button>
+            <button class="chart-tab" onclick="setRevTab(this,'1y')">1Y</button>
+            <button class="chart-tab" onclick="setRevTab(this,'2y')">2Y</button>
+          </div>
+        </div>
+        <div class="rev-metric">
+          <div class="rev-val">₨ 3,240,000</div>
+          <div class="rev-period">April 2025 · Current Month</div>
+          <div class="rev-change"><i class="bi bi-arrow-up-short"></i> +12.4% from March</div>
+        </div>
+        <div class="chart-wrap" style="height:180px;">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Plan Distribution -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Plan Distribution</div>
+            <div class="card-subtitle">Active subscriptions by plan</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px;">
+          <canvas id="planChart"></canvas>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#2C6FD4;"></div>
+            <span class="legend-label">Basic</span>
+            <span class="legend-val">8</span>
+            <span class="legend-pct">(33%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#E85D3A;"></div>
+            <span class="legend-label">Pro</span>
+            <span class="legend-val">11</span>
+            <span class="legend-pct">(46%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#7C3AED;"></div>
+            <span class="legend-label">Enterprise</span>
+            <span class="legend-val">5</span>
+            <span class="legend-pct">(21%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHARTS ROW 2 ── -->
+    <div class="charts-row-3">
+      <!-- New Registrations -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">School Registrations</div>
+            <div class="card-subtitle">Monthly new onboarding</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px;">
+          <canvas id="regChart"></canvas>
+        </div>
+      </div>
+
+      <!-- User Growth -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">User Growth</div>
+            <div class="card-subtitle">Platform-wide users</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px;">
+          <canvas id="userChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Platform Health -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">System Health</div>
+            <div class="card-subtitle">Core service status</div>
+          </div>
+          <span class="pill pill-active"><i class="bi bi-circle-fill" style="font-size:7px;"></i> All Systems Go</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">API Server</span>
+              <span style="font-weight:600;color:var(--success);">98ms avg</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--success);width:98%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">Database</span>
+              <span style="font-weight:600;color:var(--success);">12ms avg</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--success);width:95%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">Storage</span>
+              <span style="font-weight:600;color:var(--warning);">68% used</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--warning);width:68%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">Mail Service</span>
+              <span style="font-weight:600;color:var(--success);">Operational</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--success);width:100%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">SMS Gateway</span>
+              <span style="font-weight:600;color:var(--warning);">Degraded</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--warning);width:72%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:var(--text-mid);">CDN / Assets</span>
+              <span style="font-weight:600;color:var(--success);">Healthy</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--success);width:100%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RECENTLY REGISTERED SCHOOLS ── -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div>
+          <div class="section-heading" style="margin-bottom:2px;">
+            <i class="bi bi-building-fill" style="color:var(--coral);"></i>
+            Recently Registered Schools
+          </div>
+          <div style="font-size:12px;color:var(--text-light);">Latest school instances onboarded to the platform</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="search-input-sm">
+            <i class="bi bi-search"></i>
+            <input type="text" id="schoolSearch" placeholder="Search schools..." oninput="filterSchools()">
+          </div>
+          <select class="filter-select" id="statusFilter" onchange="filterSchools()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="trial">Trial</option>
+            <option value="suspended">Suspended</option>
+            <option value="pending">Pending</option>
+          </select>
+          <select class="filter-select" id="planFilter" onchange="filterSchools()">
+            <option value="">All Plans</option>
+            <option value="Basic">Basic</option>
+            <option value="Pro">Pro</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+          <a class="link-btn" href="#">View All <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="tbl" id="schoolsTable">
+          <thead>
+            <tr>
+              <th>School Name</th>
+              <th>Slug / Domain</th>
+              <th>Subscription Plan</th>
+              <th>Students</th>
+              <th>Storage</th>
+              <th>Status</th>
+              <th>Joined Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="schoolsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── BOTTOM SECTION: Domain Requests + Activity + Top Schools ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+
+      <!-- Domain Requests -->
+      <div class="table-card" style="margin-bottom:0;">
+        <div class="table-card-header">
+          <div>
+            <div class="section-heading" style="margin-bottom:2px;">
+              <i class="bi bi-globe2" style="color:var(--warning);"></i>
+              Domain Requests
+              <span class="pill pill-pending" style="font-size:10px;padding:2px 7px;">5 Pending</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-light);">Custom domain mapping requests from schools</div>
+          </div>
+          <a class="link-btn" href="#">View All <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>School</th>
+              <th>Requested Domain</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-weight:600;">Al-Noor Academy</span></td>
+              <td><span class="domain-badge">alnoor.edu.pk</span></td>
+              <td><span class="pill pill-pending">Pending</span></td>
+              <td style="color:var(--text-light);font-size:12px;">Apr 25, 2025</td>
+              <td>
+                <button class="action-btn" title="Approve" style="color:var(--success);"><i class="bi bi-check-lg"></i></button>
+                <button class="action-btn" title="Reject" style="color:var(--danger);"><i class="bi bi-x-lg"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">Bright Future School</span></td>
+              <td><span class="domain-badge">brightfuture.pk</span></td>
+              <td><span class="pill pill-pending">Pending</span></td>
+              <td style="color:var(--text-light);font-size:12px;">Apr 23, 2025</td>
+              <td>
+                <button class="action-btn" title="Approve" style="color:var(--success);"><i class="bi bi-check-lg"></i></button>
+                <button class="action-btn" title="Reject" style="color:var(--danger);"><i class="bi bi-x-lg"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">Hira Model School</span></td>
+              <td><span class="domain-badge">hiraschool.com</span></td>
+              <td><span class="pill pill-approved">Approved</span></td>
+              <td style="color:var(--text-light);font-size:12px;">Apr 20, 2025</td>
+              <td>
+                <button class="action-btn" title="View"><i class="bi bi-eye"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">DHA College Lahore</span></td>
+              <td><span class="domain-badge">dhacollege.edu.pk</span></td>
+              <td><span class="pill pill-pending">Pending</span></td>
+              <td style="color:var(--text-light);font-size:12px;">Apr 19, 2025</td>
+              <td>
+                <button class="action-btn" title="Approve" style="color:var(--success);"><i class="bi bi-check-lg"></i></button>
+                <button class="action-btn" title="Reject" style="color:var(--danger);"><i class="bi bi-x-lg"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">Star Kids Academy</span></td>
+              <td><span class="domain-badge">starkids.com.pk</span></td>
+              <td><span class="pill pill-rejected">Rejected</span></td>
+              <td style="color:var(--text-light);font-size:12px;">Apr 15, 2025</td>
+              <td>
+                <button class="action-btn" title="View"><i class="bi bi-eye"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent Activity Feed -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Activity</div>
+            <div class="card-subtitle">Latest platform events & actions</div>
+          </div>
+          <a class="link-btn" href="#">Audit Logs <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--success-bg);color:var(--success);"><i class="bi bi-building-add"></i></div>
+            <div>
+              <div class="activity-text"><strong>Al-Noor Academy</strong> was registered as a new instance</div>
+              <div class="activity-time">2 hours ago · by Muhammad Asif</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--info-bg);color:var(--info);"><i class="bi bi-arrow-up-circle-fill"></i></div>
+            <div>
+              <div class="activity-text"><strong>Bright Future School</strong> upgraded plan to <strong>Pro</strong></div>
+              <div class="activity-time">5 hours ago · Subscription</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="bi bi-globe2"></i></div>
+            <div>
+              <div class="activity-text"><strong>DHA College</strong> submitted a domain request for <em>dhacollege.edu.pk</em></div>
+              <div class="activity-time">Yesterday · Domain Request</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="bi bi-pause-circle-fill"></i></div>
+            <div>
+              <div class="activity-text"><strong>City Grammar School</strong> subscription was <strong>suspended</strong> due to payment failure</div>
+              <div class="activity-time">2 days ago · Billing</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--success-bg);color:var(--success);"><i class="bi bi-person-plus-fill"></i></div>
+            <div>
+              <div class="activity-text"><strong>47 new users</strong> registered across all school instances this month</div>
+              <div class="activity-time">Apr 20, 2025 · User Stats</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--purple-bg);color:var(--purple);"><i class="bi bi-shield-lock-fill"></i></div>
+            <div>
+              <div class="activity-text">Platform permissions updated — new <strong>Finance Manager</strong> role deployed</div>
+              <div class="activity-time">Apr 18, 2025 · System</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TOP SCHOOLS BY USAGE + AUDIT LOGS ── -->
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:16px;margin-bottom:20px;">
+
+      <!-- Top Schools -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Top Schools by Usage</div>
+            <div class="card-subtitle">Ranked by active students this month</div>
+          </div>
+        </div>
+        <div id="topSchoolsList"></div>
+      </div>
+
+      <!-- Audit Logs -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">System Audit Logs</div>
+            <div class="card-subtitle">Recent admin actions & system events</div>
+          </div>
+          <a class="link-btn" href="#">View Full Logs <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div>
+          <div class="log-item">
+            <span class="log-level log-success">INFO</span>
+            <div class="log-msg">School <strong>Al-Noor Academy</strong> created successfully. Instance slug: <code>alnoor</code></div>
+            <span class="log-time">14:32</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-warning">WARN</span>
+            <div class="log-msg">SMS gateway response time exceeded 3000ms threshold. Auto-retry queued.</div>
+            <span class="log-time">12:10</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-info">INFO</span>
+            <div class="log-msg">Subscription plan updated for <strong>Bright Future School</strong> (Basic → Pro)</div>
+            <span class="log-time">09:45</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-error">ERROR</span>
+            <div class="log-msg">Payment webhook failed for <strong>City Grammar School</strong>. Invoice #INV-00489. Retrying…</div>
+            <span class="log-time">Yesterday</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-success">INFO</span>
+            <div class="log-msg">Domain <strong>hiraschool.com</strong> verified and SSL certificate issued successfully.</div>
+            <span class="log-time">Apr 20</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-info">INFO</span>
+            <div class="log-msg">Nightly database backup completed. Size: 4.2 GB. Duration: 3m 14s.</div>
+            <span class="log-time">Apr 19</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-warning">WARN</span>
+            <div class="log-msg">Storage utilisation reached 68%. Consider upgrading disk allocation.</div>
+            <span class="log-time">Apr 18</span>
+          </div>
+          <div class="log-item">
+            <span class="log-level log-success">INFO</span>
+            <div class="log-msg">Global role <strong>Finance Manager</strong> deployed with 12 permissions across all instances.</div>
+            <span class="log-time">Apr 18</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REVENUE BY PLAN TABLE ── -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div>
+          <div class="section-heading" style="margin-bottom:2px;">
+            <i class="bi bi-bar-chart-fill" style="color:var(--purple);"></i>
+            Revenue by Subscription Plan
+          </div>
+          <div style="font-size:12px;color:var(--text-light);">Breakdown of current monthly revenue contributions per plan</div>
+        </div>
+        <button class="btn-secondary" style="font-size:12.5px;padding:7px 13px;"><i class="bi bi-download"></i> Export CSV</button>
+      </div>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Schools</th>
+            <th>Price / Month</th>
+            <th>Total MRR</th>
+            <th>% of Revenue</th>
+            <th>Avg Storage/School</th>
+            <th>Renewal Rate</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill pill-basic"><i class="bi bi-layers"></i> Basic</span></td>
+            <td style="font-weight:700;">8</td>
+            <td style="font-family:var(--mono);">₨ 45,000</td>
+            <td style="font-family:var(--mono);font-weight:700;color:var(--info);">₨ 360,000</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-family:var(--mono);font-weight:600;">11.1%</span>
+                <div style="flex:1;"><div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--info);width:11%;"></div></div></div>
+              </div>
+            </td>
+            <td style="color:var(--text-mid);font-family:var(--mono);">8.2 GB</td>
+            <td><span class="pill pill-active">92%</span></td>
+            <td><canvas id="spark1" width="80" height="28"></canvas></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-pro"><i class="bi bi-layers-half"></i> Pro</span></td>
+            <td style="font-weight:700;">11</td>
+            <td style="font-family:var(--mono);">₨ 180,000</td>
+            <td style="font-family:var(--mono);font-weight:700;color:var(--coral);">₨ 1,980,000</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-family:var(--mono);font-weight:600;">61.1%</span>
+                <div style="flex:1;"><div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--coral);width:61%;"></div></div></div>
+              </div>
+            </td>
+            <td style="color:var(--text-mid);font-family:var(--mono);">24.7 GB</td>
+            <td><span class="pill pill-active">95%</span></td>
+            <td><canvas id="spark2" width="80" height="28"></canvas></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-enterprise"><i class="bi bi-layers-fill"></i> Enterprise</span></td>
+            <td style="font-weight:700;">5</td>
+            <td style="font-family:var(--mono);">₨ 180,000</td>
+            <td style="font-family:var(--mono);font-weight:700;color:var(--purple);">₨ 900,000</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-family:var(--mono);font-weight:600;">27.8%</span>
+                <div style="flex:1;"><div class="progress-bar-wrap"><div class="progress-fill" style="background:var(--purple);width:28%;"></div></div></div>
+              </div>
+            </td>
+            <td style="color:var(--text-mid);font-family:var(--mono);">58.1 GB</td>
+            <td><span class="pill pill-active">100%</span></td>
+            <td><canvas id="spark3" width="80" height="28"></canvas></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:var(--surface);">
+            <td style="font-weight:700;color:var(--text-dark);">Total</td>
+            <td style="font-weight:700;">24</td>
+            <td style="color:var(--text-light);">—</td>
+            <td style="font-family:var(--mono);font-weight:800;color:var(--text-dark);font-size:14px;">₨ 3,240,000</td>
+            <td style="font-family:var(--mono);font-weight:700;">100%</td>
+            <td style="font-family:var(--mono);color:var(--text-mid);">28.4 GB avg</td>
+            <td><span class="pill pill-active">95.4% avg</span></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:16px 0 4px;font-size:12px;color:var(--text-light);">
+      SaaSAdmin Platform Master · Dashboard v2.0 · Last refreshed: <span id="lastRefresh"></span>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-wrap -->
+
+<script>
+// ─── DATA ───
+const schools = [
+  { name: 'Hira Model School', slug: 'hira', domain: 'hiraschool.com', plan: 'Enterprise', students: 892, storage: 58, status: 'active', joined: 'Jan 12, 2024', color: '#EAF1FC', tc: '#2C6FD4' },
+  { name: 'Al-Noor Academy', slug: 'alnoor', domain: 'alnoor.edu.pk', plan: 'Pro', students: 734, storage: 28, status: 'active', joined: 'Apr 25, 2025', color: '#EBF8F2', tc: '#2DA06A' },
+  { name: 'Bright Future School', slug: 'brightfuture', domain: 'brightfuture.pk', plan: 'Pro', students: 611, storage: 22, status: 'active', joined: 'Feb 3, 2025', color: '#FDF0ED', tc: '#E85D3A' },
+  { name: 'DHA College Lahore', slug: 'dhacollege', domain: 'dhacollege.edu.pk', plan: 'Enterprise', students: 1240, storage: 74, status: 'active', joined: 'Nov 14, 2023', color: '#F3EEFF', tc: '#7C3AED' },
+  { name: 'City Grammar School', slug: 'citygrammar', domain: 'citygrammar.pk', plan: 'Basic', students: 312, storage: 8, status: 'suspended', joined: 'Mar 8, 2024', color: '#FEF5E0', tc: '#D48A12' },
+  { name: 'Star Kids Academy', slug: 'starkids', domain: 'starkids.com.pk', plan: 'Basic', students: 178, storage: 5, status: 'trial', joined: 'Apr 10, 2025', color: '#FEF0F6', tc: '#C2357B' },
+  { name: 'Oxford Int\'l School', slug: 'oxford-intl', domain: 'oxfordintl.edu.pk', plan: 'Pro', students: 529, storage: 26, status: 'active', joined: 'Jul 22, 2024', color: '#EAF1FC', tc: '#2C6FD4' },
+  { name: 'Roots School System', slug: 'roots', domain: 'roots.edu.pk', plan: 'Enterprise', students: 2100, storage: 98, status: 'active', joined: 'Sep 1, 2023', color: '#EBF8F2', tc: '#2DA06A' },
+];
+
+const topSchools = [
+  { name: 'Roots School System', students: 2100, plan: 'Enterprise', color: '#EBF8F2', tc: '#2DA06A', initials: 'RS' },
+  { name: 'DHA College Lahore', students: 1240, plan: 'Enterprise', color: '#F3EEFF', tc: '#7C3AED', initials: 'DH' },
+  { name: 'Hira Model School', students: 892, plan: 'Enterprise', color: '#EAF1FC', tc: '#2C6FD4', initials: 'HM' },
+  { name: 'Al-Noor Academy', students: 734, plan: 'Pro', color: '#EBF8F2', tc: '#2DA06A', initials: 'AN' },
+  { name: 'Bright Future School', students: 611, plan: 'Pro', color: '#FDF0ED', tc: '#E85D3A', initials: 'BF' },
+  { name: 'Oxford Int\'l School', students: 529, plan: 'Pro', color: '#EAF1FC', tc: '#2C6FD4', initials: 'OX' },
+];
+
+// ─── RENDER SCHOOLS TABLE ───
+function renderSchools(data) {
+  const tbody = document.getElementById('schoolsBody');
+  tbody.innerHTML = data.map(s => {
+    const statusClass = { active: 'pill-active', trial: 'pill-trial', suspended: 'pill-suspended', pending: 'pill-pending' }[s.status] || 'pill-inactive';
+    const planClass = { Basic: 'pill-basic', Pro: 'pill-pro', Enterprise: 'pill-enterprise' }[s.plan] || '';
+    const storageColor = s.storage > 80 ? 'var(--danger)' : s.storage > 60 ? 'var(--warning)' : 'var(--success)';
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="school-logo" style="background:${s.color};color:${s.tc};">${s.name.substring(0,2).toUpperCase()}</div>
+          <div>
+            <div style="font-weight:600;font-size:13.5px;">${s.name}</div>
+            <div style="font-size:11.5px;color:var(--text-light);font-family:var(--mono);">${s.slug}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="domain-badge">${s.domain}</span></td>
+      <td><span class="pill ${planClass}">${s.plan}</span></td>
+      <td style="font-family:var(--mono);font-weight:600;">${s.students.toLocaleString()}</td>
+      <td>
+        <div style="font-size:12px;color:var(--text-mid);margin-bottom:3px;">${s.storage} GB</div>
+        <div class="progress-bar-wrap" style="width:80px;"><div class="progress-fill" style="background:${storageColor};width:${Math.min(s.storage,100)}%;"></div></div>
+      </td>
+      <td><span class="pill ${statusClass}">${s.status.charAt(0).toUpperCase()+s.status.slice(1)}</span></td>
+      <td style="font-size:12.5px;color:var(--text-mid);">${s.joined}</td>
+      <td>
+        <button class="action-btn" title="View"><i class="bi bi-eye"></i></button>
+        <button class="action-btn" title="Edit"><i class="bi bi-pencil"></i></button>
+        <button class="action-btn" title="More"><i class="bi bi-three-dots-vertical"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterSchools() {
+  const q = document.getElementById('schoolSearch').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const plan = document.getElementById('planFilter').value;
+  const filtered = schools.filter(s =>
+    (!q || s.name.toLowerCase().includes(q) || s.slug.toLowerCase().includes(q)) &&
+    (!status || s.status === status) &&
+    (!plan || s.plan === plan)
+  );
+  renderSchools(filtered);
+}
+
+// ─── TOP SCHOOLS ───
+function renderTopSchools() {
+  const el = document.getElementById('topSchoolsList');
+  const max = Math.max(...topSchools.map(s => s.students));
+  el.innerHTML = topSchools.map((s, i) => `
+    <div class="top-school-item">
+      <span class="rank-num">#${i+1}</span>
+      <div class="school-logo" style="background:${s.color};color:${s.tc};width:28px;height:28px;font-size:10px;">${s.initials}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+        <div class="progress-bar-wrap" style="margin-top:4px;"><div class="progress-fill" style="background:${s.tc};width:${Math.round(s.students/max*100)}%;"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:13px;font-weight:700;font-family:var(--mono);">${s.students.toLocaleString()}</div>
+        <div style="font-size:10.5px;color:var(--text-light);">${s.plan}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── REVENUE CHART ───
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revData6m = {
+  labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+  data: [2100000, 2400000, 2650000, 2850000, 2880000, 3240000]
+};
+const revData1y = {
+  labels: ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+  data: [1200000,1400000,1600000,1700000,1850000,2000000,2100000,2400000,2650000,2850000,2880000,3240000]
+};
+const revData2y = {
+  labels: ['May\'23','Aug','Nov','Feb\'24','May','Aug','Nov','Feb\'25','Apr'],
+  data: [600000,800000,1000000,1100000,1300000,1700000,2100000,2700000,3240000]
+};
+let revChart = new Chart(revenueCtx, {
+  type: 'line',
+  data: {
+    labels: revData6m.labels,
+    datasets: [{
+      label: 'MRR (₨)',
+      data: revData6m.data,
+      borderColor: '#E85D3A',
+      backgroundColor: 'rgba(232,93,58,0.08)',
+      borderWidth: 2.5,
+      pointRadius: 4,
+      pointBackgroundColor: '#E85D3A',
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+      tension: 0.4,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { label: ctx => ' ₨ ' + ctx.raw.toLocaleString() }
+    }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: '#9899A8' }},
+      y: { grid: { color: 'rgba(232,229,224,0.5)' }, ticks: { font: { family: 'DM Mono', size: 10 }, color: '#9899A8', callback: v => '₨' + (v/1000000).toFixed(1) + 'M' }}
+    }
+  }
+});
+
+function setRevTab(btn, range) {
+  document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const d = range === '6m' ? revData6m : range === '1y' ? revData1y : revData2y;
+  revChart.data.labels = d.labels;
+  revChart.data.datasets[0].data = d.data;
+  revChart.update();
+}
+
+// ─── PLAN DONUT ───
+new Chart(document.getElementById('planChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Basic', 'Pro', 'Enterprise'],
+    datasets: [{ data: [8, 11, 5], backgroundColor: ['#2C6FD4', '#E85D3A', '#7C3AED'], borderWidth: 0, hoverOffset: 8 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '72%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.raw + ' schools' }}}
+  }
+});
+
+// ─── REGISTRATIONS BAR ───
+new Chart(document.getElementById('regChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+    datasets: [{
+      label: 'New Schools',
+      data: [1, 2, 3, 2, 4, 3],
+      backgroundColor: 'rgba(44,111,212,0.8)',
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9899A8' }},
+      y: { grid: { color: 'rgba(232,229,224,0.5)' }, ticks: { font: { size: 10 }, color: '#9899A8', stepSize: 1 }}
+    }
+  }
+});
+
+// ─── USER GROWTH LINE ───
+new Chart(document.getElementById('userChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+    datasets: [{
+      label: 'Users',
+      data: [920, 980, 1050, 1130, 1237, 1284],
+      borderColor: '#2DA06A',
+      backgroundColor: 'rgba(45,160,106,0.08)',
+      borderWidth: 2.5,
+      pointRadius: 3,
+      pointBackgroundColor: '#2DA06A',
+      tension: 0.4, fill: true,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9899A8' }},
+      y: { grid: { color: 'rgba(232,229,224,0.5)' }, ticks: { font: { size: 10 }, color: '#9899A8' }}
+    }
+  }
+});
+
+// ─── SPARKLINES ───
+function sparkline(id, data, color) {
+  new Chart(document.getElementById(id).getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => i),
+      datasets: [{ data, borderColor: color, borderWidth: 2, pointRadius: 0, tension: 0.4, fill: false }]
+    },
+    options: {
+      responsive: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false }},
+      scales: { x: { display: false }, y: { display: false }}
+    }
+  });
+}
+sparkline('spark1', [5,6,5,7,7,8], '#2C6FD4');
+sparkline('spark2', [8,9,10,10,11,11], '#E85D3A');
+sparkline('spark3', [3,3,4,4,5,5], '#7C3AED');
+
+// ─── INIT ───
+renderSchools(schools);
+renderTopSchools();
+
+const now = new Date();
+document.getElementById('lastRefresh').textContent = now.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
+</script>
+</body>
+</html>

@@ -14,6 +14,7 @@ class Asset extends Model
     use BelongsToCampus;
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'asset_category_id',
         'name',

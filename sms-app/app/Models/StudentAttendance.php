@@ -16,6 +16,7 @@ class StudentAttendance extends Model
     protected $table = 'student_attendance';
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'student_id',
         'section_id',

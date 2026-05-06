@@ -35,6 +35,7 @@
                     </td>
                     <td>
                         <div style="display:flex;gap:.5rem;">
+                            <a class="btn-outline-sms" href="{{ route('admin.library-books.show', $book) }}"><i class="bi bi-eye"></i></a>
                             <a class="btn-outline-sms" href="{{ route('admin.library-books.edit', $book) }}"><i class="bi bi-pencil"></i></a>
                             <form action="{{ route('admin.library-books.destroy', $book) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                 @csrf

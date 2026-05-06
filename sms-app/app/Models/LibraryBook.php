@@ -13,6 +13,7 @@ class LibraryBook extends Model
     use BelongsToCampus;
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'title',
         'author',
