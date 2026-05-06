@@ -14,11 +14,42 @@ class School extends Model
 
     protected $fillable = [
         'name',
+        'short_name',
         'slug',
+        'registration_number',
+        'established_year',
         'logo',
+        'description',
+        'country',
+        'province',
+        'city',
+        'address',
+        'official_email',
+        'phone',
+        'website',
+        'custom_subdomain',
+        'whatsapp',
+        'twitter',
+        'facebook',
         'plan_id',
         'status',
         'trial_ends_at',
+        'billing_cycle',
+        'trial_days',
+        'max_students',
+        'max_teachers',
+        'storage_gb',
+        'custom_mrr',
+        'tags',
+        'feature_toggles',
+        'internal_notes',
+        'account_manager_id',
+    ];
+
+    protected $casts = [
+        'trial_ends_at' => 'datetime',
+        'tags' => 'array',
+        'feature_toggles' => 'array',
     ];
 
     public function plan(): BelongsTo
@@ -44,6 +75,11 @@ class School extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function accountManager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'account_manager_id');
     }
 
     public function isTrial(): bool

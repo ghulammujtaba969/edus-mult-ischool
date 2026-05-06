@@ -12,6 +12,7 @@ class AdmissionInquiry extends Model
     use HasFactory, BelongsToCampus;
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'student_name',
         'guardian_name',

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campus;
 use App\Models\LibraryBook;
+use App\Services\CampusManager;
+use App\Services\TenantManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -32,12 +35,24 @@ class LibraryBookController extends Controller
             'price' => 'required|numeric|min:0',
         ]);
 
-        LibraryBook::create(array_merge($validated, [
+        $tenant = $this->tenantPayload($request);
+        if (! $tenant['campus_id']) {
+            return back()->withInput()->with('error', 'Please select an active campus before adding a book.');
+        }
+
+        LibraryBook::create(array_merge($validated, $tenant, [
             'available_quantity' => $validated['quantity']
         ]));
 
         return redirect()->route('admin.library-books.index')
             ->with('success', 'Book added successfully.');
+    }
+
+    public function show(LibraryBook $libraryBook): View
+    {
+        $libraryBook->load('issues.member.user');
+
+        return view('library.books.show', ['book' => $libraryBook]);
     }
 
     public function edit(LibraryBook $libraryBook): View
@@ -74,5 +89,27 @@ class LibraryBookController extends Controller
         $libraryBook->delete();
         return redirect()->route('admin.library-books.index')
             ->with('success', 'Book deleted.');
+    }
+
+    private function tenantPayload(Request $request): array
+    {
+        $user = $request->user();
+        $schoolId = app()->bound(TenantManager::class) ? app(TenantManager::class)->getSchoolId() : null;
+        $schoolId = $schoolId ?: $user?->school_id;
+
+        $campusId = app()->bound(CampusManager::class) ? app(CampusManager::class)->getScopeCampusId() : null;
+        $campusId = $campusId ?: $request->session()->get('active_campus_id') ?: $user?->campus_id;
+
+        if (! $campusId && $schoolId) {
+            $campusId = Campus::where('school_id', $schoolId)->value('id');
+            if ($campusId) {
+                $request->session()->put('active_campus_id', $campusId);
+            }
+        }
+
+        return [
+            'school_id' => $schoolId,
+            'campus_id' => $campusId,
+        ];
     }
 }

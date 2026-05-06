@@ -11,59 +11,138 @@
     </div>
 @endsection
 
+@push('styles')
+    <style>
+        .assets-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 1.25rem;
+            align-items: start;
+        }
+
+        .assets-table-card,
+        .assets-category-card {
+            min-width: 0;
+        }
+
+        .assets-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .assets-table {
+            min-width: 760px;
+        }
+
+        .assets-table th:last-child,
+        .assets-table td:last-child {
+            width: 120px;
+            text-align: right;
+        }
+
+        .assets-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: .5rem;
+        }
+
+        .assets-empty {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .assets-category-list {
+            list-style: none;
+            padding: 0;
+            margin: .75rem 0 0;
+        }
+
+        .assets-category-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: .85rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .assets-category-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .assets-category-name {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1100px) {
+            .assets-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
-    <div class="profile-grid">
-        <div class="profile-card" style="flex:2;">
+    <div class="assets-layout">
+        <div class="profile-card assets-table-card">
             <div class="card-title">Inventory List</div>
-            <table class="sms-table">
-                <thead>
-                <tr>
-                    <th>Asset Code</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Condition</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @forelse($assets as $asset)
+            <div class="assets-table-wrap">
+                <table class="sms-table assets-table">
+                    <thead>
                     <tr>
-                        <td class="mono" style="font-weight:700;">{{ $asset->code }}</td>
-                        <td>{{ $asset->name }}</td>
-                        <td>{{ $asset->category->name }}</td>
-                        <td>
-                            <span class="status-pill {{ $asset->condition === 'new' ? 'pill-active' : ($asset->condition === 'used' ? 'pill-warning' : 'pill-inactive') }}">
-                                {{ ucfirst($asset->condition) }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill {{ $asset->status === 'available' ? 'pill-active' : ($asset->status === 'in_use' ? 'pill-partial' : 'pill-inactive') }}">
-                                {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
-                            </span>
-                        </td>
-                        <td>
-                            <div style="display:flex;gap:.5rem;">
-                                <a class="btn-outline-sms" href="{{ route('admin.assets.show', $asset) }}"><i class="bi bi-eye"></i></a>
-                                <a class="btn-outline-sms" href="{{ route('admin.assets.edit', $asset) }}"><i class="bi bi-pencil"></i></a>
-                            </div>
-                        </td>
+                        <th>Asset Code</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Condition</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light);">No assets found.</td>
-                    </tr>
-                @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @forelse($assets as $asset)
+                        <tr>
+                            <td class="mono" style="font-weight:700;">{{ $asset->code }}</td>
+                            <td>{{ $asset->name }}</td>
+                            <td>{{ $asset->category->name }}</td>
+                            <td>
+                                <span class="status-pill {{ $asset->condition === 'new' ? 'pill-active' : ($asset->condition === 'used' ? 'pill-warning' : 'pill-inactive') }}">
+                                    {{ ucfirst($asset->condition) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-pill {{ $asset->status === 'available' ? 'pill-active' : ($asset->status === 'in_use' ? 'pill-partial' : 'pill-inactive') }}">
+                                    {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="assets-actions">
+                                    <a class="btn-outline-sms" href="{{ route('admin.assets.show', $asset) }}"><i class="bi bi-eye"></i></a>
+                                    <a class="btn-outline-sms" href="{{ route('admin.assets.edit', $asset) }}"><i class="bi bi-pencil"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="assets-empty">No assets found.</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="profile-card" style="flex:1;">
+        <div class="profile-card assets-category-card">
             <div class="card-title">Categories</div>
-            <ul style="list-style:none;padding:0;">
+            <ul class="assets-category-list">
                 @foreach($categories as $cat)
-                    <li style="display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border-color);">
-                        <span style="font-weight:600;">{{ $cat->name }}</span>
+                    <li>
+                        <span class="assets-category-name">{{ $cat->name }}</span>
                         <span class="nav-badge">{{ $cat->assets_count }}</span>
                     </li>
                 @endforeach

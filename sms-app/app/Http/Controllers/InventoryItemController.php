@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssetCategory;
 use App\Models\InventoryItem;
 use App\Models\InventorySupplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class InventoryItemController extends Controller
@@ -18,15 +20,16 @@ class InventoryItemController extends Controller
 
     public function create(): View
     {
+        $categories = AssetCategory::orderBy('name')->get();
         $suppliers = InventorySupplier::all();
-        return view('inventory.items.create', compact('suppliers'));
+        return view('inventory.items.create', compact('categories', 'suppliers'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string',
+            'category' => ['required', 'string', Rule::exists('asset_categories', 'name')],
             'quantity' => 'required|integer|min:0',
             'unit' => 'required|string',
             'unit_price' => 'required|numeric|min:0',

@@ -31,6 +31,11 @@
                         <div style="display:flex;gap:.5rem;">
                             <a class="btn-outline-sms" href="{{ route('admin.transport-routes.show', $route) }}"><i class="bi bi-eye"></i></a>
                             <a class="btn-outline-sms" href="{{ route('admin.transport-routes.edit', $route) }}"><i class="bi bi-pencil"></i></a>
+                            <form action="{{ route('admin.transport-routes.destroy', $route) }}" method="POST" onsubmit="return confirm('Delete this route?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-outline-sms" type="submit" style="color:var(--danger);"><i class="bi bi-trash"></i></button>
+                            </form>
                         </div>
                     </td>
                 </tr>

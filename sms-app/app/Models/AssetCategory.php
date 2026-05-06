@@ -13,6 +13,7 @@ class AssetCategory extends Model
     use BelongsToCampus;
 
     protected $fillable = [
+        'school_id',
         'campus_id',
         'name',
         'description',

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/sms.css') }}">
+    @stack('styles')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -41,6 +42,24 @@
             </div>
 
             <div class="topbar-actions">
+                @if(request()->is('super-admin*'))
+                    <div class="topbar-search d-none d-md-flex">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search platform...">
+                    </div>
+                    <div class="topbar-icon-btn">
+                        <i class="bi bi-bell"></i>
+                        <div class="notif-badge">3</div>
+                    </div>
+                    <a class="topbar-icon-btn" href="{{ route('super-admin.profile.edit') }}" title="Profile">
+                        <i class="bi bi-person-circle"></i>
+                    </a>
+                    <div class="topbar-icon-btn">
+                        <i class="bi bi-question-circle"></i>
+                    </div>
+                    <div class="topbar-divider"></div>
+                @endif
+
                 @if(!request()->is('super-admin*') && (auth()->user()->isSuperAdmin() || auth()->user()->isCampusAdmin()))
                     @if(count($layoutCampuses) > 1)
                         <form action="{{ route('campus.switch') }}" method="POST">
@@ -82,5 +101,6 @@
         </div>
     </div>
 </div>
+@stack('scripts')
 </body>
 </html>
